@@ -1,0 +1,13 @@
+Package: shinyjester
+Title: Run Shiny Javascript Testing
+Version: 0.0.0.9000
+Authors@R:
+    c(
+      person("Barret", "Schloerke", , "barret@rstudio.com", c("aut", "cre"),
+             comment = c(ORCID = "0000-0001-9986-114X"))
+    )
+Description: Run javascript testing on shiny applications.  On successful testing, shinyjester will autokill the shiny application to speed up manual testing.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
