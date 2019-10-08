@@ -18,16 +18,18 @@
     "parcel-bundler": "^1.12.3",
     "prettier": "1.18.2",
     "ts-jest": "^24.1.0",
+    "type-coverage": "^2.3.0",
     "typescript": "^3.6.3"
   },
   "scripts": {
-    "checks": "yarn typescript-check; yarn lint-check",
-    "lint": "eslint --fix --ext .ts srcjs",
-    "lint-check": "eslint --ext .ts srcjs",
-    "typescript-check": "tsc --noEmit srcjs/index.ts",
     "build": "yarn typscript-check; parcel build -d inst -o shinyjester.js srcjs/index.ts",
     "watch": "yarn typscript-check; parcel run -d inst -o shinyjester.js srcjs/index.ts",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint --fix --ext .ts srcjs",
+    "lint-check": "eslint --ext .ts srcjs",
+    "typescript-check": "tsc --noEmit srcjs/**/*.ts",
+    "type-check": "type-coverage --detail --at-least 95",
+    "checks": "yarn typescript-check && yarn type-check && yarn lint-check"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0"
