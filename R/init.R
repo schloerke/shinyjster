@@ -1,9 +1,9 @@
 
 
 
-shinyjester_ui <- function() {
+shinyjster_ui <- function() {
   
 }
-shinyjester_server <- function(input, output) {
+shinyjster_server <- function(input, output) {
 
 }
