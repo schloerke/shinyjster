@@ -1,7 +1,9 @@
 import "babel-polyfill";
 
-function sum(a: number, b: number): number {
-  return a + b;
+import { ShinyJster } from "./jster";
+
+function jster(timeout = 250): ShinyJster {
+  return new ShinyJster(timeout);
 }
 
-export { sum };
+export { jster };
