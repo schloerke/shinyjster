@@ -18,6 +18,8 @@ plugins:
   - '@typescript-eslint'
   - prettier
 rules:
+  no-explicit-any:
+    - off
   indent:
     - error
     - 2
