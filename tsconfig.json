@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "UMD",
+    "target": "es5",
+    "preserveConstEnums": true
+  },
+  "include": [
+    "srcjs/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
