@@ -2,8 +2,6 @@ library(shiny)
 library(shinyjster)
 
 ui <- fluidPage(
-
-  shinyjster_ui(),
   
   titlePanel("Button Example - Do NOT Touch application"),
 
@@ -20,11 +18,11 @@ ui <- fluidPage(
 
   # include shinyjster JS at end of UI definition
   shinyjster_js(
-    "var jst = jster(1000)",
+    "var jst = jster(2000)",
     "jst.add(function(done) { $('#button').click(); done() });",
     "jst.add(function(done) { $('#button').click(); done() });",
     "jst.add(function(done) { $('#button').click(); done() });",
-    "jst.add(function(done) { if ($('#number').text() == '3') done(); throw 'text does not equal three' });",
+    "jst.add(function(done) { if ($('#number').text() == '3') done(); throw 'text does not equal 3' });",
     "jst.test()"
   )
 
