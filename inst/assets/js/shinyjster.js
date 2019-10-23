@@ -232,7 +232,7 @@ var globals_1 = require("./globals");
 
 function initJsterHooks() {
   // use event.target to obtain the output element
-  globals_1.Shiny.addCustomMessageHandler('shinyjster_msg_close_window', function (ignore) {
+  globals_1.Shiny.addCustomMessageHandler("shinyjster_msg_close_window", function () {
     setTimeout(function () {
       console.log("shinyjster: - closing window!");
       window.close();

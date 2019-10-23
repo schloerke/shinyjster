@@ -1,10 +1,8 @@
-import { Shiny, $ } from "./globals";
+import { Shiny } from "./globals";
 
-function initJsterHooks() {
+function initJsterHooks(): void {
   // use event.target to obtain the output element
-  Shiny.addCustomMessageHandler("shinyjster_msg_close_window", function(
-    ignore
-  ) {
+  Shiny.addCustomMessageHandler("shinyjster_msg_close_window", function() {
     setTimeout(() => {
       console.log("shinyjster: - closing window!");
       window.close();
