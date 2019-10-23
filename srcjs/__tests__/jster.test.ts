@@ -1,5 +1,4 @@
-import { jster } from "../index";
-// import { do_fns } from "../index";
+import { jster } from "../jster";
 
 test("adds 1 + 2 to equal 3", (doneTest) => {
   const jst = jster();
@@ -39,7 +38,7 @@ test("adds 1 + 2 to equal 3", (doneTest) => {
       length: 4,
       value: 5,
     });
-    expect(key).toBe("jster");
+    expect(key).toBe("jster_done");
 
     doneTest();
   });

@@ -172,8 +172,8 @@ function () {
       }) // call the fn itself
       .then(function (value) {
         return new Promise(function (resolve) {
-          if ($) {
-            $("#shinyjster_progress").text($("#shinyjster_progress").text() + " .");
+          if (globals_1.$) {
+            globals_1.$("#shinyjster_progress").text(globals_1.$("#shinyjster_progress").text() + " .");
           }
 
           fn(resolve, value);
@@ -252,7 +252,6 @@ var jster_1 = require("./jster");
 var shiny_1 = require("./shiny");
 
 window.jster = jster_1.jster;
-shiny_1.initJsterHooks(); // // export { jster };
-// export default jster;
+shiny_1.initJsterHooks();
 },{"./jster":"WLG3","./shiny":"CnUs"}]},{},["QCba"], null)
 //# sourceMappingURL=/shinyjster.js.map

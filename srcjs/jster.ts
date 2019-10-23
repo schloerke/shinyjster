@@ -1,4 +1,4 @@
-import { Shiny } from "./globals";
+import { Shiny, $ } from "./globals";
 
 interface ResolveFnType {
   (value?: any): void;
@@ -7,7 +7,7 @@ interface AddFnType {
   (resolve: ResolveFnType, value?: any): void;
 }
 
-class ShinyJster {
+class Jster {
   timeout: number;
   fns: Array<{ fn: Function; timeout: number }>;
   p: null | Promise<any>;
@@ -42,6 +42,11 @@ class ShinyJster {
         // call the fn itself
         .then((value) => {
           return new Promise((resolve) => {
+            if ($) {
+              $("#shinyjster_progress").text(
+                `${$("#shinyjster_progress").text()} .`
+              );
+            }
             fn(resolve, value);
           });
         });
@@ -53,18 +58,19 @@ class ShinyJster {
   test(setInputValue = Shiny.setInputValue): void {
     this.setupPromises().then(
       (value) => {
-        setInputValue("jster", {
+        setInputValue("jster_done", {
           type: "success",
           length: this.fns.length,
           value: value,
         });
       },
       (error) => {
+        // print to console the same error
         setTimeout(function() {
           throw error;
         }, 0);
 
-        setInputValue("jster-error", {
+        setInputValue("jster_done", {
           type: "error",
           length: this.fns.length,
           error: error,
@@ -74,4 +80,8 @@ class ShinyJster {
   }
 }
 
-export { ShinyJster };
+function jster(timeout = 250): Jster {
+  return new Jster(timeout);
+}
+
+export { Jster, jster };

@@ -1,9 +1,8 @@
-import "babel-polyfill";
+// import "babel-polyfill";
 
-import { ShinyJster } from "./jster";
+import { jster } from "./jster";
+import { initJsterHooks } from "./shiny";
 
-function jster(timeout = 250): ShinyJster {
-  return new ShinyJster(timeout);
-}
+window.jster = jster;
 
-export { jster };
+initJsterHooks();

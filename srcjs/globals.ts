@@ -1,11 +1,16 @@
 interface ShinyType {
   setInputValue: (key: string, value: string | Record<string, any>) => void;
+  addCustomMessageHandler: (
+    key: string,
+    fn: (val: string | number) => void
+  ) => void;
 }
 
 declare global {
   interface Window {
     Shiny: ShinyType;
     jQuery: JQueryStatic;
+    jster: (timeout: number) => void;
   }
 }
 
