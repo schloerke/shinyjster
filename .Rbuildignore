@@ -1,1 +1,12 @@
+^\.cache
 ^LICENSE\.md$
+^node_modules$
+^\.eslintrc\.yml$
+^\.prettierrc\.yml$
+^jest\.config\.js$
+^package\.json$
+^tsconfig\.json$
+^yarn-error\.log$
+^yarn\.lock$
+^Notes\.md$
+^srcjs
