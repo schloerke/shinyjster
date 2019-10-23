@@ -23,8 +23,8 @@
     "typescript": "^3.6.3"
   },
   "scripts": {
-    "build": "yarn typescript-check && parcel build -d inst -o shinyjster.js srcjs/index.ts",
-    "watch": "yarn typescript-check && parcel run -d inst -o shinyjster.js srcjs/index.ts",
+    "build": "yarn typescript-check && parcel build -d inst/assets/js -o shinyjster.js --no-minify srcjs/index.ts",
+    "watch": "yarn typescript-check && parcel run -d inst/assets/js -o shinyjster.js srcjs/index.ts",
     "test": "jest",
     "lint": "eslint --fix --ext .ts srcjs",
     "lint-check": "eslint --ext .ts srcjs",

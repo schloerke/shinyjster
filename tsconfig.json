@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
-    "module": "UMD",
-    "target": "es5",
+    "target": "es3",
     "preserveConstEnums": true
   },
   "include": [
