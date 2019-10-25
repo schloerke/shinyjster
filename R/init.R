@@ -15,7 +15,7 @@ shinyjster_js_dependencies <- function() {
   )
 }
 
-# htmlwidgets::JS
+# ~ htmlwidgets::JS
 JS <- function(...) {
   x <- c(...)
   if (is.null(x)) {
@@ -25,7 +25,7 @@ JS <- function(...) {
     stop("The arguments for JS() must be a character vector")
   }
   x <- paste(x, collapse = "\n")
-  structure(x, class = unique(c("JS_EVAL", oldClass(x))))
+  htmltools::HTML(x) # return HTML code, not a JS structure
 }
 
 #' JavaScript helper
@@ -54,7 +54,7 @@ shinyjster_ui <- function() {
     shinyjster_js_dependencies(),
     htmltools::tags$div(
       id = "shinyjster_progress",
-      style = "position: absolute; left: 0px; bottom: 0px;"
+      style = "position: absolute; left: 0px; bottom: 0px; padding: 5px;"
     )
   )
 }
@@ -100,18 +100,18 @@ shinyjster_js <- function(..., set_timeout = TRUE) {
 shinyjster_server <- function(input, output, session) {
   shiny::observeEvent(input$jster_done, {
     val <- input$jster_done
-    str(val)
+    # str(val)
 
     if (identical(val$type, "success")) {
-      message("Success! Closing Browser window")
+      message("shinyjster - Success! Closing Browser window")
       session$sendCustomMessage("shinyjster_msg_close_window", TRUE)
     } else {
-      stop(val$error)
+      message("shinyjster - Error found!\n\tError:\n\t'", val$error, "'")
     }
   })
 
   shiny::observeEvent(input$jster_closing_window, {
-    message("Browser window has been closed. Stopping Shiny Application now.")
+    message("shinyjster - Browser window has been closed. Stopping Shiny Application now.")
     shiny::stopApp()
   })
 }

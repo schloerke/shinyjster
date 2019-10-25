@@ -1,5 +1,5 @@
 interface ShinyType {
-  setInputValue: (key: string, value: string | Record<string, any>) => void;
+  setInputValue: (key: string, value: string | Record<string, unknown>) => void;
   addCustomMessageHandler: (
     key: string,
     fn: (val?: string | number) => void
