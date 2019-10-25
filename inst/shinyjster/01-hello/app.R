@@ -18,7 +18,7 @@ ui <- fluidPage(
 
   # include shinyjster JS at end of UI definition
   shinyjster_js(
-    "var jst = jster(2000)",
+    "var jst = jster(500)", # execute every 500 ms
     "jst.add(function(done) { $('#button').click(); done() });",
     "jst.add(function(done) { $('#button').click(); done() });",
     "jst.add(function(done) { $('#button').click(); done() });",
