@@ -137,6 +137,7 @@ var Jster =
 /** @class */
 function () {
   function Jster(timeout) {
+    this.hasCalled = false;
     this.timeout = timeout;
     this.fns = [];
     this.p = new Promise(function (resolve) {
@@ -144,11 +145,57 @@ function () {
     });
   }
 
+  Jster.prototype.setProgress = function (color, txt) {
+    this.setProgressText(txt);
+    this.setProgressColor(color);
+  };
+
+  Jster.prototype.setProgressText = function (txt) {
+    if (globals_1.$) {
+      globals_1.$("#shinyjster_progress").text(txt);
+    }
+  };
+
+  Jster.prototype.setProgressColor = function (color) {
+    switch (color) {
+      case "red":
+        {
+          color = "rgb(90%, 54%, 59.4%)";
+          break;
+        }
+
+      case "yellow":
+        {
+          color = "rgb(90%, 86.4%, 54%)";
+          break;
+        }
+
+      case "green":
+        {
+          color = "rgb(55.8%, 90%, 54%)";
+          break;
+        }
+
+      default:
+        {// color = color
+        }
+    }
+
+    if (globals_1.$) {
+      globals_1.$("#shinyjster_progress").css("background-color", color);
+    }
+  };
+
   Jster.prototype.add = function (fn, timeout) {
     if (timeout === void 0) {
       timeout = this.timeout;
     }
 
+    if (this.hasCalled) {
+      throw "`this.test()` has already been called";
+    }
+
+    this.setProgress("green", "shinyjster - Adding tests!");
     this.fns.push({
       fn: fn,
       timeout: timeout
@@ -156,14 +203,17 @@ function () {
   };
 
   Jster.prototype.setupPromises = function () {
-    var _this = this; // for each fn
+    var _this = this;
 
+    this.setProgress("yellow", "shinyjster - Running tests!"); // for each fn
 
-    this.fns.forEach(function (_a) {
+    this.fns.forEach(function (_a, idx, fns) {
       var fn = _a.fn,
           timeout = _a.timeout;
       _this.p = _this.p // delay a little bit
       .then(function (value) {
+        _this.setProgress("yellow", "shinyjster - Progress: " + (idx + 1) + "/" + fns.length + " (waiting)");
+
         return new Promise(function (resolve) {
           setTimeout(function () {
             resolve(value);
@@ -171,11 +221,9 @@ function () {
         });
       }) // call the fn itself
       .then(function (value) {
-        return new Promise(function (resolve) {
-          if (globals_1.$) {
-            globals_1.$("#shinyjster_progress").text(globals_1.$("#shinyjster_progress").text() + " .");
-          }
+        _this.setProgress("yellow", "shinyjster - Progress: " + (idx + 1) + "/" + fns.length + " (running)");
 
+        return new Promise(function (resolve) {
           fn(resolve, value);
         });
       });
@@ -190,22 +238,41 @@ function () {
       setInputValue = globals_1.Shiny.setInputValue;
     }
 
+    if (this.hasCalled) {
+      throw "`this.test()` has already been called";
+    }
+
+    if (this.fns.length === 0) {
+      throw "`this.test()` requires functions to be `this.add()`ed before executing the test";
+    } // prevent bad testing from occuring
+
+
+    this.hasCalled = true;
     this.setupPromises().then(function (value) {
+      _this.setProgress("green", "shinyjster - Progress: " + _this.fns.length + "/" + _this.fns.length + " (done!)"); // send success to shiny
+
+
       setInputValue("jster_done", {
         type: "success",
         length: _this.fns.length,
         value: value
       });
     }, function (error) {
-      // print to console the same error
-      setTimeout(function () {
-        throw error;
-      }, 0);
+      // print error to progress area
+      if (globals_1.$) {
+        _this.setProgress("red", globals_1.$("#shinyjster_progress").text() + " - Error found: " + error);
+      } // send error to shiny
+
+
       setInputValue("jster_done", {
         type: "error",
         length: _this.fns.length,
         error: error
-      });
+      }); // display error in console
+
+      setTimeout(function () {
+        throw error;
+      }, 0);
     });
   };
 
