@@ -1,7 +1,12 @@
 import { jster } from "../jster";
 
-test("adds 1 + 2 to equal 3", (doneTest) => {
-  const jst = jster();
+const setInputMock = function(key: string, value: string): void {
+  key + value;
+  return;
+};
+
+test("basic jster works", (doneTest) => {
+  const jst = jster(10);
 
   let val = 1;
 
@@ -32,7 +37,7 @@ test("adds 1 + 2 to equal 3", (doneTest) => {
   });
 
   jst.test(function(key, info) {
-    console.log(key, info);
+    // console.log(key, info);
     expect(info).toStrictEqual({
       type: "success",
       length: 4,
@@ -41,5 +46,48 @@ test("adds 1 + 2 to equal 3", (doneTest) => {
     expect(key).toBe("jster_done");
 
     doneTest();
+  });
+});
+
+test("tests can not be empty", () => {
+  // expect(jst.test((key, value) => { return; })).toThrow("before executing")
+  expect(() => {
+    const jst = jster();
+
+    jst.test(setInputMock);
+  }).toThrow("before executing");
+});
+
+test("tests can not be added after testing", () => {
+  expect(() => {
+    const jst = jster();
+
+    jst.add((done) => done());
+    jst.test(setInputMock);
+    jst.add((done) => done());
+  }).toThrow("`this.test()` has already been called");
+});
+
+test("test can not be called after testing", () => {
+  expect(() => {
+    const jst = jster();
+
+    jst.add((done) => done());
+    jst.test(setInputMock);
+    jst.test(setInputMock);
+  }).toThrow("`this.test()` has already been called");
+});
+
+test("test can not be called after testing - async", (doneTest) => {
+  const jst = jster(10);
+
+  jst.add((done) => done());
+  jst.test((key, value) => {
+    expect(key + value).toBeTruthy();
+    expect(() => {
+      jst.test(setInputMock);
+    }).toThrow("`this.test()` has already been called");
+    doneTest();
+    return;
   });
 });

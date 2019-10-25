@@ -11,8 +11,10 @@ class Jster {
   timeout: number;
   fns: Array<{ fn: Function; timeout: number }>;
   p: null | Promise<any>;
+  private hasCalled: boolean;
 
   constructor(timeout: number) {
+    this.hasCalled = false;
     this.timeout = timeout;
     this.fns = [];
     this.p = new Promise((resolve) => {
@@ -21,6 +23,9 @@ class Jster {
   }
 
   add(fn: AddFnType, timeout: number = this.timeout): void {
+    if (this.hasCalled) {
+      throw "`this.test()` has already been called";
+    }
     this.fns.push({
       fn: fn,
       timeout: timeout,
@@ -56,6 +61,14 @@ class Jster {
   }
 
   test(setInputValue = Shiny.setInputValue): void {
+    if (this.hasCalled) {
+      throw "`this.test()` has already been called";
+    }
+    if (this.fns.length === 0) {
+      throw "`this.test()` requires functions to be `this.add()`ed before executing the test";
+    }
+    // prevent bad testing from occuring
+    this.hasCalled = true;
     this.setupPromises().then(
       (value) => {
         setInputValue("jster_done", {

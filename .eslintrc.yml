@@ -18,11 +18,16 @@ plugins:
   - '@typescript-eslint'
   - prettier
 rules:
-  no-explicit-any:
-    - off
+  "@typescript-eslint/explicit-function-return-type":
+    - error
+  "@typescript-eslint/no-explicit-any":
+    - error
+  default-case:
+    - error
   indent:
     - error
     - 2
+    - SwitchCase: 1
   linebreak-style:
     - error
     - unix
