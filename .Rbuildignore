@@ -11,3 +11,5 @@
 ^Notes\.md$
 ^srcjs
 ^\.travis\.yml$
+^shinyjster\.Rproj$
+^\.Rproj\.user$
