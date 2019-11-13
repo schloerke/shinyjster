@@ -39,4 +39,3 @@ rsconnect/
 .cache
 node_modules
 yarn-error.log
-.Rproj.user

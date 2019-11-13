@@ -13,3 +13,4 @@
 ^\.travis\.yml$
 ^shinyjster\.Rproj$
 ^\.Rproj\.user$
+^\.vscode$
