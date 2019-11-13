@@ -2,7 +2,7 @@
   "main": "srcjs/index.js",
   "private": true,
   "engines": {
-    "node": ">=13"
+    "node": ">=12"
   },
   "devDependencies": {
     "@types/jest": "^24.0.18",
