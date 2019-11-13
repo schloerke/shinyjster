@@ -1,12 +1,12 @@
 
 #' shinyjster HTML Dependencies
-#' 
+#'
 #' @return \code{htmltools::\link[htmltools]{htmlDependency}}s to allow shinyjster to function.
 #' @export
 shinyjster_js_dependencies <- function() {
   list(
     htmltools::htmlDependency(
-      name = "shinyjster-assets", 
+      name = "shinyjster-assets",
       version = packageVersion("shinyjster"),
       package = "shinyjster",
       src = "assets",
@@ -29,9 +29,9 @@ JS <- function(...) {
 }
 
 #' JavaScript helper
-#' 
+#'
 #' Wraps supplied text in an \code{htmltools::tags$script} call after turning it into \code{JS} code.
-#' 
+#'
 #' @param ... JavaScript text to be put in a script.
 #' @export
 js_script <- function(...) {
@@ -43,11 +43,11 @@ js_script <- function(...) {
 
 
 #' Shiny UI helper
-#' 
+#'
 #' Function to be called first inside the definition of the Shiny UI.
-#' 
+#'
 #' This function will add the shinyjster JS dependencies and add a text based progress bar in the bottom left corner of the application.
-#' 
+#'
 #' @export
 shinyjster_ui <- function() {
   htmltools::tagList(
@@ -60,13 +60,13 @@ shinyjster_ui <- function() {
 }
 
 #' Shiny JavaScript helper
-#' 
+#'
 #' Function to be called first inside the definition of the Shiny UI.
-#' 
+#'
 #' This function also includes \code{\link{shinyjster_ui}} and wraps all JavaScript using \code{\link{js_script}}.
-#' 
+#'
 #' @param ... JavaScript text to be put in a script.
-#' @param set_timeout If \code{TRUE} (default), the JavaScript provided is executed 250 milliseconds after the document is ready.  Otherwise, code is included as is. 
+#' @param set_timeout If \code{TRUE} (default), the JavaScript provided is executed 250 milliseconds after the document is ready.  Otherwise, code is included as is.
 #' @export
 shinyjster_js <- function(..., set_timeout = TRUE) {
   js <- if (isTRUE(set_timeout)) {
@@ -75,7 +75,7 @@ shinyjster_js <- function(..., set_timeout = TRUE) {
         setTimeout(
           function(){",
             ...,
-      "   }, 
+      "   },
           250
         )
       });"
@@ -92,7 +92,7 @@ shinyjster_js <- function(..., set_timeout = TRUE) {
 
 
 #' Shiny server helper
-#' 
+#'
 #' Function to be called within the shiny server
 #' @param input,output,session Shiny server function parameters
 #' @importFrom utils packageVersion str
