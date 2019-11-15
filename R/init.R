@@ -1,3 +1,10 @@
+#' Run an application with shinyjster enabled
+#' @inheritParams shiny::runApp
+run_jster <- function(appDir, port = 8000, host = "127.0.0.1") {
+  url <- paste0("http://127.0.0.1:", port, "/?shinyjster=1")
+  utils::browseURL(url)
+  shiny::runApp(appDir, port, host = host, launch.browser = FALSE)
+}
 
 #' shinyjster HTML Dependencies
 #'
@@ -72,6 +79,11 @@ shinyjster_js <- function(..., set_timeout = TRUE) {
   js <- if (isTRUE(set_timeout)) {
     c(
       "$(function() {
+
+        if (Jster.getParameterByName('shinyjster') !== '1') {
+          return;
+        }
+
         setTimeout(
           function(){",
             ...,
@@ -81,7 +93,16 @@ shinyjster_js <- function(..., set_timeout = TRUE) {
       });"
     )
   } else {
-    c(...)
+    c(
+      "(function() {
+
+        if (Jster.getParameterByName('shinyjster') !== '1') {
+          return;
+        }",
+            ...,
+      "
+      })();"
+    )
   }
 
   htmltools::tagList(
