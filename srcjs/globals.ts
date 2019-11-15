@@ -1,3 +1,5 @@
+import { Jster, jster } from "./jster";
+
 interface ShinyType {
   setInputValue: (key: string, value: string | Record<string, unknown>) => void;
   addCustomMessageHandler: (
@@ -10,6 +12,7 @@ declare global {
   interface Window {
     Shiny: ShinyType;
     jQuery: JQueryStatic;
+    Jster: Jster;
     jster: (timeout: number) => void;
   }
 }
