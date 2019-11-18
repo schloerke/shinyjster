@@ -17,6 +17,8 @@ class Jster {
   static selectize = methods.selectize;
   static assert = methods.assert;
   static shiny = methods.shiny;
+  static button = methods.button;
+  static radio = methods.radio;
 
   constructor(timeout: number) {
     this.hasCalled = false;
