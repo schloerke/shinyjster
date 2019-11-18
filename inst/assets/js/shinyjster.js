@@ -252,6 +252,42 @@ function waitForShiny(callback) {
 }
 
 exports.wait = waitForShiny;
+},{"../globals":"globals.ts"}],"methods/button.ts":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+
+var globals_1 = require("../globals");
+
+function click(id) {
+  globals_1.$("#" + id).click();
+}
+
+exports.click = click;
+},{"../globals":"globals.ts"}],"methods/radio.ts":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+
+var globals_1 = require("../globals");
+
+function options(id) {
+  return globals_1.$("#" + id).siblings().filter(".selectize-control").find(".selectize-dropdown-content").children();
+}
+
+exports.options = options;
+
+function clickOption(id, value) {
+  globals_1.$("#" + id + " input[value='" + value + "']").click();
+}
+
+exports.clickOption = clickOption;
+
+function currentChoice(id) {
+  return globals_1.$("#" + id + " input:checked").attr("value");
+}
+
+exports.currentChoice = currentChoice;
 },{"../globals":"globals.ts"}],"methods/index.ts":[function(require,module,exports) {
 "use strict";
 
@@ -273,13 +309,19 @@ var assert = __importStar(require("./assert"));
 
 var shiny = __importStar(require("./shiny"));
 
+var button = __importStar(require("./button"));
+
+var radio = __importStar(require("./radio"));
+
 var methods = {
   assert: assert,
   selectize: selectize,
-  shiny: shiny
+  shiny: shiny,
+  button: button,
+  radio: radio
 };
 exports.methods = methods;
-},{"./selectize":"methods/selectize.ts","./assert":"methods/assert.ts","./shiny":"methods/shiny.ts"}],"jster.ts":[function(require,module,exports) {
+},{"./selectize":"methods/selectize.ts","./assert":"methods/assert.ts","./shiny":"methods/shiny.ts","./button":"methods/button.ts","./radio":"methods/radio.ts"}],"jster.ts":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -431,6 +473,12 @@ function () {
     });
   };
 
+  Jster.prototype.waitFor = function (ms) {
+    this.add(function (done) {
+      setTimeout(done, ms);
+    });
+  };
+
   Jster.prototype.waitForShiny = function () {
     this.add(function (done) {
       Jster.shiny.wait(done);
@@ -450,6 +498,8 @@ function () {
   Jster.selectize = methods_1.methods.selectize;
   Jster.assert = methods_1.methods.assert;
   Jster.shiny = methods_1.methods.shiny;
+  Jster.button = methods_1.methods.button;
+  Jster.radio = methods_1.methods.radio;
   return Jster;
 }();
 
@@ -524,7 +574,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60248" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63399" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
