@@ -155,6 +155,11 @@ class Jster {
     );
   }
 
+  waitFor(ms) {
+    this.add((done) => {
+      setTimeout(done, ms);
+    });
+  }
   waitForShiny() {
     this.add((done) => {
       Jster.shiny.wait(done);
