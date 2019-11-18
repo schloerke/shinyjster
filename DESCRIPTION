@@ -14,7 +14,8 @@ RoxygenNote: 7.0.0
 Imports: 
     htmltools,
     htmlwidgets,
-    shiny
+    shiny,
+    later
 Suggests: 
     spelling
 Language: en-US

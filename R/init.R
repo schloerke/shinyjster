@@ -1,8 +1,12 @@
 #' Run an application with shinyjster enabled
+#'
 #' @inheritParams shiny::runApp
+#' @export
 run_jster <- function(appDir, port = 8000, host = "127.0.0.1") {
   url <- paste0("http://127.0.0.1:", port, "/?shinyjster=1")
-  utils::browseURL(url)
+  later::later(delay = 0.5, function() {
+    utils::browseURL(url)
+  })
   shiny::runApp(appDir, port, host = host, launch.browser = FALSE)
 }
 
