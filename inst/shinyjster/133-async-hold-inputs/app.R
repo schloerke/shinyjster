@@ -34,15 +34,15 @@ ui <- fluidPage(
         var jst = jster();
         jst.waitForShiny();
 
-        var chose_and_submit = function(val) {
+        var choose_and_submit = function(val) {
           jst.add(function(done) {
             Jster.radio.clickOption('choice', val);
             Jster.button.click('go');
             done();
           })
         }
-        chose_and_submit('b');
-        chose_and_submit('c');
+        choose_and_submit('b');
+        choose_and_submit('c');
 
         var validate_output = function(expected) {
           jst.waitForShiny();
@@ -58,15 +58,15 @@ ui <- fluidPage(
         }
         validate_output('c');
 
-        chose_and_submit('b');
-        chose_and_submit('c');
-        chose_and_submit('b');
-        chose_and_submit('b');
-        chose_and_submit('c');
-        chose_and_submit('b');
-        chose_and_submit('b');
-        chose_and_submit('c');
-        chose_and_submit('b');
+        choose_and_submit('b');
+        choose_and_submit('c');
+        choose_and_submit('b');
+        choose_and_submit('b');
+        choose_and_submit('c');
+        choose_and_submit('b');
+        choose_and_submit('b');
+        choose_and_submit('c');
+        choose_and_submit('b');
         jst.waitFor(9 * 3 * 1000);
 
         validate_output('b');
@@ -78,6 +78,9 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
+  # include shinyjster_server call at top of server definition
+  shinyjster_server(input, output, session)
+
   output$out <- renderPrint({
     req(input$go)
 
