@@ -9,18 +9,16 @@ function isShinyBusy(): boolean {
     .hasClass("shiny-busy");
 }
 
-function waitForShiny() {
-  this.add((done) => {
-    const wait = function() {
-      if (this.isShinyBusy()) {
-        setTimeout(wait, 25);
-      } else {
-        done();
-      }
-    };
+function waitForShiny(callback) {
+  const wait = function() {
+    if (isShinyBusy()) {
+      setTimeout(wait, 25);
+    } else {
+      callback();
+    }
+  };
 
-    wait();
-  });
+  wait();
 }
 
 export { waitForShiny as wait, isShinyBusy as isBusy };

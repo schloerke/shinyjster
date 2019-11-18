@@ -14,6 +14,10 @@ class Jster {
   p: null | Promise<unknown>;
   private hasCalled: boolean;
 
+  static selectize = methods.selectize;
+  static assert = methods.assert;
+  static shiny = methods.shiny;
+
   constructor(timeout: number) {
     this.hasCalled = false;
     this.timeout = timeout;
@@ -149,6 +153,12 @@ class Jster {
     );
   }
 
+  waitForShiny() {
+    this.add((done) => {
+      Jster.shiny.wait(done);
+    });
+  }
+
   static getParameterByName(name: string, url: string): string {
     if (!url) url = window.location.href;
     name = name.replace(/[\\[\\]]/g, "\\\\$&");
@@ -163,12 +173,6 @@ class Jster {
 
 function jster(timeout = 250): Jster {
   return new Jster(timeout);
-}
-// copy over all methods into jster object to access as function values normal
-{
-  for (const key in methods) {
-    jster[key] = methods[key];
-  }
 }
 
 export { Jster, jster };

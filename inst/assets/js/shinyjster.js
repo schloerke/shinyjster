@@ -239,18 +239,16 @@ function isShinyBusy() {
 
 exports.isBusy = isShinyBusy;
 
-function waitForShiny() {
-  this.add(function (done) {
-    var wait = function wait() {
-      if (this.isShinyBusy()) {
-        setTimeout(wait, 25);
-      } else {
-        done();
-      }
-    };
+function waitForShiny(callback) {
+  var wait = function wait() {
+    if (isShinyBusy()) {
+      setTimeout(wait, 25);
+    } else {
+      callback();
+    }
+  };
 
-    wait();
-  });
+  wait();
 }
 
 exports.wait = waitForShiny;
@@ -433,6 +431,12 @@ function () {
     });
   };
 
+  Jster.prototype.waitForShiny = function () {
+    this.add(function (done) {
+      Jster.shiny.wait(done);
+    });
+  };
+
   Jster.getParameterByName = function (name, url) {
     if (!url) url = window.location.href;
     name = name.replace(/[\\[\\]]/g, "\\\\$&");
@@ -443,6 +447,9 @@ function () {
     return decodeURIComponent(results[2].replace(/\\+/g, " "));
   };
 
+  Jster.selectize = methods_1.methods.selectize;
+  Jster.assert = methods_1.methods.assert;
+  Jster.shiny = methods_1.methods.shiny;
   return Jster;
 }();
 
@@ -456,13 +463,7 @@ function jster(timeout) {
   return new Jster(timeout);
 }
 
-exports.jster = jster; // copy over all methods into jster object to access as function values normal
-
-{
-  for (var key in methods_1.methods) {
-    jster[key] = methods_1.methods[key];
-  }
-}
+exports.jster = jster;
 },{"./globals":"globals.ts","./methods":"methods/index.ts"}],"shiny.ts":[function(require,module,exports) {
 "use strict";
 
@@ -523,7 +524,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50337" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60248" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

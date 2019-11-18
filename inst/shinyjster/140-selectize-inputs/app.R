@@ -85,27 +85,27 @@ js_for_id <- function(select_id, output_id, test_val) {
     jst.add(function(done) {
       console.log('", select_id, "');
       console.log('current label')
-      jster.assert.is_equal(
-        jster.selectize.currentChoice('", select_id, "'),
+      Jster.assert.isEqual(
+        Jster.selectize.currentChoice('", select_id, "'),
         '", test_val$expected[[1]]$label, "'
       );
-      jster.selectize.click('", select_id, "');
+      Jster.selectize.click('", select_id, "');
       done();
     });
     jst.add(function(done) {
-      var items = jster.selectize.values('", select_id, "');
+      var items = Jster.selectize.values('", select_id, "');
       var expected = ", jsonlite::toJSON(test_val$expected, auto_unbox = TRUE), ";
       console.log('available values')
-      jster.assert.is_equal(items, expected);
+      Jster.assert.isEqual(items, expected);
 
       // click
-      jster.selectize.clickOption('", select_id, "', 1); // select second item
+      Jster.selectize.clickOption('", select_id, "', 1); // select second item
       done();
     });
     jst.add(function(done) {
       console.log('chosen second choice')
-      jster.assert.is_equal($('#", output_id, "').text(), '[1] \"", test_val$expected[[2]]$value, "\"');
-      jster.assert.is_equal($('#", output_id, "').text(), '[1] \"", test_val$expected[[2]]$value, "\"');
+      Jster.assert.isEqual($('#", output_id, "').text(), '[1] \"", test_val$expected[[2]]$value, "\"');
+      Jster.assert.isEqual($('#", output_id, "').text(), '[1] \"", test_val$expected[[2]]$value, "\"');
       done();
     });
   ")
@@ -175,7 +175,7 @@ ui <- fluidPage(
   ),
   shinyjster_js(
     "var jst = jster();",
-    "jst.shiny.wait();",
+    "jst.waitForShiny();",
     paste0(
       collapse = "\n",
       lapply(seq_along(test_set), function(i) {
