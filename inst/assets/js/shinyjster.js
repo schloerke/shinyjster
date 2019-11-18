@@ -218,7 +218,7 @@ function isTrue(x) {
 exports.isTrue = isTrue;
 
 function isFalse(x) {
-  return isEqual(x, true);
+  return isEqual(x, false);
 }
 
 exports.isFalse = isFalse;
@@ -252,6 +252,12 @@ function waitForShiny(callback) {
 }
 
 exports.wait = waitForShiny;
+
+function hasOverlay() {
+  return globals_1.$("#shiny-disconnected-overlay").length > 0;
+}
+
+exports.hasOverlay = hasOverlay;
 },{"../globals":"globals.ts"}],"methods/button.ts":[function(require,module,exports) {
 "use strict";
 

@@ -19,7 +19,7 @@ function isTrue(x: any) {
 }
 
 function isFalse(x: any) {
-  return isEqual(x, true);
+  return isEqual(x, false);
 }
 
 export { isEqual, isTrue, isFalse, prettyJSON };

@@ -21,4 +21,8 @@ function waitForShiny(callback) {
   wait();
 }
 
-export { waitForShiny as wait, isShinyBusy as isBusy };
+function hasOverlay() {
+  return $("#shiny-disconnected-overlay").length > 0;
+}
+
+export { waitForShiny as wait, isShinyBusy as isBusy, hasOverlay };
