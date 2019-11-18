@@ -1,4 +1,5 @@
 import { Shiny, $ } from "./globals";
+import { methods } from "./methods";
 
 interface ResolveFnType {
   (value?: unknown): void;
@@ -162,6 +163,12 @@ class Jster {
 
 function jster(timeout = 250): Jster {
   return new Jster(timeout);
+}
+// copy over all methods into jster object to access as function values normal
+{
+  for (const key in methods) {
+    jster[key] = methods[key];
+  }
 }
 
 export { Jster, jster };
