@@ -239,10 +239,14 @@ function isShinyBusy() {
 
 exports.isBusy = isShinyBusy;
 
-function waitForShiny(callback) {
+function waitForShiny(callback, timeout) {
+  if (timeout === void 0) {
+    timeout = 23;
+  }
+
   var wait = function wait() {
     if (isShinyBusy()) {
-      setTimeout(wait, 25);
+      setTimeout(wait, timeout);
     } else {
       callback();
     }

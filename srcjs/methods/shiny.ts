@@ -9,10 +9,10 @@ function isShinyBusy(): boolean {
     .hasClass("shiny-busy");
 }
 
-function waitForShiny(callback) {
+function waitForShiny(callback, timeout = 23) {
   const wait = function() {
     if (isShinyBusy()) {
-      setTimeout(wait, 25);
+      setTimeout(wait, timeout);
     } else {
       callback();
     }
