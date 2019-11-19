@@ -3,7 +3,7 @@
 #' @inheritParams shiny::runApp
 #' @export
 run_jster <- function(appDir, port = 8000, host = "127.0.0.1") {
-  url <- paste0("http://127.0.0.1:", port, "/?shinyjster=1")
+  url <- paste0("http://", host, ":", port, "/?shinyjster=1")
   later::later(delay = 0.5, function() {
     utils::browseURL(url)
   })
@@ -128,15 +128,15 @@ shinyjster_server <- function(input, output, session) {
     # str(val)
 
     if (identical(val$type, "success")) {
-      message("shinyjster - Success! Closing Browser window")
+      jster_message("Success! Closing Browser window")
       session$sendCustomMessage("shinyjster_msg_close_window", TRUE)
     } else {
-      message("shinyjster - Error found!\n\tError:\n\t'", val$error, "'")
+      jster_message("Error found!\n\tError:\n\t'", val$error, "'")
     }
   })
 
   shiny::observeEvent(input$jster_closing_window, {
-    message("shinyjster - Browser window has been closed. Stopping Shiny Application now.")
+    jster_message("Browser window has been closed. Stopping Shiny Application now.")
     shiny::stopApp()
   })
 }
