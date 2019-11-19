@@ -15,6 +15,10 @@ apps_to_test <- function() {
 
 test_working_apps_parallel <- function(cores = parallel::detectCores(), host = "127.0.0.1") {
 
+  if (!requireNamespace("httpuv", quietly = TRUE)) {
+    stop("httpuv must be installed for this function to work")
+  }
+
   apps <- apps_to_test()
 
   parallel::mclapply(
@@ -39,6 +43,12 @@ test_working_apps_parallel <- function(cores = parallel::detectCores(), host = "
 
 
 test_working_apps_callr <- function(cores = parallel::detectCores(), host = "127.0.0.1") {
+  if (!requireNamespace("httpuv", quietly = TRUE)) {
+    stop("httpuv must be installed for this function to work")
+  }
+  if (!requireNamespace("callr", quietly = TRUE)) {
+    stop("callr must be installed for this function to work")
+  }
   apps <- apps_to_test()
 
   original_apps <- apps
@@ -65,7 +75,8 @@ test_working_apps_callr <- function(cores = parallel::detectCores(), host = "127
       app = app,
       p = callr::r_bg(
         function(app_, host_, i_) {
-          shinyjster:::jster_message(cat = TRUE, "launching app")
+          cat("shinyjster - ", "launching app", "\n", sep = "")
+
           port <- httpuv::randomPort()
           url <- paste0("http://", host_, ":", port, "/?shinyjster=1")
           later::later(delay = 0.5, function() {
@@ -74,7 +85,7 @@ test_working_apps_callr <- function(cores = parallel::detectCores(), host = "127
 
           # utils::browseURL(url)
           shiny::runApp(app_, port, host = host_, launch.browser = FALSE)
-          shinyjster:::jster_message(cat = TRUE, "closing app")
+          cat("shinyjster - ", "closing app", "\n", sep = "")
         },
         list(
           app_ = app,

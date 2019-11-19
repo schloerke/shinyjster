@@ -17,5 +17,8 @@ Imports:
     shiny,
     later
 Suggests: 
-    spelling
+    spelling,
+    httpuv,
+    callr,
+    parallel
 Language: en-US
