@@ -56,6 +56,7 @@ ui <- fluidPage(
             done();
           })
         }
+        jst.wait(3 * 1000);
         validate_output('c');
 
         choose_and_submit('b');
@@ -66,10 +67,10 @@ ui <- fluidPage(
         choose_and_submit('b');
         choose_and_submit('b');
         choose_and_submit('c');
-        choose_and_submit('b');
-        jst.wait(9 * 3 * 1000);
+        choose_and_submit('e');
 
-        validate_output('b');
+        jst.wait(9 * 3 * 1000);
+        validate_output('e');
 
         jst.test();"
       )
