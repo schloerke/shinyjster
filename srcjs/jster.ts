@@ -8,6 +8,8 @@ interface AddFnType {
   (resolve: ResolveFnType, value?: unknown): void;
 }
 
+const assertFunction = methods.assert.isFunction;
+
 class Jster {
   timeout: number;
   fns: Array<{ fn: Function; timeout: number }>;
@@ -79,6 +81,8 @@ class Jster {
 
     // for each fn
     this.fns.forEach(({ fn, timeout }, idx, fns) => {
+      assertFunction(fn);
+
       this.p = this.p
         // delay a little bit
         .then((value) => {

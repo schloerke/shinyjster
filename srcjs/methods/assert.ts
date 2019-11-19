@@ -22,4 +22,11 @@ function isFalse(x: any) {
   return isEqual(x, false);
 }
 
-export { isEqual, isTrue, isFalse, prettyJSON };
+function isFunction(fn: any) {
+  if (typeof fn !== "function") {
+    console.log("fn: ", fn);
+    throw "fn is not a function";
+  }
+}
+
+export { isEqual, isTrue, isFalse, prettyJSON, isFunction };

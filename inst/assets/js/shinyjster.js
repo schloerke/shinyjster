@@ -222,6 +222,15 @@ function isFalse(x) {
 }
 
 exports.isFalse = isFalse;
+
+function isFunction(fn) {
+  if (typeof fn !== "function") {
+    console.log("fn: ", fn);
+    throw "fn is not a function";
+  }
+}
+
+exports.isFunction = isFunction;
 },{}],"methods/shiny.ts":[function(require,module,exports) {
 "use strict";
 
@@ -229,7 +238,7 @@ exports.__esModule = true;
 
 var globals_1 = require("../globals");
 
-function isShinyBusy() {
+function isBusy() {
   if (!globals_1.$) {
     return false;
   }
@@ -237,15 +246,15 @@ function isShinyBusy() {
   return globals_1.$("html").first().hasClass("shiny-busy");
 }
 
-exports.isBusy = isShinyBusy;
+exports.isBusy = isBusy;
 
-function waitForShiny(callback, timeout) {
+function waitUntilIdle(callback, timeout) {
   if (timeout === void 0) {
     timeout = 23;
   }
 
   var wait = function wait() {
-    if (isShinyBusy()) {
+    if (isBusy()) {
       setTimeout(wait, timeout);
     } else {
       callback();
@@ -255,7 +264,7 @@ function waitForShiny(callback, timeout) {
   wait();
 }
 
-exports.wait = waitForShiny;
+exports.waitUntilIdle = waitUntilIdle;
 
 function hasOverlay() {
   return globals_1.$("#shiny-disconnected-overlay").length > 0;
@@ -340,6 +349,8 @@ var globals_1 = require("./globals");
 
 var methods_1 = require("./methods");
 
+var assertFunction = methods_1.methods.assert.isFunction;
+
 var Jster =
 /** @class */
 function () {
@@ -417,6 +428,7 @@ function () {
     this.fns.forEach(function (_a, idx, fns) {
       var fn = _a.fn,
           timeout = _a.timeout;
+      assertFunction(fn);
       _this.p = _this.p // delay a little bit
       .then(function (value) {
         _this.setProgress("yellow", "shinyjster - Progress: " + (idx + 1) + "/" + fns.length + " (waiting)");
@@ -438,12 +450,20 @@ function () {
     return this.p;
   };
 
-  Jster.prototype.test = function (setInputValue) {
-    var _this = this;
-
-    if (setInputValue === void 0) {
+  Jster.prototype.initSetInputValue = function (setInputValue) {
+    if (!setInputValue) {
       setInputValue = globals_1.Shiny.setInputValue;
     }
+
+    if (typeof setInputValue !== "function") {
+      throw "`setInputValue` is not a function.";
+    }
+
+    return setInputValue;
+  };
+
+  Jster.prototype.test = function (setInputValue) {
+    var _this = this;
 
     if (this.hasCalled) {
       throw "`this.test()` has already been called";
@@ -456,8 +476,9 @@ function () {
 
     this.hasCalled = true;
     this.setupPromises().then(function (value) {
-      _this.setProgress("green", "shinyjster - Progress: " + _this.fns.length + "/" + _this.fns.length + " (done!)"); // send success to shiny
+      _this.setProgress("green", "shinyjster - Progress: " + _this.fns.length + "/" + _this.fns.length + " (done!)");
 
+      setInputValue = _this.initSetInputValue(setInputValue); // send success to shiny
 
       setInputValue("jster_done", {
         type: "success",
@@ -471,6 +492,7 @@ function () {
       } // send error to shiny
 
 
+      setInputValue = _this.initSetInputValue(setInputValue);
       setInputValue("jster_done", {
         type: "error",
         length: _this.fns.length,
@@ -483,15 +505,9 @@ function () {
     });
   };
 
-  Jster.prototype.waitFor = function (ms) {
+  Jster.prototype.wait = function (ms) {
     this.add(function (done) {
       setTimeout(done, ms);
-    });
-  };
-
-  Jster.prototype.waitForShiny = function () {
-    this.add(function (done) {
-      Jster.shiny.wait(done);
     });
   };
 
@@ -584,7 +600,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63399" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51447" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
