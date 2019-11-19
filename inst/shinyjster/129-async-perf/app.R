@@ -28,8 +28,8 @@ ui <- fluidPage(
     var jst = jster(1);
     jst.waitForShiny();
 
-    var n = 100;
-    var allow_k_failures = Math.floor(n / 20);
+    var n = 50;
+    var allow_k_failures = Math.floor(n / 10);
 
     var click_and_validate = function(id, time) {
       var count = 0;
