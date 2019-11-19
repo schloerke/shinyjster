@@ -1,28 +1,54 @@
 import { $ } from "../globals";
+import { debounce } from "lodash";
 
-function isBusy(): boolean {
-  if (!$) {
-    return false;
-  }
-  return $("html")
-    .first()
-    .hasClass("shiny-busy");
+let shinyIsIdle = false;
+const shinyIdleFns = [];
+
+function isIdle(): boolean {
+  return shinyIsIdle;
+}
+function callIdleFns() {
+  console.log("callIdleFns!");
+  // call using setTimeout to "break" serialized execution
+  shinyIdleFns.map(function(fn) {
+    setTimeout(fn, 0);
+  });
 }
 
-function waitUntilIdle(callback, timeout = 23) {
-  const wait = function() {
-    if (isBusy()) {
-      setTimeout(wait, timeout);
-    } else {
-      callback();
-    }
-  };
+// wait 200ms before calling callIdleFns
+const callIdleFnsDebounced = debounce(callIdleFns, 200);
 
-  wait();
+if ($) {
+  $(document).on("shiny:busy", function(event) {
+    console.log("busy!");
+    shinyIsIdle = false;
+    callIdleFnsDebounced.cancel();
+  });
+  $(document).on("shiny:idle", function(event) {
+    console.log("idle!");
+    shinyIsIdle = true;
+    // to avoid idle and busy thrashing,
+    //   call the debounced form of `callIdleFns`
+    callIdleFnsDebounced();
+  });
+}
+
+function waitUntilIdle(callback) {
+  // add to idle queue
+  shinyIdleFns.push(callback);
+
+  if (shinyIsIdle) {
+    // kick it off, if possible
+    callIdleFnsDebounced();
+  }
+}
+
+function isBusy(): boolean {
+  return !shinyIsIdle;
 }
 
 function hasOverlay() {
   return $("#shiny-disconnected-overlay").length > 0;
 }
 
-export { waitUntilIdle, isBusy, hasOverlay };
+export { waitUntilIdle, isBusy, hasOverlay, isIdle };
