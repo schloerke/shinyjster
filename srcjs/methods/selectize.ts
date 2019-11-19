@@ -1,5 +1,6 @@
 import { $ } from "../globals";
 
+// simulate user click
 function click(id: string) {
   $(`#${id}`)
     .siblings()
@@ -28,7 +29,7 @@ function clickOption(id: string, idx: number) {
   }
 }
 
-function currentChoice(id: string) {
+function currentOption(id: string) {
   return $(`#${id}`)
     .siblings()
     .filter(".selectize-control")
@@ -36,6 +37,7 @@ function currentChoice(id: string) {
     .text();
 }
 
+// When using serverside selectize, only the first 1000 values are sent.
 function values(id: string) {
   return options(id)
     .map(function() {
@@ -58,4 +60,4 @@ function values(id: string) {
     .get();
 }
 
-export { click, values, options, clickOption, currentChoice };
+export { click, values, options, clickOption, currentOption };

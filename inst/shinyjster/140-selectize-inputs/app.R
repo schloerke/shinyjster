@@ -86,7 +86,7 @@ js_for_id <- function(select_id, output_id, test_val) {
       console.log('", select_id, "');
       console.log('current label')
       Jster.assert.isEqual(
-        Jster.selectize.currentChoice('", select_id, "'),
+        Jster.selectize.currentOption('", select_id, "'),
         '", test_val$expected[[1]]$label, "'
       );
       Jster.selectize.click('", select_id, "');

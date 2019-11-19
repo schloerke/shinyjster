@@ -131,7 +131,8 @@ exports.$ = jQuery;
 
 exports.__esModule = true;
 
-var globals_1 = require("../globals");
+var globals_1 = require("../globals"); // simulate user click
+
 
 function click(id) {
   globals_1.$("#" + id).siblings().filter(".selectize-control").find(".selectize-input").click();
@@ -157,11 +158,11 @@ function clickOption(id, idx) {
 
 exports.clickOption = clickOption;
 
-function currentChoice(id) {
+function currentOption(id) {
   return globals_1.$("#" + id).siblings().filter(".selectize-control").find(".selectize-input").text();
 }
 
-exports.currentChoice = currentChoice;
+exports.currentOption = currentOption; // When using serverside selectize, only the first 1000 values are sent.
 
 function values(id) {
   return options(id).map(function () {
@@ -296,11 +297,11 @@ function clickOption(id, value) {
 
 exports.clickOption = clickOption;
 
-function currentChoice(id) {
+function currentOption(id) {
   return globals_1.$("#" + id + " input:checked").attr("value");
 }
 
-exports.currentChoice = currentChoice;
+exports.currentOption = currentOption;
 },{"../globals":"globals.ts"}],"methods/index.ts":[function(require,module,exports) {
 "use strict";
 
