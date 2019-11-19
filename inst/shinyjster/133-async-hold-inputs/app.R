@@ -32,7 +32,7 @@ ui <- fluidPage(
       shinyjster_js(
         "
         var jst = jster();
-        jst.waitForShiny();
+        jst.add(Jster.shiny.waitUntilIdle);
 
         var choose_and_submit = function(val) {
           jst.add(function(done) {
@@ -45,7 +45,7 @@ ui <- fluidPage(
         choose_and_submit('c');
 
         var validate_output = function(expected) {
-          jst.waitForShiny();
+          jst.add(Jster.shiny.waitUntilIdle);
           jst.add(function(done) {
             // make sure choice is expected
             Jster.assert.isEqual(Jster.radio.currentChoice('choice'), expected);

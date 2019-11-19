@@ -172,11 +172,6 @@ class Jster {
       setTimeout(done, ms);
     });
   }
-  waitForShiny() {
-    this.add((done) => {
-      Jster.shiny.wait(done);
-    });
-  }
 
   static getParameterByName(name: string, url: string): string {
     if (!url) url = window.location.href;

@@ -26,7 +26,7 @@ ui <- fluidPage(
   textOutput("time"),
   shinyjster_js("
     var jst = jster(1);
-    jst.waitForShiny();
+    jst.add(Jster.shiny.waitUntilIdle);
 
     var n = 50;
     var allow_k_failures = Math.floor(n / 10);
@@ -39,8 +39,7 @@ ui <- fluidPage(
             Jster.button.click(id);
             setTimeout(done, 10)
           });
-          jst.add(Jster.shiny.wait);
-          jst.waitForShiny();
+          jst.add(Jster.shiny.waitUntilIdle);
           jst.add(function(done) {
             var val = parseFloat($('#time').text().replace(/[^0-9.]/g, '')) * 1000;
             console.log($('#time').text().replace(/[^0-9.]/g, ''), val, time);
@@ -49,7 +48,7 @@ ui <- fluidPage(
             }
             done();
           })
-          jst.waitForShiny();
+          jst.add(Jster.shiny.waitUntilIdle);
         })(i)
       }
       jst.add(function(done) {

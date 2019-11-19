@@ -40,7 +40,7 @@ ui <- withTags(fluidPage(
     }
 
     var jst = jster();
-    jst.waitForShiny();
+    jst.add(Jster.shiny.waitUntilIdle);
 
     jst.add(function(done) {
       var img = $('#plot img')[0];

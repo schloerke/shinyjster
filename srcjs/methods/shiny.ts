@@ -1,6 +1,6 @@
 import { $ } from "../globals";
 
-function isShinyBusy(): boolean {
+function isBusy(): boolean {
   if (!$) {
     return false;
   }
@@ -9,9 +9,9 @@ function isShinyBusy(): boolean {
     .hasClass("shiny-busy");
 }
 
-function waitForShiny(callback, timeout = 23) {
+function waitUntilIdle(callback, timeout = 23) {
   const wait = function() {
-    if (isShinyBusy()) {
+    if (isBusy()) {
       setTimeout(wait, timeout);
     } else {
       callback();
@@ -25,4 +25,4 @@ function hasOverlay() {
   return $("#shiny-disconnected-overlay").length > 0;
 }
 
-export { waitForShiny as wait, isShinyBusy as isBusy, hasOverlay };
+export { waitUntilIdle, isBusy, hasOverlay };

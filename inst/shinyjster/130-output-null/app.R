@@ -9,7 +9,7 @@ ui <- fluidPage(
   shinyjster_js("
     var jst = jster();
     jst.add(function(done) { $('#clear').click(); done() });
-    jst.waitForShiny();
+    jst.add(Jster.shiny.waitUntilIdle);
     jst.add(function(done) {
       if ($('#plot').children().length == 0) done();
       throw 'Plot is not empty.';

@@ -49,7 +49,7 @@ ui <- fluidPage(
   ),
   shinyjster_js(
     "var jst = jster();",
-    "jst.waitForShiny();",
+    "jst.add(Jster.shiny.waitUntilIdle);",
     paste0(
       collapse = "\n",
       lapply(

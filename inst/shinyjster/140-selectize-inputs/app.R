@@ -102,7 +102,7 @@ js_for_id <- function(select_id, output_id, test_val) {
       Jster.selectize.clickOption('", select_id, "', 1); // select second item
       done();
     });
-    jst.waitForShiny();
+    jst.add(Jster.shiny.waitUntilIdle);
     jst.add(function(done) {
       console.log('chosen second choice')
       Jster.assert.isEqual($('#", output_id, "').text(), '[1] \"", test_val$expected[[2]]$value, "\"');
@@ -176,7 +176,7 @@ ui <- fluidPage(
   ),
   shinyjster_js(
     "var jst = jster();",
-    "jst.waitForShiny();",
+    "jst.add(Jster.shiny.waitUntilIdle);",
     paste0(
       collapse = "\n",
       lapply(seq_along(test_set), function(i) {
