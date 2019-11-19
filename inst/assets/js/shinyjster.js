@@ -290,12 +290,6 @@ exports.__esModule = true;
 
 var globals_1 = require("../globals");
 
-function options(id) {
-  return globals_1.$("#" + id).siblings().filter(".selectize-control").find(".selectize-dropdown-content").children();
-}
-
-exports.options = options;
-
 function clickOption(id, value) {
   globals_1.$("#" + id + " input[value='" + value + "']").click();
 }
