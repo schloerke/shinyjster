@@ -39,6 +39,7 @@ ui <- fluidPage(
             Jster.button.click(id);
             setTimeout(done, 10)
           });
+          jst.add(Jster.shiny.wait);
           jst.waitForShiny();
           jst.add(function(done) {
             var val = parseFloat($('#time').text().replace(/[^0-9.]/g, '')) * 1000;
