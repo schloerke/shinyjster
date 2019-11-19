@@ -167,7 +167,7 @@ class Jster {
     );
   }
 
-  waitFor(ms) {
+  wait(ms) {
     this.add((done) => {
       setTimeout(done, ms);
     });
