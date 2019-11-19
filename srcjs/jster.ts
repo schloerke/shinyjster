@@ -107,7 +107,17 @@ class Jster {
     return this.p;
   }
 
-  test(setInputValue = Shiny.setInputValue): void {
+  private initSetInputValue(setInputValue) {
+    if (!setInputValue) {
+      setInputValue = Shiny.setInputValue;
+    }
+    if (typeof setInputValue !== "function") {
+      throw "`setInputValue` is not a function.";
+    }
+    return setInputValue;
+  }
+
+  test(setInputValue): void {
     if (this.hasCalled) {
       throw "`this.test()` has already been called";
     }
@@ -124,6 +134,7 @@ class Jster {
           `shinyjster - Progress: ${this.fns.length}/${this.fns.length} (done!)`
         );
 
+        setInputValue = this.initSetInputValue(setInputValue);
         // send success to shiny
         setInputValue("jster_done", {
           type: "success",
@@ -141,6 +152,7 @@ class Jster {
         }
 
         // send error to shiny
+        setInputValue = this.initSetInputValue(setInputValue);
         setInputValue("jster_done", {
           type: "error",
           length: this.fns.length,
