@@ -8,11 +8,12 @@ ui <- fluidPage(
 ​
   shinyjster_js("
     var jst = jster();
-    jst.add(function(done) { $('#clear').click(); done() });
+    jst.add(function() { $('#clear').click(); });
     jst.add(Jster.shiny.waitUntilIdle);
-    jst.add(function(done) {
-      if ($('#plot').children().length == 0) done();
-      throw 'Plot is not empty.';
+    jst.add(function() {
+      if ($('#plot').children().length > 0) {
+        throw 'Plot is not empty.';
+      }
     });
     jst.test();
     "

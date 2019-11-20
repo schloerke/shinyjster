@@ -82,7 +82,7 @@ test_set <- list(
 
 js_for_id <- function(select_id, output_id, test_val) {
   paste0("
-    jst.add(function(done) {
+    jst.add(function() {
       console.log('", select_id, "');
       console.log('current label')
       Jster.assert.isEqual(
@@ -90,9 +90,8 @@ js_for_id <- function(select_id, output_id, test_val) {
         '", test_val$expected[[1]]$label, "'
       );
       Jster.selectize.click('", select_id, "');
-      done();
     });
-    jst.add(function(done) {
+    jst.add(function() {
       var items = Jster.selectize.values('", select_id, "');
       var expected = ", jsonlite::toJSON(test_val$expected, auto_unbox = TRUE), ";
       console.log('available values')
@@ -100,14 +99,12 @@ js_for_id <- function(select_id, output_id, test_val) {
 
       // click
       Jster.selectize.clickOption('", select_id, "', 1); // select second item
-      done();
     });
     jst.add(Jster.shiny.waitUntilIdle);
-    jst.add(function(done) {
+    jst.add(function() {
       console.log('chosen second choice')
       Jster.assert.isEqual($('#", output_id, "').text(), '[1] \"", test_val$expected[[2]]$value, "\"');
       Jster.assert.isEqual($('#", output_id, "').text(), '[1] \"", test_val$expected[[2]]$value, "\"');
-      done();
     });
   ")
 }
