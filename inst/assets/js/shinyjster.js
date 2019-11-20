@@ -117,7 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"eS2z":[function(require,module,exports) {
+})({"globals.ts":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -126,12 +126,225 @@ exports.Shiny = Shiny;
 var jQuery = window.jQuery;
 exports.jQuery = jQuery;
 exports.$ = jQuery;
-},{}],"WLG3":[function(require,module,exports) {
+},{}],"methods/selectize.ts":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+
+var globals_1 = require("../globals"); // simulate user click
+
+
+function click(id) {
+  globals_1.$("#" + id).siblings().filter(".selectize-control").find(".selectize-input").click();
+}
+
+exports.click = click;
+
+function options(id) {
+  return globals_1.$("#" + id).siblings().filter(".selectize-control").find(".selectize-dropdown-content").children();
+}
+
+exports.options = options;
+
+function clickOption(id, idx) {
+  var opt = options(id).get(idx);
+
+  if (globals_1.$(opt).hasClass("optgroup")) {
+    globals_1.$(opt).find(".option").click();
+  } else {
+    opt.click();
+  }
+}
+
+exports.clickOption = clickOption;
+
+function currentOption(id) {
+  return globals_1.$("#" + id).siblings().filter(".selectize-control").find(".selectize-input").text();
+}
+
+exports.currentOption = currentOption; // When using serverside selectize, only the first 1000 values are sent.
+
+function values(id) {
+  return options(id).map(function () {
+    var selectInfo = {
+      label: "",
+      value: ""
+    };
+    var jthis = globals_1.$(this);
+
+    if (jthis.hasClass("optgroup")) {
+      selectInfo.group = jthis.find(".optgroup-header").text();
+      selectInfo.label = jthis.find(".option").text();
+      selectInfo.value = globals_1.$(jthis.find(".option").get(0)).attr("data-value");
+    } else {
+      selectInfo.label = jthis.text();
+      selectInfo.value = jthis.attr("data-value");
+    }
+
+    return selectInfo;
+  }).get();
+}
+
+exports.values = values;
+},{"../globals":"globals.ts"}],"methods/assert.ts":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+
+function prettyJSON(x) {
+  return JSON.stringify(x, null, "  ");
+}
+
+exports.prettyJSON = prettyJSON;
+
+function isEqual(x, y) {
+  var xStr = prettyJSON(x);
+  var yStr = prettyJSON(y);
+
+  if (xStr !== yStr) {
+    console.log("x: ", x);
+    console.log("y: ", y);
+    throw "x does not equal y";
+  }
+
+  return true;
+}
+
+exports.isEqual = isEqual;
+
+function isTrue(x) {
+  return isEqual(x, true);
+}
+
+exports.isTrue = isTrue;
+
+function isFalse(x) {
+  return isEqual(x, false);
+}
+
+exports.isFalse = isFalse;
+
+function isFunction(fn) {
+  if (typeof fn !== "function") {
+    console.log("fn: ", fn);
+    throw "fn is not a function";
+  }
+}
+
+exports.isFunction = isFunction;
+},{}],"methods/shiny.ts":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+
+var globals_1 = require("../globals");
+
+function isBusy() {
+  if (!globals_1.$) {
+    return false;
+  }
+
+  return globals_1.$("html").first().hasClass("shiny-busy");
+}
+
+exports.isBusy = isBusy;
+
+function waitUntilIdle(callback, timeout) {
+  if (timeout === void 0) {
+    timeout = 23;
+  }
+
+  var wait = function wait() {
+    if (isBusy()) {
+      setTimeout(wait, timeout);
+    } else {
+      callback();
+    }
+  };
+
+  wait();
+}
+
+exports.waitUntilIdle = waitUntilIdle;
+
+function hasOverlay() {
+  return globals_1.$("#shiny-disconnected-overlay").length > 0;
+}
+
+exports.hasOverlay = hasOverlay;
+},{"../globals":"globals.ts"}],"methods/button.ts":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+
+var globals_1 = require("../globals");
+
+function click(id) {
+  globals_1.$("#" + id).click();
+}
+
+exports.click = click;
+},{"../globals":"globals.ts"}],"methods/radio.ts":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+
+var globals_1 = require("../globals");
+
+function clickOption(id, value) {
+  globals_1.$("#" + id + " input[value='" + value + "']").click();
+}
+
+exports.clickOption = clickOption;
+
+function currentOption(id) {
+  return globals_1.$("#" + id + " input:checked").attr("value");
+}
+
+exports.currentOption = currentOption;
+},{"../globals":"globals.ts"}],"methods/index.ts":[function(require,module,exports) {
+"use strict";
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+  }
+  result["default"] = mod;
+  return result;
+};
+
+exports.__esModule = true;
+
+var selectize = __importStar(require("./selectize"));
+
+var assert = __importStar(require("./assert"));
+
+var shiny = __importStar(require("./shiny"));
+
+var button = __importStar(require("./button"));
+
+var radio = __importStar(require("./radio"));
+
+var methods = {
+  assert: assert,
+  selectize: selectize,
+  shiny: shiny,
+  button: button,
+  radio: radio
+};
+exports.methods = methods;
+},{"./selectize":"methods/selectize.ts","./assert":"methods/assert.ts","./shiny":"methods/shiny.ts","./button":"methods/button.ts","./radio":"methods/radio.ts"}],"jster.ts":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
 
 var globals_1 = require("./globals");
+
+var methods_1 = require("./methods");
+
+var assertFunction = methods_1.methods.assert.isFunction;
 
 var Jster =
 /** @class */
@@ -210,6 +423,7 @@ function () {
     this.fns.forEach(function (_a, idx, fns) {
       var fn = _a.fn,
           timeout = _a.timeout;
+      assertFunction(fn);
       _this.p = _this.p // delay a little bit
       .then(function (value) {
         _this.setProgress("yellow", "shinyjster - Progress: " + (idx + 1) + "/" + fns.length + " (waiting)");
@@ -231,12 +445,20 @@ function () {
     return this.p;
   };
 
-  Jster.prototype.test = function (setInputValue) {
-    var _this = this;
-
-    if (setInputValue === void 0) {
+  Jster.prototype.initSetInputValue = function (setInputValue) {
+    if (!setInputValue) {
       setInputValue = globals_1.Shiny.setInputValue;
     }
+
+    if (typeof setInputValue !== "function") {
+      throw "`setInputValue` is not a function.";
+    }
+
+    return setInputValue;
+  };
+
+  Jster.prototype.test = function (setInputValue) {
+    var _this = this;
 
     if (this.hasCalled) {
       throw "`this.test()` has already been called";
@@ -249,8 +471,9 @@ function () {
 
     this.hasCalled = true;
     this.setupPromises().then(function (value) {
-      _this.setProgress("green", "shinyjster - Progress: " + _this.fns.length + "/" + _this.fns.length + " (done!)"); // send success to shiny
+      _this.setProgress("green", "shinyjster - Progress: " + _this.fns.length + "/" + _this.fns.length + " (done!)");
 
+      setInputValue = _this.initSetInputValue(setInputValue); // send success to shiny
 
       setInputValue("jster_done", {
         type: "success",
@@ -264,6 +487,7 @@ function () {
       } // send error to shiny
 
 
+      setInputValue = _this.initSetInputValue(setInputValue);
       setInputValue("jster_done", {
         type: "error",
         length: _this.fns.length,
@@ -276,16 +500,27 @@ function () {
     });
   };
 
-  Jster.getParameterByName = function (name, url) {
-    if (!url) url = window.location.href;
-    name = name.replace(/[\\[\\]]/g, '\\\\$&');
-    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\\+/g, ' '));
+  Jster.prototype.wait = function (ms) {
+    this.add(function (done) {
+      setTimeout(done, ms);
+    });
   };
 
+  Jster.getParameterByName = function (name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\\[\\]]/g, "\\\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return "";
+    return decodeURIComponent(results[2].replace(/\\+/g, " "));
+  };
+
+  Jster.selectize = methods_1.methods.selectize;
+  Jster.assert = methods_1.methods.assert;
+  Jster.shiny = methods_1.methods.shiny;
+  Jster.button = methods_1.methods.button;
+  Jster.radio = methods_1.methods.radio;
   return Jster;
 }();
 
@@ -300,7 +535,7 @@ function jster(timeout) {
 }
 
 exports.jster = jster;
-},{"./globals":"eS2z"}],"CnUs":[function(require,module,exports) {
+},{"./globals":"globals.ts","./methods":"methods/index.ts"}],"shiny.ts":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -320,7 +555,7 @@ function initJsterHooks() {
 }
 
 exports.initJsterHooks = initJsterHooks;
-},{"./globals":"eS2z"}],"QCba":[function(require,module,exports) {
+},{"./globals":"globals.ts"}],"index.ts":[function(require,module,exports) {
 "use strict"; // import "babel-polyfill";
 
 exports.__esModule = true;
@@ -332,5 +567,209 @@ var shiny_1 = require("./shiny");
 window.jster = jster_1.jster;
 window.Jster = jster_1.Jster;
 shiny_1.initJsterHooks();
-},{"./jster":"WLG3","./shiny":"CnUs"}]},{},["QCba"], null)
+},{"./jster":"jster.ts","./shiny":"shiny.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+var global = arguments[3];
+var OVERLAY_ID = '__parcel__error__overlay__';
+var OldModule = module.bundle.Module;
+
+function Module(moduleName) {
+  OldModule.call(this, moduleName);
+  this.hot = {
+    data: module.bundle.hotData,
+    _acceptCallbacks: [],
+    _disposeCallbacks: [],
+    accept: function (fn) {
+      this._acceptCallbacks.push(fn || function () {});
+    },
+    dispose: function (fn) {
+      this._disposeCallbacks.push(fn);
+    }
+  };
+  module.bundle.hotData = null;
+}
+
+module.bundle.Module = Module;
+var checkedAssets, assetsToAccept;
+var parent = module.bundle.parent;
+
+if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
+  var hostname = "" || location.hostname;
+  var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51447" + '/');
+
+  ws.onmessage = function (event) {
+    checkedAssets = {};
+    assetsToAccept = [];
+    var data = JSON.parse(event.data);
+
+    if (data.type === 'update') {
+      var handled = false;
+      data.assets.forEach(function (asset) {
+        if (!asset.isNew) {
+          var didAccept = hmrAcceptCheck(global.parcelRequire, asset.id);
+
+          if (didAccept) {
+            handled = true;
+          }
+        }
+      }); // Enable HMR for CSS by default.
+
+      handled = handled || data.assets.every(function (asset) {
+        return asset.type === 'css' && asset.generated.js;
+      });
+
+      if (handled) {
+        console.clear();
+        data.assets.forEach(function (asset) {
+          hmrApply(global.parcelRequire, asset);
+        });
+        assetsToAccept.forEach(function (v) {
+          hmrAcceptRun(v[0], v[1]);
+        });
+      } else if (location.reload) {
+        // `location` global exists in a web worker context but lacks `.reload()` function.
+        location.reload();
+      }
+    }
+
+    if (data.type === 'reload') {
+      ws.close();
+
+      ws.onclose = function () {
+        location.reload();
+      };
+    }
+
+    if (data.type === 'error-resolved') {
+      console.log('[parcel] ✨ Error resolved');
+      removeErrorOverlay();
+    }
+
+    if (data.type === 'error') {
+      console.error('[parcel] 🚨  ' + data.error.message + '\n' + data.error.stack);
+      removeErrorOverlay();
+      var overlay = createErrorOverlay(data);
+      document.body.appendChild(overlay);
+    }
+  };
+}
+
+function removeErrorOverlay() {
+  var overlay = document.getElementById(OVERLAY_ID);
+
+  if (overlay) {
+    overlay.remove();
+  }
+}
+
+function createErrorOverlay(data) {
+  var overlay = document.createElement('div');
+  overlay.id = OVERLAY_ID; // html encode message and stack trace
+
+  var message = document.createElement('div');
+  var stackTrace = document.createElement('pre');
+  message.innerText = data.error.message;
+  stackTrace.innerText = data.error.stack;
+  overlay.innerHTML = '<div style="background: black; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; opacity: 0.85; font-family: Menlo, Consolas, monospace; z-index: 9999;">' + '<span style="background: red; padding: 2px 4px; border-radius: 2px;">ERROR</span>' + '<span style="top: 2px; margin-left: 5px; position: relative;">🚨</span>' + '<div style="font-size: 18px; font-weight: bold; margin-top: 20px;">' + message.innerHTML + '</div>' + '<pre>' + stackTrace.innerHTML + '</pre>' + '</div>';
+  return overlay;
+}
+
+function getParents(bundle, id) {
+  var modules = bundle.modules;
+
+  if (!modules) {
+    return [];
+  }
+
+  var parents = [];
+  var k, d, dep;
+
+  for (k in modules) {
+    for (d in modules[k][1]) {
+      dep = modules[k][1][d];
+
+      if (dep === id || Array.isArray(dep) && dep[dep.length - 1] === id) {
+        parents.push(k);
+      }
+    }
+  }
+
+  if (bundle.parent) {
+    parents = parents.concat(getParents(bundle.parent, id));
+  }
+
+  return parents;
+}
+
+function hmrApply(bundle, asset) {
+  var modules = bundle.modules;
+
+  if (!modules) {
+    return;
+  }
+
+  if (modules[asset.id] || !bundle.parent) {
+    var fn = new Function('require', 'module', 'exports', asset.generated.js);
+    asset.isNew = !modules[asset.id];
+    modules[asset.id] = [fn, asset.deps];
+  } else if (bundle.parent) {
+    hmrApply(bundle.parent, asset);
+  }
+}
+
+function hmrAcceptCheck(bundle, id) {
+  var modules = bundle.modules;
+
+  if (!modules) {
+    return;
+  }
+
+  if (!modules[id] && bundle.parent) {
+    return hmrAcceptCheck(bundle.parent, id);
+  }
+
+  if (checkedAssets[id]) {
+    return;
+  }
+
+  checkedAssets[id] = true;
+  var cached = bundle.cache[id];
+  assetsToAccept.push([bundle, id]);
+
+  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
+    return true;
+  }
+
+  return getParents(global.parcelRequire, id).some(function (id) {
+    return hmrAcceptCheck(global.parcelRequire, id);
+  });
+}
+
+function hmrAcceptRun(bundle, id) {
+  var cached = bundle.cache[id];
+  bundle.hotData = {};
+
+  if (cached) {
+    cached.hot.data = bundle.hotData;
+  }
+
+  if (cached && cached.hot && cached.hot._disposeCallbacks.length) {
+    cached.hot._disposeCallbacks.forEach(function (cb) {
+      cb(bundle.hotData);
+    });
+  }
+
+  delete bundle.cache[id];
+  bundle(id);
+  cached = bundle.cache[id];
+
+  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
+    cached.hot._acceptCallbacks.forEach(function (cb) {
+      cb();
+    });
+
+    return true;
+  }
+}
+},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","index.ts"], null)
 //# sourceMappingURL=/shinyjster.js.map

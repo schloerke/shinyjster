@@ -2,7 +2,7 @@ library(shiny)
 library(shinyjster)
 
 ui <- fluidPage(
-  
+
   titlePanel("Button Example - Do NOT Touch application"),
 
   sidebarLayout(
@@ -17,13 +17,14 @@ ui <- fluidPage(
   ),
 
   # include shinyjster JS at end of UI definition
-  shinyjster_js(
-    "var jst = jster(500)", # execute every 500 ms
-    "jst.add(function(done) { $('#button').click(); done() });",
-    "jst.add(function(done) { $('#button').click(); done() });",
-    "jst.add(function(done) { $('#button').click(); done() });",
-    "jst.add(function(done) { if ($('#number').text() == '3') done(); throw 'text does not equal 3' });",
-    "jst.test()"
+  shinyjster_js("
+    var jst = jster(500) // execute every 500 ms
+    jst.add(function(done) { $('#button').click(); done() });
+    jst.add(function(done) { $('#button').click(); done() });
+    jst.add(function(done) { $('#button').click(); done() });
+    jst.add(Jster.shiny.waitUntilIdle);
+    jst.add(function(done) { if ($('#number').text() == '3') done(); throw 'text does not equal 3' });
+    jst.test()"
   )
 
 )

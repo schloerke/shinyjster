@@ -1,4 +1,5 @@
 import { Shiny, $ } from "./globals";
+import { methods } from "./methods";
 
 interface ResolveFnType {
   (value?: unknown): void;
@@ -7,11 +8,19 @@ interface AddFnType {
   (resolve: ResolveFnType, value?: unknown): void;
 }
 
+const assertFunction = methods.assert.isFunction;
+
 class Jster {
   timeout: number;
   fns: Array<{ fn: Function; timeout: number }>;
   p: null | Promise<unknown>;
   private hasCalled: boolean;
+
+  static selectize = methods.selectize;
+  static assert = methods.assert;
+  static shiny = methods.shiny;
+  static button = methods.button;
+  static radio = methods.radio;
 
   constructor(timeout: number) {
     this.hasCalled = false;
@@ -72,6 +81,8 @@ class Jster {
 
     // for each fn
     this.fns.forEach(({ fn, timeout }, idx, fns) => {
+      assertFunction(fn);
+
       this.p = this.p
         // delay a little bit
         .then((value) => {
@@ -100,7 +111,17 @@ class Jster {
     return this.p;
   }
 
-  test(setInputValue = Shiny.setInputValue): void {
+  private initSetInputValue(setInputValue) {
+    if (!setInputValue) {
+      setInputValue = Shiny.setInputValue;
+    }
+    if (typeof setInputValue !== "function") {
+      throw "`setInputValue` is not a function.";
+    }
+    return setInputValue;
+  }
+
+  test(setInputValue): void {
     if (this.hasCalled) {
       throw "`this.test()` has already been called";
     }
@@ -117,6 +138,7 @@ class Jster {
           `shinyjster - Progress: ${this.fns.length}/${this.fns.length} (done!)`
         );
 
+        setInputValue = this.initSetInputValue(setInputValue);
         // send success to shiny
         setInputValue("jster_done", {
           type: "success",
@@ -134,6 +156,7 @@ class Jster {
         }
 
         // send error to shiny
+        setInputValue = this.initSetInputValue(setInputValue);
         setInputValue("jster_done", {
           type: "error",
           length: this.fns.length,
@@ -148,14 +171,21 @@ class Jster {
     );
   }
 
+  wait(ms) {
+    this.add((done) => {
+      setTimeout(done, ms);
+    });
+  }
+
   static getParameterByName(name: string, url: string): string {
     if (!url) url = window.location.href;
-    name = name.replace(/[\\[\\]]/g, '\\\\$&');
-    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-        results = regex.exec(url);
+    name = name.replace(/[\\[\\]]/g, "\\\\$&");
+    const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+      results = regex.exec(url);
+
     if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\\+/g, ' '));
+    if (!results[2]) return "";
+    return decodeURIComponent(results[2].replace(/\\+/g, " "));
   }
 }
 
