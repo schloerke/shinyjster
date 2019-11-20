@@ -6,29 +6,35 @@ const setInputMock = function(key: string, value: string): void {
 };
 
 test("basic jster works", (doneTest) => {
-  const jst = jster(10);
+  const jst = jster(1);
 
   let val = 1;
 
-  expect.assertions(9);
+  expect.assertions(8);
 
-  jst.add((done) => {
+  // sync
+  jst.add(() => {
     val += 2;
     expect(val).toBe(3);
-    done(2);
+    return 2;
   });
+
+  // async
   jst.add((done, priorVal) => {
     expect(priorVal).toBe(2);
     val += 3;
     expect(val).toBe(6);
     done(3);
   });
-  jst.add((done, priorVal) => {
-    expect(priorVal).toBe(3);
+
+  // sync
+  jst.add(() => {
     val += 4;
     expect(val).toBe(10);
-    done(4);
+    return 4;
   });
+
+  // async
   jst.add((done, priorVal) => {
     expect(priorVal).toBe(4);
     val += 5;

@@ -5,7 +5,7 @@ interface ResolveFnType {
   (value?: unknown): void;
 }
 interface AddFnType {
-  (resolve: ResolveFnType, value?: unknown): void;
+  (resolve?: ResolveFnType, value?: unknown): void;
 }
 
 const assertFunction = methods.assert.isFunction;
@@ -70,8 +70,21 @@ class Jster {
       throw "`this.test()` has already been called";
     }
     this.setProgress("green", "shinyjster - Adding tests!");
+
+    let newFn = fn;
+
+    if (fn.length == 0) {
+      // if no arguments are supplied in the added function,
+      //   * assume it is a sync function
+      //   * If it returns anything, pass it along to the next function
+      //   * Since 'fn' has no 'value' arg, no value will be passed into 'fn'
+      newFn = function(done) {
+        done(fn());
+      };
+    }
+
     this.fns.push({
-      fn: fn,
+      fn: newFn,
       timeout: timeout,
     });
   }
