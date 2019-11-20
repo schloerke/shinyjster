@@ -71,20 +71,20 @@ class Jster {
     }
     this.setProgress("green", "shinyjster - Adding tests!");
 
-    let newFn = fn;
+    let addFn = fn;
 
     if (fn.length == 0) {
       // if no arguments are supplied in the added function,
       //   * assume it is a sync function
       //   * If it returns anything, pass it along to the next function
       //   * Since 'fn' has no 'value' arg, no value will be passed into 'fn'
-      newFn = function(done) {
+      addFn = function(done) {
         done(fn());
       };
     }
 
     this.fns.push({
-      fn: newFn,
+      fn: addFn,
       timeout: timeout,
     });
   }
