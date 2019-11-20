@@ -21,6 +21,8 @@ class Jster {
   static shiny = methods.shiny;
   static button = methods.button;
   static radio = methods.radio;
+  static download = methods.download;
+  static checkbox = methods.checkbox;
 
   constructor(timeout: number) {
     this.hasCalled = false;

@@ -3,6 +3,8 @@ import * as assert from "./assert";
 import * as shiny from "./shiny";
 import * as button from "./button";
 import * as radio from "./radio";
+import * as download from "./download";
+import * as checkbox from "./checkbox";
 
 const methods = {
   assert: assert,
@@ -10,6 +12,8 @@ const methods = {
   shiny: shiny,
   button: button,
   radio: radio,
+  download: download,
+  checkbox: checkbox,
 };
 
 export { methods };

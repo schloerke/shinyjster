@@ -302,6 +302,48 @@ function currentOption(id) {
 }
 
 exports.currentOption = currentOption;
+},{"../globals":"globals.ts"}],"methods/download.ts":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+
+var globals_1 = require("../globals");
+
+function click(id, callback) {
+  var href = globals_1.$("#" + id).attr("href");
+  globals_1.$.get({
+    url: href,
+    success: function success(value) {
+      callback(null, value);
+    }
+  }).fail(function (req, textStatus, errorThrown) {
+    callback({
+      req: req,
+      textStatus: textStatus,
+      errorThrown: errorThrown
+    }, null);
+  });
+}
+
+exports.click = click;
+},{"../globals":"globals.ts"}],"methods/checkbox.ts":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+
+var globals_1 = require("../globals");
+
+function click(id) {
+  globals_1.$("#" + id).click();
+}
+
+exports.click = click;
+
+function isChecked(id) {
+  return globals_1.$("#" + id + ":checked").length > 0;
+}
+
+exports.isChecked = isChecked;
 },{"../globals":"globals.ts"}],"methods/index.ts":[function(require,module,exports) {
 "use strict";
 
@@ -327,15 +369,21 @@ var button = __importStar(require("./button"));
 
 var radio = __importStar(require("./radio"));
 
+var download = __importStar(require("./download"));
+
+var checkbox = __importStar(require("./checkbox"));
+
 var methods = {
   assert: assert,
   selectize: selectize,
   shiny: shiny,
   button: button,
-  radio: radio
+  radio: radio,
+  download: download,
+  checkbox: checkbox
 };
 exports.methods = methods;
-},{"./selectize":"methods/selectize.ts","./assert":"methods/assert.ts","./shiny":"methods/shiny.ts","./button":"methods/button.ts","./radio":"methods/radio.ts"}],"jster.ts":[function(require,module,exports) {
+},{"./selectize":"methods/selectize.ts","./assert":"methods/assert.ts","./shiny":"methods/shiny.ts","./button":"methods/button.ts","./radio":"methods/radio.ts","./download":"methods/download.ts","./checkbox":"methods/checkbox.ts"}],"jster.ts":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -533,6 +581,8 @@ function () {
   Jster.shiny = methods_1.methods.shiny;
   Jster.button = methods_1.methods.button;
   Jster.radio = methods_1.methods.radio;
+  Jster.download = methods_1.methods.download;
+  Jster.checkbox = methods_1.methods.checkbox;
   return Jster;
 }();
 
