@@ -8,7 +8,6 @@ function isIdle(): boolean {
   return shinyIsIdle;
 }
 function callIdleFns() {
-  console.log("callIdleFns!");
   // call using setTimeout to "break" serialized execution
   shinyIdleFns.map(function(fn) {
     setTimeout(fn, 0);
@@ -20,12 +19,10 @@ const callIdleFnsDebounced = debounce(callIdleFns, 200);
 
 if ($) {
   $(document).on("shiny:busy", function(event) {
-    console.log("busy!");
     shinyIsIdle = false;
     callIdleFnsDebounced.cancel();
   });
   $(document).on("shiny:idle", function(event) {
-    console.log("idle!");
     shinyIsIdle = true;
     // to avoid idle and busy thrashing,
     //   call the debounced form of `callIdleFns`
