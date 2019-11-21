@@ -258,47 +258,40 @@ if (globals_1.$) {
     shinyIsIdle = false;
   });
   globals_1.$(document).on("shiny:idle", function (event) {
-    shinyIsIdle = true; // to avoid idle and busy thrashing,
-    //   call the debounced form of `callIdleFns`
-    // `waitUntilIdle` is interpreted as "Shiny must be in the 'idle' state for at least 200ms"
-    //   if shiny decides to become 'idle', then immediately become 'busy', `waitUntilIdle` should NOT be called.
-    // To combat this, debouncing is used to make sure there is a 200ms delay
-    //   and _.cancel is used to stop any debounced `waitUntilIdle` call if suddendly shiny is 'busy'.
+    shinyIsIdle = true;
   });
-} // to avoid idle and busy thrashing,
-//   call the debounced form of `callIdleFns`
-// `waitUntilIdle` is interpreted as "Shiny must be in the 'idle' state for at least 200ms"
-//   if shiny decides to become 'idle', then immediately become 'busy', `waitUntilIdle` should NOT be called.
-// To combat this, debouncing is used to make sure there is a 200ms delay
-//   and _.cancel is used to stop any debounced `waitUntilIdle` call if suddendly shiny is 'busy'.
+} // `waitUntilIdleFor` requires a timeout value
+// `waitUntilIdleFor` is interpreted as "Shiny must be in the 'idle' state for at least `timeout`ms"
+// If shiny decides to become 'idle', but becomes 'busy' before `timeout`ms...
+//   `callback` will have to wait until the next time Shiny is 'idle' before attempting to wait to execute
+// Once a callback is successful, all created event handlers are removed to avoid buildup of no-op handlers
 
 
 function waitUntilIdleFor(timeout) {
   return function (callback) {
     var timeoutId = null;
-    var randomVal = Math.random();
 
     var busyFn = function busyFn() {
-      console.log("busy!", randomVal);
+      // clear timeout. Calling with `null` is ok.
       clearTimeout(timeoutId);
     };
 
     var idleFn = function idleFn() {
-      console.log("idle!", randomVal);
-
       var fn = function fn() {
-        console.log("success!", randomVal); // made it through the timeout, remove event listeners
-
+        // made it through the timeout, remove event listeners
         globals_1.$(document).off("shiny:busy", busyFn);
-        globals_1.$(document).off("shiny:idle", idleFn);
+        globals_1.$(document).off("shiny:idle", idleFn); // call original callback
+
         callback();
-      };
+      }; // delay the callback wrapper function
+
 
       timeoutId = setTimeout(fn, timeout);
-    };
+    }; // set up individual listeners for this function.
+
 
     globals_1.$(document).on("shiny:busy", busyFn);
-    globals_1.$(document).on("shiny:idle", idleFn);
+    globals_1.$(document).on("shiny:idle", idleFn); // if already idle, call `idleFn`.
 
     if (shinyIsIdle) {
       idleFn();
@@ -306,13 +299,15 @@ function waitUntilIdleFor(timeout) {
   };
 }
 
-exports.waitUntilIdleFor = waitUntilIdleFor;
+exports.waitUntilIdleFor = waitUntilIdleFor; // `waitUntilIdle` will fire a callback once shiny is idle.
+//  If shiny is already idle, the callback will be executed on the next tick.
 
 function waitUntilIdle(callback) {
   waitUntilIdleFor(0)(callback);
 }
 
-exports.waitUntilIdle = waitUntilIdle;
+exports.waitUntilIdle = waitUntilIdle; // `waitUntilStable` is interpreted as "Shiny must be in the 'idle' state for at least 200ms"
+//   if shiny decides to become 'idle', then immediately become 'busy', `waitUntilIdle` should NOT be called.
 
 function waitUntilStable(callback) {
   waitUntilIdleFor(200)(callback);
