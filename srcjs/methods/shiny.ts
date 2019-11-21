@@ -1,5 +1,4 @@
 import { $ } from "../globals";
-import { debounce } from "lodash";
 
 let shinyIsIdle = false;
 
