@@ -62,16 +62,14 @@ ui <- fluidPage(
     jst.add(Jster.shiny.waitUntilIdle);
 
     var choose_and_validate = function(val, expected) {
-      jst.add(function(done) {
+      jst.add(function() {
         Jster.radio.clickOption('type', val);
         Jster.button.click('go');
-        done();
       })
       jst.add(Jster.shiny.waitUntilIdle);
-      jst.add(function(done) {
+      jst.add(function() {
         Jster.assert.isEqual($('#sync_output').text(), expected);
         Jster.assert.isEqual($('#async_output').text(), expected);
-        done();
       })
     }
     choose_and_validate('success', 'normal value')
@@ -85,12 +83,11 @@ ui <- fluidPage(
         Jster.button.click(id);
         setTimeout(done, 1500);
       });
-      jst.add(function(done) {
+      jst.add(function() {
         Jster.assert.isEqual(
           $('#observeEventStatus').text(),
           'Success!'
         );
-        done();
       });
     }
 
@@ -98,14 +95,12 @@ ui <- fluidPage(
     click_and_validate('silent');
     click_and_validate('validation');
 
-    jst.add(function(done) {
+    jst.add(function() {
       Jster.assert.isFalse(Jster.shiny.hasOverlay());
-      done();
     });
     click_and_validate('error');
-    jst.add(function(done) {
+    jst.add(function() {
       Jster.assert.isTrue(Jster.shiny.hasOverlay());
-      done();
     });
 
     jst.test();"

@@ -42,10 +42,11 @@ ui <- withTags(fluidPage(
     var jst = jster();
     jst.add(Jster.shiny.waitUntilIdle);
 
-    jst.add(function(done) {
+    jst.add(function() {
       var img = $('#plot img')[0];
-      if (proportion_transparent(img) >= 0.95) done();
-      throw 'Plot is not >= 95% transparent.';
+      if (proportion_transparent(img) <= 0.95) {
+        throw 'Plot is not >= 95% transparent.';
+      }
     });
 
     jst.test();

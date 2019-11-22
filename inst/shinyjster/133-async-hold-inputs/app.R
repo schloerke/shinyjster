@@ -35,10 +35,9 @@ ui <- fluidPage(
         jst.add(Jster.shiny.waitUntilIdle);
 
         var choose_and_submit = function(val) {
-          jst.add(function(done) {
+          jst.add(function() {
             Jster.radio.clickOption('choice', val);
             Jster.button.click('go');
-            done();
           })
         }
         choose_and_submit('b');
@@ -46,14 +45,13 @@ ui <- fluidPage(
 
         var validate_output = function(expected) {
           jst.add(Jster.shiny.waitUntilIdle);
-          jst.add(function(done) {
+          jst.add(function() {
             // make sure choice is expected
             Jster.assert.isEqual(Jster.radio.currentOption('choice'), expected);
             // make sure all output is made of _expected_
             var unique_vals = $.unique($('#out').text().trim().split('\\n').map(function(item) {return item.trim()}))
             Jster.assert.isEqual(unique_vals.length, 1);
             Jster.assert.isEqual(unique_vals[0], expected);
-            done();
           })
         }
         jst.wait(3 * 1000);
