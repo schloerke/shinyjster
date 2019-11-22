@@ -6,6 +6,8 @@
   },
   "devDependencies": {
     "@types/jest": "^24.0.18",
+    "@types/jquery": "^3.3.31",
+    "@types/lodash": "^4.14.149",
     "@typescript-eslint/eslint-plugin": "^2.3.3",
     "@typescript-eslint/parser": "^2.3.3",
     "eslint": "^6.5.1",
@@ -33,8 +35,8 @@
     "checks": "yarn typescript-check && yarn type-check && yarn lint-check"
   },
   "dependencies": {
-    "@types/jquery": "^3.3.31",
-    "babel-polyfill": "^6.26.0"
+    "babel-polyfill": "^6.26.0",
+    "lodash": "^4.17.15"
   },
   "husky": {
     "hooks": {
