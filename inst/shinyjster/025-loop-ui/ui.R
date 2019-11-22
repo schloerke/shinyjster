@@ -30,6 +30,7 @@ fluidPage(
 
     jst.add(function() {
 
+      // test verbatim output
       Jster.assert.isEqual(
         $('#a_out').text().trim(),",
         paste0(
@@ -43,6 +44,7 @@ fluidPage(
         ),
       "
       )
+      // test b# output
       ",
       vapply(1:10, function(i) {
         paste0( collapse = "\n",
