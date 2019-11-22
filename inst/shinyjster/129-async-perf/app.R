@@ -31,19 +31,19 @@ ui <- fluidPage(
     var n = 50;
     var allow_k_failures = Math.floor(n / 10);
 
-    var click_and_validate = function(id, time) {
+    var click_and_validate = function(id, max_time) {
       var count = 0;
       for (var i = 0; i < n; i++) {
         (function(ii) {
           jst.add(function(done) {
             Jster.button.click(id);
-            setTimeout(done, 10)
+            setTimeout(done, 10);
           });
           jst.add(Jster.shiny.waitUntilIdle);
           jst.add(function() {
             var val = parseFloat($('#time').text().replace(/[^0-9.]/g, '')) * 1000;
-            console.log($('#time').text().replace(/[^0-9.]/g, ''), val, time);
-            if (val > time) {
+            console.log($('#time').text().replace(/[^0-9.]/g, ''), val, max_time);
+            if (val > max_time) {
               count = count + 1
             }
           })

@@ -204,7 +204,7 @@ class Jster {
   }
 }
 
-function jster(timeout = 250): Jster {
+function jster(timeout = 10): Jster {
   return new Jster(timeout);
 }
 

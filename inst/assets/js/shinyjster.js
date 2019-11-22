@@ -117,7 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"globals.ts":[function(require,module,exports) {
+})({"eS2z":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -126,7 +126,7 @@ exports.Shiny = Shiny;
 var jQuery = window.jQuery;
 exports.jQuery = jQuery;
 exports.$ = jQuery;
-},{}],"methods/selectize.ts":[function(require,module,exports) {
+},{}],"ceOt":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -186,7 +186,7 @@ function values(id) {
 }
 
 exports.values = values;
-},{"../globals":"globals.ts"}],"methods/assert.ts":[function(require,module,exports) {
+},{"../globals":"eS2z"}],"UK2R":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -232,47 +232,95 @@ function isFunction(fn) {
 }
 
 exports.isFunction = isFunction;
-},{}],"methods/shiny.ts":[function(require,module,exports) {
+},{}],"owfG":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
 
 var globals_1 = require("../globals");
 
-function isBusy() {
-  if (!globals_1.$) {
-    return false;
-  }
+var shinyIsIdle = false;
 
-  return globals_1.$("html").first().hasClass("shiny-busy");
+function isIdle() {
+  return shinyIsIdle;
+}
+
+exports.isIdle = isIdle;
+
+function isBusy() {
+  return !shinyIsIdle;
 }
 
 exports.isBusy = isBusy;
 
-function waitUntilIdle(callback, timeout) {
-  if (timeout === void 0) {
-    timeout = 23;
-  }
+if (globals_1.$) {
+  globals_1.$(document).on("shiny:busy", function (event) {
+    shinyIsIdle = false;
+  });
+  globals_1.$(document).on("shiny:idle", function (event) {
+    shinyIsIdle = true;
+  });
+} // `waitUntilIdleFor` requires a timeout value
+// `waitUntilIdleFor` is interpreted as "Shiny must be in the 'idle' state for at least `timeout`ms"
+// If shiny decides to become 'idle', but becomes 'busy' before `timeout`ms...
+//   `callback` will have to wait until the next time Shiny is 'idle' before attempting to wait to execute
+// Once a callback is successful, all created event handlers are removed to avoid buildup of no-op handlers
 
-  var wait = function wait() {
-    if (isBusy()) {
-      setTimeout(wait, timeout);
-    } else {
-      callback();
+
+function waitUntilIdleFor(timeout) {
+  return function (callback) {
+    var timeoutId = null;
+
+    var busyFn = function busyFn() {
+      // clear timeout. Calling with `null` is ok.
+      clearTimeout(timeoutId);
+    };
+
+    var idleFn = function idleFn() {
+      var fn = function fn() {
+        // made it through the timeout, remove event listeners
+        globals_1.$(document).off("shiny:busy", busyFn);
+        globals_1.$(document).off("shiny:idle", idleFn); // call original callback
+
+        callback();
+      }; // delay the callback wrapper function
+
+
+      timeoutId = setTimeout(fn, timeout);
+    }; // set up individual listeners for this function.
+
+
+    globals_1.$(document).on("shiny:busy", busyFn);
+    globals_1.$(document).on("shiny:idle", idleFn); // if already idle, call `idleFn`.
+
+    if (shinyIsIdle) {
+      idleFn();
     }
   };
-
-  wait();
 }
 
-exports.waitUntilIdle = waitUntilIdle;
+exports.waitUntilIdleFor = waitUntilIdleFor; // `waitUntilIdle` will fire a callback once shiny is idle.
+//  If shiny is already idle, the callback will be executed on the next tick.
+
+function waitUntilIdle(callback) {
+  waitUntilIdleFor(0)(callback);
+}
+
+exports.waitUntilIdle = waitUntilIdle; // `waitUntilStable` is interpreted as "Shiny must be in the 'idle' state for at least 200ms"
+//   if shiny decides to become 'idle', then immediately become 'busy', `waitUntilIdle` should NOT be called.
+
+function waitUntilStable(callback) {
+  waitUntilIdleFor(200)(callback);
+}
+
+exports.waitUntilStable = waitUntilStable;
 
 function hasOverlay() {
   return globals_1.$("#shiny-disconnected-overlay").length > 0;
 }
 
 exports.hasOverlay = hasOverlay;
-},{"../globals":"globals.ts"}],"methods/button.ts":[function(require,module,exports) {
+},{"../globals":"eS2z"}],"bPYC":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -284,7 +332,7 @@ function click(id) {
 }
 
 exports.click = click;
-},{"../globals":"globals.ts"}],"methods/radio.ts":[function(require,module,exports) {
+},{"../globals":"eS2z"}],"ZV6I":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -302,7 +350,7 @@ function currentOption(id) {
 }
 
 exports.currentOption = currentOption;
-},{"../globals":"globals.ts"}],"methods/download.ts":[function(require,module,exports) {
+},{"../globals":"eS2z"}],"by4Q":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -326,7 +374,7 @@ function click(id, callback) {
 }
 
 exports.click = click;
-},{"../globals":"globals.ts"}],"methods/checkbox.ts":[function(require,module,exports) {
+},{"../globals":"eS2z"}],"k4af":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -344,7 +392,7 @@ function isChecked(id) {
 }
 
 exports.isChecked = isChecked;
-},{"../globals":"globals.ts"}],"methods/index.ts":[function(require,module,exports) {
+},{"../globals":"eS2z"}],"Y0XI":[function(require,module,exports) {
 "use strict";
 
 var __importStar = this && this.__importStar || function (mod) {
@@ -383,7 +431,7 @@ var methods = {
   checkbox: checkbox
 };
 exports.methods = methods;
-},{"./selectize":"methods/selectize.ts","./assert":"methods/assert.ts","./shiny":"methods/shiny.ts","./button":"methods/button.ts","./radio":"methods/radio.ts","./download":"methods/download.ts","./checkbox":"methods/checkbox.ts"}],"jster.ts":[function(require,module,exports) {
+},{"./selectize":"ceOt","./assert":"UK2R","./shiny":"owfG","./button":"bPYC","./radio":"ZV6I","./download":"by4Q","./checkbox":"k4af"}],"WLG3":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -590,14 +638,14 @@ exports.Jster = Jster;
 
 function jster(timeout) {
   if (timeout === void 0) {
-    timeout = 250;
+    timeout = 10;
   }
 
   return new Jster(timeout);
 }
 
 exports.jster = jster;
-},{"./globals":"globals.ts","./methods":"methods/index.ts"}],"shiny.ts":[function(require,module,exports) {
+},{"./globals":"eS2z","./methods":"Y0XI"}],"CnUs":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -617,7 +665,7 @@ function initJsterHooks() {
 }
 
 exports.initJsterHooks = initJsterHooks;
-},{"./globals":"globals.ts"}],"index.ts":[function(require,module,exports) {
+},{"./globals":"eS2z"}],"QCba":[function(require,module,exports) {
 "use strict"; // import "babel-polyfill";
 
 exports.__esModule = true;
@@ -629,209 +677,5 @@ var shiny_1 = require("./shiny");
 window.jster = jster_1.jster;
 window.Jster = jster_1.Jster;
 shiny_1.initJsterHooks();
-},{"./jster":"jster.ts","./shiny":"shiny.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
-var global = arguments[3];
-var OVERLAY_ID = '__parcel__error__overlay__';
-var OldModule = module.bundle.Module;
-
-function Module(moduleName) {
-  OldModule.call(this, moduleName);
-  this.hot = {
-    data: module.bundle.hotData,
-    _acceptCallbacks: [],
-    _disposeCallbacks: [],
-    accept: function (fn) {
-      this._acceptCallbacks.push(fn || function () {});
-    },
-    dispose: function (fn) {
-      this._disposeCallbacks.push(fn);
-    }
-  };
-  module.bundle.hotData = null;
-}
-
-module.bundle.Module = Module;
-var checkedAssets, assetsToAccept;
-var parent = module.bundle.parent;
-
-if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
-  var hostname = "" || location.hostname;
-  var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49163" + '/');
-
-  ws.onmessage = function (event) {
-    checkedAssets = {};
-    assetsToAccept = [];
-    var data = JSON.parse(event.data);
-
-    if (data.type === 'update') {
-      var handled = false;
-      data.assets.forEach(function (asset) {
-        if (!asset.isNew) {
-          var didAccept = hmrAcceptCheck(global.parcelRequire, asset.id);
-
-          if (didAccept) {
-            handled = true;
-          }
-        }
-      }); // Enable HMR for CSS by default.
-
-      handled = handled || data.assets.every(function (asset) {
-        return asset.type === 'css' && asset.generated.js;
-      });
-
-      if (handled) {
-        console.clear();
-        data.assets.forEach(function (asset) {
-          hmrApply(global.parcelRequire, asset);
-        });
-        assetsToAccept.forEach(function (v) {
-          hmrAcceptRun(v[0], v[1]);
-        });
-      } else if (location.reload) {
-        // `location` global exists in a web worker context but lacks `.reload()` function.
-        location.reload();
-      }
-    }
-
-    if (data.type === 'reload') {
-      ws.close();
-
-      ws.onclose = function () {
-        location.reload();
-      };
-    }
-
-    if (data.type === 'error-resolved') {
-      console.log('[parcel] ✨ Error resolved');
-      removeErrorOverlay();
-    }
-
-    if (data.type === 'error') {
-      console.error('[parcel] 🚨  ' + data.error.message + '\n' + data.error.stack);
-      removeErrorOverlay();
-      var overlay = createErrorOverlay(data);
-      document.body.appendChild(overlay);
-    }
-  };
-}
-
-function removeErrorOverlay() {
-  var overlay = document.getElementById(OVERLAY_ID);
-
-  if (overlay) {
-    overlay.remove();
-  }
-}
-
-function createErrorOverlay(data) {
-  var overlay = document.createElement('div');
-  overlay.id = OVERLAY_ID; // html encode message and stack trace
-
-  var message = document.createElement('div');
-  var stackTrace = document.createElement('pre');
-  message.innerText = data.error.message;
-  stackTrace.innerText = data.error.stack;
-  overlay.innerHTML = '<div style="background: black; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; opacity: 0.85; font-family: Menlo, Consolas, monospace; z-index: 9999;">' + '<span style="background: red; padding: 2px 4px; border-radius: 2px;">ERROR</span>' + '<span style="top: 2px; margin-left: 5px; position: relative;">🚨</span>' + '<div style="font-size: 18px; font-weight: bold; margin-top: 20px;">' + message.innerHTML + '</div>' + '<pre>' + stackTrace.innerHTML + '</pre>' + '</div>';
-  return overlay;
-}
-
-function getParents(bundle, id) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return [];
-  }
-
-  var parents = [];
-  var k, d, dep;
-
-  for (k in modules) {
-    for (d in modules[k][1]) {
-      dep = modules[k][1][d];
-
-      if (dep === id || Array.isArray(dep) && dep[dep.length - 1] === id) {
-        parents.push(k);
-      }
-    }
-  }
-
-  if (bundle.parent) {
-    parents = parents.concat(getParents(bundle.parent, id));
-  }
-
-  return parents;
-}
-
-function hmrApply(bundle, asset) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return;
-  }
-
-  if (modules[asset.id] || !bundle.parent) {
-    var fn = new Function('require', 'module', 'exports', asset.generated.js);
-    asset.isNew = !modules[asset.id];
-    modules[asset.id] = [fn, asset.deps];
-  } else if (bundle.parent) {
-    hmrApply(bundle.parent, asset);
-  }
-}
-
-function hmrAcceptCheck(bundle, id) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return;
-  }
-
-  if (!modules[id] && bundle.parent) {
-    return hmrAcceptCheck(bundle.parent, id);
-  }
-
-  if (checkedAssets[id]) {
-    return;
-  }
-
-  checkedAssets[id] = true;
-  var cached = bundle.cache[id];
-  assetsToAccept.push([bundle, id]);
-
-  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
-    return true;
-  }
-
-  return getParents(global.parcelRequire, id).some(function (id) {
-    return hmrAcceptCheck(global.parcelRequire, id);
-  });
-}
-
-function hmrAcceptRun(bundle, id) {
-  var cached = bundle.cache[id];
-  bundle.hotData = {};
-
-  if (cached) {
-    cached.hot.data = bundle.hotData;
-  }
-
-  if (cached && cached.hot && cached.hot._disposeCallbacks.length) {
-    cached.hot._disposeCallbacks.forEach(function (cb) {
-      cb(bundle.hotData);
-    });
-  }
-
-  delete bundle.cache[id];
-  bundle(id);
-  cached = bundle.cache[id];
-
-  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
-    cached.hot._acceptCallbacks.forEach(function (cb) {
-      cb();
-    });
-
-    return true;
-  }
-}
-},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","index.ts"], null)
+},{"./jster":"WLG3","./shiny":"CnUs"}]},{},["QCba"], null)
 //# sourceMappingURL=/shinyjster.js.map
