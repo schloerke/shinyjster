@@ -1,6 +1,6 @@
 function(input, output, session) {
   # include shinyjster_server call at top of server definition
-  # shinyjster_server(input, output, session)
+  shinyjster::shinyjster_server(input, output, session)
 
   # note we use the syntax input[['foo']] instead of input$foo, because we have
   # to construct the id as a character string, then use it to access the value;
