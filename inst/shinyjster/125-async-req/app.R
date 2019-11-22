@@ -37,7 +37,7 @@ ui <- fluidPage(
   ),
   shinyjster_js("
     var jst = jster();
-    jst.add(Jster.shiny.waitUntilIdle);
+    jst.add(Jster.shiny.waitUntilStable);
     jst.add(function() {
       var assertEqual = function(id, txt) {
         Jster.assert.isEqual($('#' + id).text(), txt);
@@ -53,7 +53,7 @@ ui <- fluidPage(
     jst.add(function() {
       $('#boom').click();
     })
-    jst.add(Jster.shiny.waitUntilIdle);
+    jst.add(Jster.shiny.waitUntilStable);
     jst.add(function() {
       var assertEqual = function(id, txt) {
         Jster.assert.isEqual($('#' + id).text(), txt);
