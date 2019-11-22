@@ -52,7 +52,7 @@ ui <- fluidPage(
     });
     jst.add(function(done) {
       var wait = function() {
-        if ($('#status').text() == 'Waiting...') {
+        if ($('#status').text().trim() == 'Waiting...') {
           setTimeout(wait, 100);
         } else {
           done();
