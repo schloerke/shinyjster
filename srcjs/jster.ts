@@ -23,6 +23,7 @@ class Jster {
   static radio = methods.radio;
   static download = methods.download;
   static checkbox = methods.checkbox;
+  static image = methods.image;
 
   constructor(timeout: number) {
     this.hasCalled = false;

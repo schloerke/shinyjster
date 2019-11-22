@@ -12,19 +12,11 @@ ui <- withTags(fluidPage(
   plotOutput("plot"),
 ​
   shinyjster_js(set_timeout = FALSE, "
-    console.log('hey')
 
     // Given an img tag object, return the proportion of pixels that have zero
     // alpha.
-    function proportion_transparent(img) {
-      var canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      context = canvas.getContext('2d');
-      context.drawImage(img, 0, 0, img.width, img.height);
-
-      var imageData = context.getImageData(0, 0, img.width, img.height);
-      var data = imageData.data;
+    function proportion_transparent(id) {
+      var data = Jster.image.data(id);
 
       // Count number of pixels with zero alpha
       var zeros = 0;
@@ -43,8 +35,7 @@ ui <- withTags(fluidPage(
     jst.add(Jster.shiny.waitUntilIdle);
 
     jst.add(function() {
-      var img = $('#plot img')[0];
-      if (proportion_transparent(img) <= 0.95) {
+      if (proportion_transparent('plot') <= 0.95) {
         throw 'Plot is not >= 95% transparent.';
       }
     });
