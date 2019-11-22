@@ -168,26 +168,23 @@ run_jster_apps_callr <- function(
     )
   }
 
-  while (length(apps) > 0) {
+  # while any processes exists
+  repeat {
     for (i in seq_len(cores)) {
       if (is.null(processes[[i]])) {
-        do_process(i)
+        # will not do anything if no app exists
+        do_process(i) # start first
       } else if (!processes[[i]]$p$is_alive()) {
-        print_process_output(i)
-        do_process(i)
+        print_process_output(i) # print prior
+        processes[i] <- list(NULL) # clean up
+        do_process(i) # start next
       }
+    }
+
+    if (all(vapply(processes, is.null, logical(1)))) {
+      break
     }
     Sys.sleep(0.5)
-  }
-
-  for (i in seq_len(cores)) {
-    if (!is.null(processes[[i]])) {
-      if (processes[[i]]$p$is_alive()) {
-        # jster_message("waiting for core[", i, "]")
-        processes[[i]]$p$wait()
-      }
-      print_process_output(i)
-    }
   }
 
   invisible()
