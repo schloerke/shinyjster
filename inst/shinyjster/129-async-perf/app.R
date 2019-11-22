@@ -40,20 +40,18 @@ ui <- fluidPage(
             setTimeout(done, 10)
           });
           jst.add(Jster.shiny.waitUntilIdle);
-          jst.add(function(done) {
+          jst.add(function() {
             var val = parseFloat($('#time').text().replace(/[^0-9.]/g, '')) * 1000;
             console.log($('#time').text().replace(/[^0-9.]/g, ''), val, time);
             if (val > time) {
               count = count + 1
             }
-            done();
           })
           jst.add(Jster.shiny.waitUntilIdle);
         })(i)
       }
-      jst.add(function(done) {
+      jst.add(function() {
         Jster.assert.isTrue(count < allow_k_failures);
-        done();
       })
     }
     click_and_validate('success', 50);

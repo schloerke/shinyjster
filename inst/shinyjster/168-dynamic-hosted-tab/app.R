@@ -33,7 +33,7 @@ ui <- fluidPage(
 
   // init working tabs
   function add_button_click() {
-    js.add(function(done) { $('#add').click(); done(); });
+    js.add(function() { $('#add').click(); });
   }
   add_button_click()
   add_button_click()
@@ -41,7 +41,7 @@ ui <- fluidPage(
 
   // click tabs to cause error state
   function add_click_tab(idx) {
-    js.add(function(done) { $($('#tabs a').get(idx)).click(); done(); });
+    js.add(function() { $($('#tabs a').get(idx)).click(); });
   }
   add_click_tab(0)
   add_click_tab(1)
@@ -55,13 +55,12 @@ ui <- fluidPage(
 
   // calculate value of active tab to get sum to check if working
   function add_active_pane_counter() {
-    js.add(function(done) { 
-      var val = $('.tab-pane.active .val').text() - 0; 
+    js.add(function() {
+      var val = $('.tab-pane.active .val').text() - 0;
       counter = counter + val;
-      done();
     });
   }
-  
+
   add_click_tab(0); add_active_pane_counter();
   add_click_tab(1); add_active_pane_counter();
   add_click_tab(2); add_active_pane_counter();
@@ -72,7 +71,7 @@ ui <- fluidPage(
   add_click_tab(7); add_active_pane_counter();
 
   // verify the tabs work
-  js.add(function(done) {
+  js.add(function() {
     var sum = 0;
     var len = $('.tab-pane').get().length;
     for (var i = 0; i < len; i++) {
@@ -82,10 +81,8 @@ ui <- fluidPage(
     if (counter != sum) {
       throw `FAILED!\nCounted a sum of ${ counter } vs ${ sum }`
     }
-
-    done()
   });
-  
+
   js.test();
   ")
 )
@@ -93,7 +90,7 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   shinyjster_server(input, outout, session)
-  
+
   n <- 0
   observeEvent(input$add, {
     appendTab(inputId = "tabs",

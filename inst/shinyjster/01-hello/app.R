@@ -18,14 +18,14 @@ ui <- fluidPage(
 
   # include shinyjster JS at end of UI definition
   shinyjster_js("
-    var jst = jster(500) // execute every 500 ms
-    jst.add(function(done) { $('#button').click(); done() });
-    jst.add(function(done) { $('#button').click(); done() });
-    jst.add(function(done) { $('#button').click(); done() });
+    var jst = jster(500); // execute every 500 ms
+    jst.add(function() { $('#button').click(); });
+    jst.add(function() { $('#button').click(); });
+    jst.add(function() { $('#button').click(); });
     jst.add(Jster.shiny.waitUntilIdle);
-    jst.add(function(done) { if ($('#number').text() == '3') done(); throw 'text does not equal 3' });
-    jst.test()"
-  )
+    jst.add(function() { if ($('#number').text() !== '3') throw 'text does not equal 3' });
+    jst.test();
+  ")
 
 )
 

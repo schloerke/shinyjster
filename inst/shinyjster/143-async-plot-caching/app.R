@@ -65,11 +65,10 @@ ui <- fluidPage(
 
           paste0(
             "
-            jst.add(function(done) {
+            jst.add(function() {
               var syncSrc = $('#", sync_id, "').attr('src');
               var asyncSrc = $('#", async_id, "').attr('src');
               Jster.assert.isEqual(syncSrc, asyncSrc);
-              done();
             });
             "
           )
