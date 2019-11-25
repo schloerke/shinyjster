@@ -24,6 +24,7 @@ class Jster {
   static download = methods.download;
   static checkbox = methods.checkbox;
   static image = methods.image;
+  static unicode = methods.unicode;
 
   constructor(timeout: number) {
     this.hasCalled = false;

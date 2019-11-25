@@ -6,6 +6,7 @@ import * as radio from "./radio";
 import * as download from "./download";
 import * as checkbox from "./checkbox";
 import * as image from "./image";
+import * as unicode from "./unicode";
 
 const methods = {
   assert: assert,
@@ -16,6 +17,7 @@ const methods = {
   download: download,
   checkbox: checkbox,
   image: image,
+  unicode: unicode,
 };
 
 export { methods };
