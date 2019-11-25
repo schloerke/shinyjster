@@ -8,4 +8,11 @@ function isChecked(id: string) {
   return $(`#${id}:checked`).length > 0;
 }
 
-export { click, isChecked };
+function label(id: string) {
+  return $("#summary")
+    .parent()
+    .text()
+    .trim();
+}
+
+export { click, isChecked, label };
