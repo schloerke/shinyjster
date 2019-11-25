@@ -7,6 +7,7 @@ import * as download from "./download";
 import * as checkbox from "./checkbox";
 import * as image from "./image";
 import * as unicode from "./unicode";
+import * as input from "./input";
 
 const methods = {
   assert: assert,
@@ -18,6 +19,7 @@ const methods = {
   checkbox: checkbox,
   image: image,
   unicode: unicode,
+  input: input,
 };
 
 export { methods };

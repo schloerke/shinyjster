@@ -186,6 +186,12 @@ function values(id) {
 }
 
 exports.values = values;
+
+function label(id) {
+  return globals_1.$("label[for=\"" + id + "-selectized\"]").text().trim();
+}
+
+exports.label = label;
 },{"../globals":"globals.ts"}],"methods/assert.ts":[function(require,module,exports) {
 "use strict";
 
@@ -392,6 +398,12 @@ function isChecked(id) {
 }
 
 exports.isChecked = isChecked;
+
+function label(id) {
+  return globals_1.$("#summary").parent().text().trim();
+}
+
+exports.label = label;
 },{"../globals":"globals.ts"}],"methods/image.ts":[function(require,module,exports) {
 "use strict";
 
@@ -413,6 +425,47 @@ function data(id) {
 }
 
 exports.data = data;
+},{"../globals":"globals.ts"}],"methods/unicode.ts":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+
+function escape(str, forR) {
+  if (forR === void 0) {
+    forR = false;
+  }
+
+  var ret = str.replace(/[^\0-~]/g, function (ch) {
+    return "\\u" + ("000" + ch.charCodeAt().toString(16)).slice(-4);
+  });
+
+  if (forR) {
+    // make all back slashes double back slashes
+    ret = ret.replace(/\\u/g, "\\\\u");
+  }
+
+  return ret;
+}
+
+exports.escape = escape;
+},{}],"methods/input.ts":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+
+var globals_1 = require("../globals");
+
+function label(id) {
+  return globals_1.$("label[for=\"" + id + "\"]").text().trim();
+}
+
+exports.label = label;
+
+function currentOption(id) {
+  return globals_1.$("#" + id).val();
+}
+
+exports.currentOption = currentOption;
 },{"../globals":"globals.ts"}],"methods/index.ts":[function(require,module,exports) {
 "use strict";
 
@@ -444,6 +497,10 @@ var checkbox = __importStar(require("./checkbox"));
 
 var image = __importStar(require("./image"));
 
+var unicode = __importStar(require("./unicode"));
+
+var input = __importStar(require("./input"));
+
 var methods = {
   assert: assert,
   selectize: selectize,
@@ -452,10 +509,12 @@ var methods = {
   radio: radio,
   download: download,
   checkbox: checkbox,
-  image: image
+  image: image,
+  unicode: unicode,
+  input: input
 };
 exports.methods = methods;
-},{"./selectize":"methods/selectize.ts","./assert":"methods/assert.ts","./shiny":"methods/shiny.ts","./button":"methods/button.ts","./radio":"methods/radio.ts","./download":"methods/download.ts","./checkbox":"methods/checkbox.ts","./image":"methods/image.ts"}],"jster.ts":[function(require,module,exports) {
+},{"./selectize":"methods/selectize.ts","./assert":"methods/assert.ts","./shiny":"methods/shiny.ts","./button":"methods/button.ts","./radio":"methods/radio.ts","./download":"methods/download.ts","./checkbox":"methods/checkbox.ts","./image":"methods/image.ts","./unicode":"methods/unicode.ts","./input":"methods/input.ts"}],"jster.ts":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -656,6 +715,8 @@ function () {
   Jster.download = methods_1.methods.download;
   Jster.checkbox = methods_1.methods.checkbox;
   Jster.image = methods_1.methods.image;
+  Jster.unicode = methods_1.methods.unicode;
+  Jster.input = methods_1.methods.input;
   return Jster;
 }();
 
@@ -730,7 +791,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49305" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58945" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
