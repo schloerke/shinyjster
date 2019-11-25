@@ -3,6 +3,11 @@ import * as assert from "./assert";
 import * as shiny from "./shiny";
 import * as button from "./button";
 import * as radio from "./radio";
+import * as download from "./download";
+import * as checkbox from "./checkbox";
+import * as image from "./image";
+import * as unicode from "./unicode";
+import * as input from "./input";
 
 const methods = {
   assert: assert,
@@ -10,6 +15,11 @@ const methods = {
   shiny: shiny,
   button: button,
   radio: radio,
+  download: download,
+  checkbox: checkbox,
+  image: image,
+  unicode: unicode,
+  input: input,
 };
 
 export { methods };

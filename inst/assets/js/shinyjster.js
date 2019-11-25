@@ -117,7 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"eS2z":[function(require,module,exports) {
+})({"globals.ts":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -126,7 +126,7 @@ exports.Shiny = Shiny;
 var jQuery = window.jQuery;
 exports.jQuery = jQuery;
 exports.$ = jQuery;
-},{}],"ceOt":[function(require,module,exports) {
+},{}],"methods/selectize.ts":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -186,7 +186,13 @@ function values(id) {
 }
 
 exports.values = values;
-},{"../globals":"eS2z"}],"UK2R":[function(require,module,exports) {
+
+function label(id) {
+  return globals_1.$("label[for=\"" + id + "-selectized\"]").text().trim();
+}
+
+exports.label = label;
+},{"../globals":"globals.ts"}],"methods/assert.ts":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -202,8 +208,8 @@ function isEqual(x, y) {
   var yStr = prettyJSON(y);
 
   if (xStr !== yStr) {
-    console.log("x: ", x);
-    console.log("y: ", y);
+    console.log("x:", x);
+    console.log("y:", y);
     throw "x does not equal y";
   }
 
@@ -232,7 +238,7 @@ function isFunction(fn) {
 }
 
 exports.isFunction = isFunction;
-},{}],"owfG":[function(require,module,exports) {
+},{}],"methods/shiny.ts":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -320,7 +326,7 @@ function hasOverlay() {
 }
 
 exports.hasOverlay = hasOverlay;
-},{"../globals":"eS2z"}],"bPYC":[function(require,module,exports) {
+},{"../globals":"globals.ts"}],"methods/button.ts":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -332,7 +338,7 @@ function click(id) {
 }
 
 exports.click = click;
-},{"../globals":"eS2z"}],"ZV6I":[function(require,module,exports) {
+},{"../globals":"globals.ts"}],"methods/radio.ts":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -350,7 +356,117 @@ function currentOption(id) {
 }
 
 exports.currentOption = currentOption;
-},{"../globals":"eS2z"}],"Y0XI":[function(require,module,exports) {
+},{"../globals":"globals.ts"}],"methods/download.ts":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+
+var globals_1 = require("../globals");
+
+function click(id, callback) {
+  var href = globals_1.$("#" + id).attr("href");
+  globals_1.$.get({
+    url: href,
+    success: function success(value) {
+      callback(null, value);
+    }
+  }).fail(function (req, textStatus, errorThrown) {
+    callback({
+      req: req,
+      textStatus: textStatus,
+      errorThrown: errorThrown
+    }, null);
+  });
+}
+
+exports.click = click;
+},{"../globals":"globals.ts"}],"methods/checkbox.ts":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+
+var globals_1 = require("../globals");
+
+function click(id) {
+  globals_1.$("#" + id).click();
+}
+
+exports.click = click;
+
+function isChecked(id) {
+  return globals_1.$("#" + id + ":checked").length > 0;
+}
+
+exports.isChecked = isChecked;
+
+function label(id) {
+  return globals_1.$("#summary").parent().text().trim();
+}
+
+exports.label = label;
+},{"../globals":"globals.ts"}],"methods/image.ts":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+
+var globals_1 = require("../globals");
+
+function data(id) {
+  var img = globals_1.$("#" + id + " img").get(0);
+  var width = img.width;
+  var height = img.height;
+  var canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  var context = canvas.getContext("2d");
+  context.drawImage(img, 0, 0, width, height);
+  var imageData = context.getImageData(0, 0, width, height);
+  return imageData.data;
+}
+
+exports.data = data;
+},{"../globals":"globals.ts"}],"methods/unicode.ts":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+
+function escape(str, forR) {
+  if (forR === void 0) {
+    forR = false;
+  }
+
+  var ret = str.replace(/[^\0-~]/g, function (ch) {
+    return "\\u" + ("000" + ch.charCodeAt().toString(16)).slice(-4);
+  });
+
+  if (forR) {
+    // make all back slashes double back slashes
+    ret = ret.replace(/\\u/g, "\\\\u");
+  }
+
+  return ret;
+}
+
+exports.escape = escape;
+},{}],"methods/input.ts":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+
+var globals_1 = require("../globals");
+
+function label(id) {
+  return globals_1.$("label[for=\"" + id + "\"]").text().trim();
+}
+
+exports.label = label;
+
+function currentOption(id) {
+  return globals_1.$("#" + id).val();
+}
+
+exports.currentOption = currentOption;
+},{"../globals":"globals.ts"}],"methods/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __importStar = this && this.__importStar || function (mod) {
@@ -375,15 +491,30 @@ var button = __importStar(require("./button"));
 
 var radio = __importStar(require("./radio"));
 
+var download = __importStar(require("./download"));
+
+var checkbox = __importStar(require("./checkbox"));
+
+var image = __importStar(require("./image"));
+
+var unicode = __importStar(require("./unicode"));
+
+var input = __importStar(require("./input"));
+
 var methods = {
   assert: assert,
   selectize: selectize,
   shiny: shiny,
   button: button,
-  radio: radio
+  radio: radio,
+  download: download,
+  checkbox: checkbox,
+  image: image,
+  unicode: unicode,
+  input: input
 };
 exports.methods = methods;
-},{"./selectize":"ceOt","./assert":"UK2R","./shiny":"owfG","./button":"bPYC","./radio":"ZV6I"}],"WLG3":[function(require,module,exports) {
+},{"./selectize":"methods/selectize.ts","./assert":"methods/assert.ts","./shiny":"methods/shiny.ts","./button":"methods/button.ts","./radio":"methods/radio.ts","./download":"methods/download.ts","./checkbox":"methods/checkbox.ts","./image":"methods/image.ts","./unicode":"methods/unicode.ts","./input":"methods/input.ts"}],"jster.ts":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -457,20 +588,20 @@ function () {
     }
 
     this.setProgress("green", "shinyjster - Adding tests!");
-    var newFn = fn;
+    var addFn = fn;
 
     if (fn.length == 0) {
       // if no arguments are supplied in the added function,
       //   * assume it is a sync function
       //   * If it returns anything, pass it along to the next function
       //   * Since 'fn' has no 'value' arg, no value will be passed into 'fn'
-      newFn = function newFn(done) {
+      addFn = function addFn(done) {
         done(fn());
       };
     }
 
     this.fns.push({
-      fn: newFn,
+      fn: addFn,
       timeout: timeout
     });
   };
@@ -581,6 +712,11 @@ function () {
   Jster.shiny = methods_1.methods.shiny;
   Jster.button = methods_1.methods.button;
   Jster.radio = methods_1.methods.radio;
+  Jster.download = methods_1.methods.download;
+  Jster.checkbox = methods_1.methods.checkbox;
+  Jster.image = methods_1.methods.image;
+  Jster.unicode = methods_1.methods.unicode;
+  Jster.input = methods_1.methods.input;
   return Jster;
 }();
 
@@ -595,7 +731,7 @@ function jster(timeout) {
 }
 
 exports.jster = jster;
-},{"./globals":"eS2z","./methods":"Y0XI"}],"CnUs":[function(require,module,exports) {
+},{"./globals":"globals.ts","./methods":"methods/index.ts"}],"shiny.ts":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -615,7 +751,7 @@ function initJsterHooks() {
 }
 
 exports.initJsterHooks = initJsterHooks;
-},{"./globals":"eS2z"}],"QCba":[function(require,module,exports) {
+},{"./globals":"globals.ts"}],"index.ts":[function(require,module,exports) {
 "use strict"; // import "babel-polyfill";
 
 exports.__esModule = true;
@@ -627,5 +763,209 @@ var shiny_1 = require("./shiny");
 window.jster = jster_1.jster;
 window.Jster = jster_1.Jster;
 shiny_1.initJsterHooks();
-},{"./jster":"WLG3","./shiny":"CnUs"}]},{},["QCba"], null)
+},{"./jster":"jster.ts","./shiny":"shiny.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+var global = arguments[3];
+var OVERLAY_ID = '__parcel__error__overlay__';
+var OldModule = module.bundle.Module;
+
+function Module(moduleName) {
+  OldModule.call(this, moduleName);
+  this.hot = {
+    data: module.bundle.hotData,
+    _acceptCallbacks: [],
+    _disposeCallbacks: [],
+    accept: function (fn) {
+      this._acceptCallbacks.push(fn || function () {});
+    },
+    dispose: function (fn) {
+      this._disposeCallbacks.push(fn);
+    }
+  };
+  module.bundle.hotData = null;
+}
+
+module.bundle.Module = Module;
+var checkedAssets, assetsToAccept;
+var parent = module.bundle.parent;
+
+if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
+  var hostname = "" || location.hostname;
+  var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58945" + '/');
+
+  ws.onmessage = function (event) {
+    checkedAssets = {};
+    assetsToAccept = [];
+    var data = JSON.parse(event.data);
+
+    if (data.type === 'update') {
+      var handled = false;
+      data.assets.forEach(function (asset) {
+        if (!asset.isNew) {
+          var didAccept = hmrAcceptCheck(global.parcelRequire, asset.id);
+
+          if (didAccept) {
+            handled = true;
+          }
+        }
+      }); // Enable HMR for CSS by default.
+
+      handled = handled || data.assets.every(function (asset) {
+        return asset.type === 'css' && asset.generated.js;
+      });
+
+      if (handled) {
+        console.clear();
+        data.assets.forEach(function (asset) {
+          hmrApply(global.parcelRequire, asset);
+        });
+        assetsToAccept.forEach(function (v) {
+          hmrAcceptRun(v[0], v[1]);
+        });
+      } else if (location.reload) {
+        // `location` global exists in a web worker context but lacks `.reload()` function.
+        location.reload();
+      }
+    }
+
+    if (data.type === 'reload') {
+      ws.close();
+
+      ws.onclose = function () {
+        location.reload();
+      };
+    }
+
+    if (data.type === 'error-resolved') {
+      console.log('[parcel] ✨ Error resolved');
+      removeErrorOverlay();
+    }
+
+    if (data.type === 'error') {
+      console.error('[parcel] 🚨  ' + data.error.message + '\n' + data.error.stack);
+      removeErrorOverlay();
+      var overlay = createErrorOverlay(data);
+      document.body.appendChild(overlay);
+    }
+  };
+}
+
+function removeErrorOverlay() {
+  var overlay = document.getElementById(OVERLAY_ID);
+
+  if (overlay) {
+    overlay.remove();
+  }
+}
+
+function createErrorOverlay(data) {
+  var overlay = document.createElement('div');
+  overlay.id = OVERLAY_ID; // html encode message and stack trace
+
+  var message = document.createElement('div');
+  var stackTrace = document.createElement('pre');
+  message.innerText = data.error.message;
+  stackTrace.innerText = data.error.stack;
+  overlay.innerHTML = '<div style="background: black; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; opacity: 0.85; font-family: Menlo, Consolas, monospace; z-index: 9999;">' + '<span style="background: red; padding: 2px 4px; border-radius: 2px;">ERROR</span>' + '<span style="top: 2px; margin-left: 5px; position: relative;">🚨</span>' + '<div style="font-size: 18px; font-weight: bold; margin-top: 20px;">' + message.innerHTML + '</div>' + '<pre>' + stackTrace.innerHTML + '</pre>' + '</div>';
+  return overlay;
+}
+
+function getParents(bundle, id) {
+  var modules = bundle.modules;
+
+  if (!modules) {
+    return [];
+  }
+
+  var parents = [];
+  var k, d, dep;
+
+  for (k in modules) {
+    for (d in modules[k][1]) {
+      dep = modules[k][1][d];
+
+      if (dep === id || Array.isArray(dep) && dep[dep.length - 1] === id) {
+        parents.push(k);
+      }
+    }
+  }
+
+  if (bundle.parent) {
+    parents = parents.concat(getParents(bundle.parent, id));
+  }
+
+  return parents;
+}
+
+function hmrApply(bundle, asset) {
+  var modules = bundle.modules;
+
+  if (!modules) {
+    return;
+  }
+
+  if (modules[asset.id] || !bundle.parent) {
+    var fn = new Function('require', 'module', 'exports', asset.generated.js);
+    asset.isNew = !modules[asset.id];
+    modules[asset.id] = [fn, asset.deps];
+  } else if (bundle.parent) {
+    hmrApply(bundle.parent, asset);
+  }
+}
+
+function hmrAcceptCheck(bundle, id) {
+  var modules = bundle.modules;
+
+  if (!modules) {
+    return;
+  }
+
+  if (!modules[id] && bundle.parent) {
+    return hmrAcceptCheck(bundle.parent, id);
+  }
+
+  if (checkedAssets[id]) {
+    return;
+  }
+
+  checkedAssets[id] = true;
+  var cached = bundle.cache[id];
+  assetsToAccept.push([bundle, id]);
+
+  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
+    return true;
+  }
+
+  return getParents(global.parcelRequire, id).some(function (id) {
+    return hmrAcceptCheck(global.parcelRequire, id);
+  });
+}
+
+function hmrAcceptRun(bundle, id) {
+  var cached = bundle.cache[id];
+  bundle.hotData = {};
+
+  if (cached) {
+    cached.hot.data = bundle.hotData;
+  }
+
+  if (cached && cached.hot && cached.hot._disposeCallbacks.length) {
+    cached.hot._disposeCallbacks.forEach(function (cb) {
+      cb(bundle.hotData);
+    });
+  }
+
+  delete bundle.cache[id];
+  bundle(id);
+  cached = bundle.cache[id];
+
+  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
+    cached.hot._acceptCallbacks.forEach(function (cb) {
+      cb();
+    });
+
+    return true;
+  }
+}
+},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","index.ts"], null)
 //# sourceMappingURL=/shinyjster.js.map

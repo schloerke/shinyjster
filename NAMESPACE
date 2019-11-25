@@ -2,6 +2,7 @@
 
 export(js_script)
 export(run_jster)
+export(run_jster_apps)
 export(shinyjster_js)
 export(shinyjster_js_dependencies)
 export(shinyjster_server)

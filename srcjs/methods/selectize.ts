@@ -60,4 +60,10 @@ function values(id: string) {
     .get();
 }
 
-export { click, values, options, clickOption, currentOption };
+function label(id: string) {
+  return $(`label[for="${id}-selectized"]`)
+    .text()
+    .trim();
+}
+
+export { click, values, options, clickOption, currentOption, label };

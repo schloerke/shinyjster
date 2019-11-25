@@ -91,6 +91,7 @@ js_for_id <- function(select_id, output_id, test_val) {
       );
       Jster.selectize.click('", select_id, "');
     });
+    jst.add(Jster.shiny.waitUntilStable);
     jst.add(function() {
       var items = Jster.selectize.values('", select_id, "');
       var expected = ", jsonlite::toJSON(test_val$expected, auto_unbox = TRUE), ";
@@ -100,7 +101,7 @@ js_for_id <- function(select_id, output_id, test_val) {
       // click
       Jster.selectize.clickOption('", select_id, "', 1); // select second item
     });
-    jst.add(Jster.shiny.waitUntilIdle);
+    jst.add(Jster.shiny.waitUntilStable);
     jst.add(function() {
       console.log('chosen second choice')
       Jster.assert.isEqual($('#", output_id, "').text(), '[1] \"", test_val$expected[[2]]$value, "\"');

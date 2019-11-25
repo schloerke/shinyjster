@@ -7,8 +7,8 @@ function isEqual(x: any, y: any) {
   const yStr = prettyJSON(y);
 
   if (xStr !== yStr) {
-    console.log("x: ", x);
-    console.log("y: ", y);
+    console.log("x:", x);
+    console.log("y:", y);
     throw "x does not equal y";
   }
   return true;
