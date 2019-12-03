@@ -17,4 +17,4 @@ jobs:
           Rscript -e "remotes::install_cran('devtools', repos = 'https://demo.rstudiopm.com/all/__linux__/bionic/latest')"
       - name: "devtools::check()"
         run: |-
-          Rscript -e "devtools::check(error_on = "note", run_dont_test = TRUE)"
+          Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE)"
