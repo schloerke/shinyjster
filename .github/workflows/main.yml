@@ -3,7 +3,7 @@ on:
   - push
 jobs:
 
-  "devtools::check() - devel":
+  "check-devel":
     runs-on: ubuntu-18.04
     container: "rocker/verse:devel"
     steps:
@@ -20,7 +20,7 @@ jobs:
         run: |-
           Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE)"
 
-  "devtools::check() - release":
+  "check-release":
     runs-on: ubuntu-18.04
     container: "rocker/verse:latest"
     steps: 
