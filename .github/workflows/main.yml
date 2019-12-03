@@ -38,7 +38,7 @@ jobs:
           Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE)"
 
 
-  "pkgdown::build_site()":
+  "pkgdown":
     runs-on: ubuntu-18.04
     container: "rocker/verse:latest"
     steps:
