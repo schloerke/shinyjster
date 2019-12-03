@@ -7,7 +7,7 @@ jobs:
     container: rocker/verse:latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@master
+        uses: actions/checkout@v1
       - name: Install Package Dependencies
         run: |-
           Rscript -e "install.packages('remotes', repos = 'https://demo.rstudiopm.com/all/__linux__/bionic/latest')"
