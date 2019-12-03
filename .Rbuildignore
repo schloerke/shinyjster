@@ -14,3 +14,7 @@
 ^shinyjster\.Rproj$
 ^\.Rproj\.user$
 ^\.vscode$
+^\.github/workflows$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
