@@ -2,11 +2,19 @@
 
 name: Check
 on:
-  - push
-  - pull_request
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches:
+      - "*"
+  # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#onschedule
+  schedule:
+    - cron:  '0 0 1,16 * *' # every 1st and 15th of month
 jobs:
 
   "mac-r-cmd-check":
+    # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#jobsjob_idif
     # if: false
     runs-on: macos-latest
     steps:
