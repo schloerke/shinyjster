@@ -40,6 +40,8 @@ jobs:
         with:
           path: "~/R_LIB"
           key: ${{ runner.OS }}-library-${{ hashFiles('**/DESCRIPTION') }}
+          restore-keys: |-
+            ${{ runner.OS }}-library-
       - name: Install Package Dependencies
         run: |-
           Rscript -e "if(!requireNamespace('remotes', quietly = TRUE)) {install.packages('remotes')}"
