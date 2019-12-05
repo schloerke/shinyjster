@@ -5,8 +5,6 @@ jobs:
 
   "mac-r-cmd-check":
     runs-on: macos-latest
-    env:
-      CRAN_REPO: 'https://demo.rstudiopm.com/all/__linux__/bionic/latest'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v1
@@ -16,19 +14,25 @@ jobs:
       - name: Install R
         run: |-
           brew install r
+      - name: R Options
+        run: |-
+          echo 'options(repos = c(CRAN = "https://cloud.r-project.org"))' > ~/.Rprofile.site
+      - name: Cache R library
+        uses: actions/cache@v1
+        with:
+          path: "/Library/Frameworks/R.framework/Resources/library"
+          key: ${{ runner.OS }}-library-${{ hashFiles('**/DESCRIPTION') }}
       - name: Install Package Dependencies
         run: |-
-          Rscript -e "install.packages('remotes', repos = Sys.getenv('CRAN_REPO'))"
+          Rscript -e "if(!requireNamespace('remotes', quietly = TRUE)) {install.packages('remotes', repos = Sys.getenv('CRAN_REPO'))}"
           Rscript -e "remotes::install_deps(dependencies = TRUE, repos = Sys.getenv('CRAN_REPO'))"
-      - name: Install devtools
-        run: |-
           Rscript -e "remotes::install_cran('devtools', repos = Sys.getenv('CRAN_REPO'))"
       - name: "devtools::check()"
         run: |-
-          Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE)"
+          Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE, cran = TRUE, remote = TRUE, manual = TRUE)"
 
   "r-cmd-check":
-    if: false
+    # if: false
     runs-on: ubuntu-18.04
     strategy:
       matrix:
@@ -38,31 +42,31 @@ jobs:
           - "rocker/verse:devel"
       fail-fast: true
     container: ${{ matrix.container }}
-    env:
-      CRAN_REPO: 'https://demo.rstudiopm.com/all/__linux__/bionic/latest'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v1
+      - name: R Options
+        run: |-
+          echo 'options(repos = c(CRAN = "https://demo.rstudiopm.com/all/__linux__/bionic/latest"))' > ~/.Rprofile.site
       - name: Install Package Dependencies
         run: |-
           Rscript -e "install.packages('remotes', repos = Sys.getenv('CRAN_REPO'))"
           Rscript -e "remotes::install_deps(dependencies = TRUE, repos = Sys.getenv('CRAN_REPO'))"
-      - name: Install devtools
-        run: |-
           Rscript -e "remotes::install_cran('devtools', repos = Sys.getenv('CRAN_REPO'))"
       - name: "devtools::check()"
         run: |-
-          Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE)"
+          Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE, cran = TRUE, remote = TRUE, manual = TRUE)"
 
   "pkgdown":
     if: false
     runs-on: ubuntu-18.04
     container: "rocker/verse:latest"
-    env:
-      CRAN_REPO: 'https://demo.rstudiopm.com/all/__linux__/bionic/latest'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v1
+      - name: R Options
+        run: |-
+          echo 'options(repos = c(CRAN = "https://demo.rstudiopm.com/all/__linux__/bionic/latest"))' > ~/.Rprofile.site
       - name: Install Package Dependencies
         run: |-
           Rscript -e "install.packages('remotes', repos = Sys.getenv('CRAN_REPO'))"
