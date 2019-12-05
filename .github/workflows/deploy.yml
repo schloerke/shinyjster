@@ -1,0 +1,31 @@
+# https://help.github.com/en/actions/automating-your-workflow-with-github-actions/development-tools-for-github-actions#set-an-environment-variable-set-env
+
+name: CICD
+on:
+  - push
+jobs:
+
+  "pkgdown":
+    # if: false
+    runs-on: ubuntu-18.04
+    container: "rocker/verse:latest"
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v1
+      - name: R Options
+        run: |-
+          echo 'options(repos = c(CRAN = "https://demo.rstudiopm.com/all/__linux__/bionic/latest"))' > ~/.Rprofile
+      - name: Install Package Dependencies
+        run: |-
+          Rscript -e "install.packages('remotes')"
+          Rscript -e "remotes::install_deps(dependencies = TRUE)"
+      - name: Render Site
+        run: |-
+          Rscript -e "remotes::install_cran('pkgdown')"
+          Rscript -e "pkgdown::build_site()"
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/master'
+        uses: maxheld83/ghpages@v0.2.0
+        env:
+          BUILD_DIR: docs
+          GH_PAT: ${{ secrets.GH_PAT }}

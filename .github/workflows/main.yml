@@ -6,6 +6,7 @@ on:
 jobs:
 
   "mac-r-cmd-check":
+    # if: false
     runs-on: macos-latest
     steps:
       - name: Checkout Repository
@@ -37,7 +38,7 @@ jobs:
           Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE, cran = TRUE, remote = FALSE)"
 
   "r-cmd-check":
-    if: false
+    # if: false
     runs-on: ubuntu-18.04
     strategy:
       matrix:
@@ -62,28 +63,3 @@ jobs:
       - name: "devtools::check()"
         run: |-
           Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE, cran = TRUE, remote = FALSE)"
-
-  "pkgdown":
-    if: false
-    runs-on: ubuntu-18.04
-    container: "rocker/verse:latest"
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v1
-      - name: R Options
-        run: |-
-          echo 'options(repos = c(CRAN = "https://demo.rstudiopm.com/all/__linux__/bionic/latest"))' > ~/.Rprofile
-      - name: Install Package Dependencies
-        run: |-
-          Rscript -e "install.packages('remotes')"
-          Rscript -e "remotes::install_deps(dependencies = TRUE)"
-      - name: Render Site
-        run: |-
-          Rscript -e "remotes::install_cran('pkgdown')"
-          Rscript -e "pkgdown::build_site()"
-      - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/master'
-        uses: maxheld83/ghpages@v0.2.0
-        env:
-          BUILD_DIR: docs
-          GH_PAT: ${{ secrets.GH_PAT }}
