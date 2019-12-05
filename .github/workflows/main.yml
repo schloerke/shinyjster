@@ -17,6 +17,7 @@ jobs:
       - name: R Options
         run: |-
           echo 'options(repos = c(CRAN = "https://cloud.r-project.org"))' > ~/.Rprofile.site
+          cat ~/.Rprofile.site
       - name: Cache R library
         uses: actions/cache@v1
         with:
@@ -24,6 +25,7 @@ jobs:
           key: ${{ runner.OS }}-library-${{ hashFiles('**/DESCRIPTION') }}
       - name: Install Package Dependencies
         run: |-
+          cat ~/.Rprofile.site
           Rscript -e "if(!requireNamespace('remotes', quietly = TRUE)) {install.packages('remotes')}"
           Rscript -e "remotes::install_deps(dependencies = TRUE)"
           Rscript -e "remotes::install_cran('devtools')"
@@ -32,7 +34,7 @@ jobs:
           Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE, cran = TRUE, remote = TRUE, manual = TRUE)"
 
   "r-cmd-check":
-    # if: false
+    if: false
     runs-on: ubuntu-18.04
     strategy:
       matrix:
