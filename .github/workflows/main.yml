@@ -3,39 +3,70 @@ on:
   - push
 jobs:
 
+  "mac-r-cmd-check":
+    runs-on: macos-latest
+    env:
+      CRAN_REPO: 'https://demo.rstudiopm.com/all/__linux__/bionic/latest'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v1
+      - name: Install brew
+        run: |-
+          /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+      - name: Install R
+        run: |-
+          brew install r
+      - name: Install Package Dependencies
+        run: |-
+          Rscript -e "install.packages('remotes', repos = Sys.getenv('CRAN_REPO'))"
+          Rscript -e "remotes::install_deps(dependencies = TRUE, repos = Sys.getenv('CRAN_REPO'))"
+      - name: Install devtools
+        run: |-
+          Rscript -e "remotes::install_cran('devtools', repos = Sys.getenv('CRAN_REPO'))"
+      - name: "devtools::check()"
+        run: |-
+          Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE)"
+
   "r-cmd-check":
+    if: false
     runs-on: ubuntu-18.04
     strategy:
       matrix:
         container:
-          - "rocker/verse:latest"
+          # - "rocker/r-ver:3.5.3"
+          # - "rocker/verse:latest"
           - "rocker/verse:devel"
       fail-fast: true
     container: ${{ matrix.container }}
+    env:
+      CRAN_REPO: 'https://demo.rstudiopm.com/all/__linux__/bionic/latest'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v1
       - name: Install Package Dependencies
         run: |-
-          Rscript -e "install.packages('remotes', repos = 'https://demo.rstudiopm.com/all/__linux__/bionic/latest')"
-          Rscript -e "remotes::install_deps(dependencies = TRUE, repos = 'https://demo.rstudiopm.com/all/__linux__/bionic/latest')"
+          Rscript -e "install.packages('remotes', repos = Sys.getenv('CRAN_REPO'))"
+          Rscript -e "remotes::install_deps(dependencies = TRUE, repos = Sys.getenv('CRAN_REPO'))"
       - name: Install devtools
         run: |-
-          Rscript -e "remotes::install_cran('devtools', repos = 'https://demo.rstudiopm.com/all/__linux__/bionic/latest')"
+          Rscript -e "remotes::install_cran('devtools', repos = Sys.getenv('CRAN_REPO'))"
       - name: "devtools::check()"
         run: |-
           Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE)"
 
   "pkgdown":
+    if: false
     runs-on: ubuntu-18.04
     container: "rocker/verse:latest"
+    env:
+      CRAN_REPO: 'https://demo.rstudiopm.com/all/__linux__/bionic/latest'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v1
       - name: Install Package Dependencies
         run: |-
-          Rscript -e "install.packages('remotes', repos = 'https://demo.rstudiopm.com/all/__linux__/bionic/latest')"
-          Rscript -e "remotes::install_deps(dependencies = TRUE, repos = 'https://demo.rstudiopm.com/all/__linux__/bionic/latest')"
+          Rscript -e "install.packages('remotes', repos = Sys.getenv('CRAN_REPO'))"
+          Rscript -e "remotes::install_deps(dependencies = TRUE, repos = Sys.getenv('CRAN_REPO'))"
       - name: Render Site
         run: |-
           Rscript -e "remotes::install_cran('pkgdown')"
