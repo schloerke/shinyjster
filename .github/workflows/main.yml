@@ -24,9 +24,9 @@ jobs:
           key: ${{ runner.OS }}-library-${{ hashFiles('**/DESCRIPTION') }}
       - name: Install Package Dependencies
         run: |-
-          Rscript -e "if(!requireNamespace('remotes', quietly = TRUE)) {install.packages('remotes', repos = Sys.getenv('CRAN_REPO'))}"
-          Rscript -e "remotes::install_deps(dependencies = TRUE, repos = Sys.getenv('CRAN_REPO'))"
-          Rscript -e "remotes::install_cran('devtools', repos = Sys.getenv('CRAN_REPO'))"
+          Rscript -e "if(!requireNamespace('remotes', quietly = TRUE)) {install.packages('remotes')}"
+          Rscript -e "remotes::install_deps(dependencies = TRUE)"
+          Rscript -e "remotes::install_cran('devtools')"
       - name: "devtools::check()"
         run: |-
           Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE, cran = TRUE, remote = TRUE, manual = TRUE)"
@@ -50,9 +50,9 @@ jobs:
           echo 'options(repos = c(CRAN = "https://demo.rstudiopm.com/all/__linux__/bionic/latest"))' > ~/.Rprofile.site
       - name: Install Package Dependencies
         run: |-
-          Rscript -e "install.packages('remotes', repos = Sys.getenv('CRAN_REPO'))"
-          Rscript -e "remotes::install_deps(dependencies = TRUE, repos = Sys.getenv('CRAN_REPO'))"
-          Rscript -e "remotes::install_cran('devtools', repos = Sys.getenv('CRAN_REPO'))"
+          Rscript -e "install.packages('remotes')"
+          Rscript -e "remotes::install_deps(dependencies = TRUE)"
+          Rscript -e "remotes::install_cran('devtools')"
       - name: "devtools::check()"
         run: |-
           Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE, cran = TRUE, remote = TRUE, manual = TRUE)"
@@ -69,8 +69,8 @@ jobs:
           echo 'options(repos = c(CRAN = "https://demo.rstudiopm.com/all/__linux__/bionic/latest"))' > ~/.Rprofile.site
       - name: Install Package Dependencies
         run: |-
-          Rscript -e "install.packages('remotes', repos = Sys.getenv('CRAN_REPO'))"
-          Rscript -e "remotes::install_deps(dependencies = TRUE, repos = Sys.getenv('CRAN_REPO'))"
+          Rscript -e "install.packages('remotes')"
+          Rscript -e "remotes::install_deps(dependencies = TRUE)"
       - name: Render Site
         run: |-
           Rscript -e "remotes::install_cran('pkgdown')"
