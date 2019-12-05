@@ -43,7 +43,7 @@ jobs:
       matrix:
         container:
           # - "rocker/r-ver:3.5.3"
-          # - "rocker/verse:latest"
+          - "rocker/verse:latest"
           - "rocker/verse:devel"
       fail-fast: true
     container: ${{ matrix.container }}
