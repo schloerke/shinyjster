@@ -5,11 +5,11 @@ name: Check
 on:
   push:
     branches:
-      - "master"
-      - "ghactions"
+      - master
+      - ghactions
   pull_request:
     branches:
-      - "**"
+      - master
   # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#onschedule
   schedule:
     - cron:  '0 0 1,16 * *' # every 1st and 15th of month
@@ -18,7 +18,7 @@ jobs:
 
   "mac-r-cmd-check":
     # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#jobsjob_idif
-    if: false
+    # if: false
     runs-on: macos-latest
     steps:
       - name: Checkout Repository
@@ -52,7 +52,7 @@ jobs:
           Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE, cran = TRUE, remote = FALSE)"
 
   "linux-r-cmd-check":
-    if: false
+    # if: false
     runs-on: ubuntu-18.04
     strategy:
       matrix:
@@ -79,7 +79,7 @@ jobs:
           Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE, cran = TRUE, remote = FALSE)"
 
   "window-r-cmd-check":
-    if: false
+    # if: false
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v1
