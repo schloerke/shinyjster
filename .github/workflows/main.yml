@@ -18,7 +18,7 @@ jobs:
 
   "mac-r-cmd-check":
     # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#jobsjob_idif
-    # if: false
+    if: false
     runs-on: macos-latest
     steps:
       - name: Checkout Repository
@@ -51,7 +51,7 @@ jobs:
         run: |-
           Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE, cran = TRUE, remote = FALSE)"
 
-  "r-cmd-check":
+  "linux-r-cmd-check":
     # if: false
     runs-on: ubuntu-18.04
     strategy:
@@ -77,3 +77,43 @@ jobs:
       - name: "devtools::check()"
         run: |-
           Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE, cran = TRUE, remote = FALSE)"
+
+  "window-r-cmd-check":
+
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install R
+        run: choco install r.project
+      - name: R Options
+        shell: bash
+        run: |-
+          echo 'MAKE=make -j2' >> .Renviron
+          mkdir ~/R_LIB
+          echo 'R_LIBS=~/R_LIB' >> .Renviron
+          echo 'options(repos = c(CRAN = "https://cloud.r-project.org"))' >> .Rprofile
+      - name: Cache R library
+        uses: actions/cache@v1
+        with:
+          path: "~/R_LIB"
+          key: ${{ runner.OS }}-library-${{ hashFiles('**/DESCRIPTION') }}
+          restore-keys: |-
+            ${{ runner.OS }}-library-
+      - name: Install shiny
+        shell: cmd
+        run: |-
+          "C:\Program Files\R\R-3.6.1\bin\Rscript.exe" -e "install.packages('shiny')"
+      - name: Verify shiny is installed
+        shell: cmd
+        run: |-
+          "C:\Program Files\R\R-3.6.1\bin\Rscript.exe" -e "print(asNamespace('shiny'))"
+      - name: Install Package Dependencies
+        shell: cmd
+        run: |-
+          "C:\Program Files\R\R-3.6.1\bin\Rscript.exe" -e "install.packages('remotes')"
+          "C:\Program Files\R\R-3.6.1\bin\Rscript.exe" -e "remotes::install_deps(dependencies = TRUE)"
+          "C:\Program Files\R\R-3.6.1\bin\Rscript.exe" -e "remotes::install_cran('devtools')"
+      - name: "devtools::check()"
+        shell: cmd
+        run: |-
+          "C:\Program Files\R\R-3.6.1\bin\Rscript.exe" -e "devtools::check(error_on = 'note', run_dont_test = TRUE, cran = TRUE, remote = FALSE)"
