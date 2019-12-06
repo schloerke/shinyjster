@@ -52,7 +52,7 @@ jobs:
           Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE, cran = TRUE, remote = FALSE)"
 
   "linux-r-cmd-check":
-    # if: false
+    if: false
     runs-on: ubuntu-18.04
     strategy:
       matrix:
@@ -79,7 +79,7 @@ jobs:
           Rscript -e "devtools::check(error_on = 'note', run_dont_test = TRUE, cran = TRUE, remote = FALSE)"
 
   "window-r-cmd-check":
-
+    if: false
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v1
