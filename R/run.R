@@ -45,8 +45,11 @@ run_jster_apps_lapply <- function(
   host = "127.0.0.1"
 ){
   lapply(apps, function(app) {
+    cat("shinyjster - ", "launching app: ", basename(app), "\n", sep = "")
     run_jster(app, port = port, host = host)
+    cat("shinyjster - ", "closing app: ", basename(app), "\n", sep = "")
   })
+  invisible(TRUE)
 }
 
 
@@ -187,7 +190,7 @@ run_jster_apps_callr <- function(
     Sys.sleep(0.5)
   }
 
-  invisible()
+  invisible(TRUE)
 }
 
 
