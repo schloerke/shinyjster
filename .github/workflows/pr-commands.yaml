@@ -1,6 +1,8 @@
 on:
   issue_comment:
-    types: [created]
+    types: [created, edited]
+  pull_request_review_comment:
+    types: [created, edited]
 name: Commands
 jobs:
   document:
