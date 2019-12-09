@@ -5,10 +5,14 @@ on:
     types: [created, edited]
 name: Commands
 jobs:
+
   document:
     if: startsWith(github.event.comment.body, '/document')
     name: document
     runs-on: ubuntu-16.04
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      CRAN: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"
     steps:
       - uses: actions/checkout@v1
       - uses: r-lib/actions/pr-fetch@master
@@ -26,10 +30,14 @@ jobs:
       - uses: r-lib/actions/pr-push@master
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+
   style:
     if: startsWith(github.event.comment.body, '/style')
     name: document
     runs-on: ubuntu-16.04
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      CRAN: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"
     steps:
       - uses: actions/checkout@master
       - uses: r-lib/actions/pr-fetch@master
