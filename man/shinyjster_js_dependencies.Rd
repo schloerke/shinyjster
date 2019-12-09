@@ -7,7 +7,7 @@
 shinyjster_js_dependencies()
 }
 \value{
-\code{htmltools::\link[htmltools]{htmlDependency}}s to allow shinyjster to function.
+\link[htmltools:htmlDependency]{htmltools::htmlDependency}'s to allow shinyjster to function.
 }
 \description{
 shinyjster HTML Dependencies

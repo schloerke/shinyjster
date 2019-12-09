@@ -15,5 +15,5 @@ shinyjster_js(..., set_timeout = TRUE)
 Function to be called first inside the definition of the Shiny UI.
 }
 \details{
-This function also includes \code{\link{shinyjster_ui}} and wraps all JavaScript using \code{\link{js_script}}.
+This function also includes \code{\link[=shinyjster_ui]{shinyjster_ui()}} and wraps all JavaScript using \code{\link[=js_script]{js_script()}}.
 }
