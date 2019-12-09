@@ -6,7 +6,7 @@ on:
     branches:
       - "**"
 
-name: "gh-pages"
+name: Deploy gh-pages
 
 jobs:
   render:
