@@ -8,7 +8,7 @@ jobs:
   document:
     if: startsWith(github.event.comment.body, '/document')
     name: document
-    runs-on: macOS-latest
+    runs-on: ubuntu-16.04
     steps:
       - uses: actions/checkout@v1
       - uses: r-lib/actions/pr-fetch@master
@@ -29,7 +29,7 @@ jobs:
   style:
     if: startsWith(github.event.comment.body, '/style')
     name: document
-    runs-on: macOS-latest
+    runs-on: ubuntu-16.04
     steps:
       - uses: actions/checkout@master
       - uses: r-lib/actions/pr-fetch@master
