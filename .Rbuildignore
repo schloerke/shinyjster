@@ -14,7 +14,8 @@
 ^shinyjster\.Rproj$
 ^\.Rproj\.user$
 ^\.vscode$
-^\.github/workflows$
+^\.github$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^README\.Rmd$
