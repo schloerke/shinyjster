@@ -752,7 +752,7 @@ function initJsterHooks() {
 
 exports.initJsterHooks = initJsterHooks;
 },{"./globals":"eS2z"}],"QCba":[function(require,module,exports) {
-"use strict"; // import "babel-polyfill";
+"use strict"; // import "core-js/stable";
 
 exports.__esModule = true;
 

@@ -35,7 +35,7 @@
     "checks": "yarn typescript-check && yarn type-check && yarn lint-check"
   },
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
+    "core-js": "3",
     "lodash": "^4.17.15"
   },
   "husky": {
