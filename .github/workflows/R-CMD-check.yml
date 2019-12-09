@@ -101,6 +101,11 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@master
 
+      - name: Git Config
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
       - name: Cache R packages
         uses: actions/cache@v1
         with:
