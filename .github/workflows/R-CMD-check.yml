@@ -68,7 +68,7 @@ jobs:
 
       - name: Upload check results
         if: failure()
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v1
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
@@ -83,7 +83,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: macOS-latest, r: '3.6'}
+        - { os: ubuntu-16.04, r: '3.6', cran: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -124,7 +124,7 @@ jobs:
 
       - uses: actions/setup-node@v1
         with:
-          node-version: '10.x'
+          node-version: '12.x'
       - name: Build JS
         run: |
           yarn install --frozen-lockfile
@@ -138,7 +138,7 @@ jobs:
 
       - name: Upload check results
         if: failure()
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v1
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
