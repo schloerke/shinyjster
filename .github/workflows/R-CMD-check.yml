@@ -73,8 +73,72 @@ jobs:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
 
-      - name: Test coverage
-        if: matrix.config.os == 'macOS-latest' && matrix.config.r == '3.6'
+
+  Rituals:
+    runs-on: ${{ matrix.config.os }}
+
+    name: Rituals
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { os: macOS-latest, r: '3.6'}
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      CRAN: ${{ matrix.config.cran }}
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: r-lib/actions/setup-r@master
+        with:
+          r-version: ${{ matrix.config.r }}
+
+      - uses: r-lib/actions/setup-pandoc@master
+
+      - name: Cache R packages
+        uses: actions/cache@v1
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-r-${{ matrix.config.r }}-${{ hashFiles('DESCRIPTION') }}
+
+      - name: Install dependencies
+        run: Rscript -e "install.packages('remotes')" -e "remotes::install_deps(dependencies = TRUE)"
+
+      - name: Code Coverage
         run: |
           Rscript -e 'remotes::install_cran("covr")'
           Rscript -e 'covr::codecov(token = "${{secrets.CODECOV_TOKEN}}")'
+
+      - name: Document
+        run: |
+          Rscript -e 'remotes::install_cran("roxygen2")'
+          Rscript -e 'roxygen2::roxygenise()'
+          git add man/\* NAMESPACE
+          git commit -m 'Document (rituals)'
+      - uses: r-lib/actions/pr-push@master
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+      - name: Build JS
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
+          git add inst/assets
+          git commit -m 'yarn build (rituals)'
+
+      - name: Push results
+        run: |
+          git push https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git HEAD:${{ github.ref }} || echo "No changes to commit"
+
+      - name: Upload check results
+        if: failure()
+        uses: actions/upload-artifact@master
+        with:
+          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+          path: check
