@@ -21,3 +21,4 @@ Suggests:
     callr,
     parallel
 Language: en-US
+Roxygen: list(markdown = TRUE)

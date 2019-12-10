@@ -8,15 +8,41 @@ name: Render README
 jobs:
   render:
     name: Render README
-    runs-on: macOS-latest
+    runs-on: ubuntu-16.04
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      CRAN: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"
     steps:
       - uses: actions/checkout@v1
       - uses: r-lib/actions/setup-r@v1
       - uses: r-lib/actions/setup-pandoc@v1
-      - name: Install rmarkdown
-        run: Rscript -e 'install.packages("rmarkdown")'
+      - name: Cache R packages
+        if: runner.os != 'Windows'
+        uses: actions/cache@v1
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-r-${{ matrix.config.r }}-${{ github.ref }}
+      - name: Install remotes
+        run: >
+          Rscript
+          -e "if (system.file(package = 'remotes') == '') install.packages('remotes')"
+          -e "remotes::install_github('r-hub/sysreqs')"
+      - name: Install system dependencies
+        if: runner.os == 'Linux'
+        env:
+          RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
+        run: |
+          sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
+          sudo -s eval "$sysreqs"
+      - name: Install dependencies
+        run: >
+          Rscript
+          -e "remotes::install_deps(dependencies = TRUE)"
+          -e "install.packages('rmarkdown')"
       - name: Render README
-        run: Rscript -e 'rmarkdown::render("README.Rmd")'
+        run: >
+          Rscript
+          -e 'rmarkdown::render("README.Rmd")'
       - name: Commit results
         run: |
           git commit README.md -m 'Re-build README.Rmd' || echo "No changes to commit"
