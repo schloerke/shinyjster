@@ -23,7 +23,7 @@ use a random port.}
 to the \code{shiny.host} option, if set, or \code{"127.0.0.1"} if not. See
 Details.}
 
-\item{debug_port}{Port to debug chrome on}
+\item{debug_port}{Port for chrome debugger}
 }
 \description{
 Run many applications with shinyjster enabled
