@@ -1,7 +1,7 @@
 
 #' shinyjster HTML Dependencies
 #'
-#' @return \code{htmltools::\link[htmltools]{htmlDependency}}s to allow shinyjster to function.
+#' @return [htmltools::htmlDependency]'s to allow shinyjster to function.
 #' @export
 shinyjster_js_dependencies <- function() {
   list(
@@ -30,7 +30,7 @@ JS <- function(...) {
 
 #' JavaScript helper
 #'
-#' Wraps supplied text in an \code{htmltools::tags$script} call after turning it into \code{JS} code.
+#' Wraps supplied text in an `htmltools::tags$script` call after turning it into `JS` code.
 #'
 #' @param ... JavaScript text to be put in a script.
 #' @export
@@ -63,10 +63,10 @@ shinyjster_ui <- function() {
 #'
 #' Function to be called first inside the definition of the Shiny UI.
 #'
-#' This function also includes \code{\link{shinyjster_ui}} and wraps all JavaScript using \code{\link{js_script}}.
+#' This function also includes [shinyjster_ui()] and wraps all JavaScript using [js_script()].
 #'
 #' @param ... JavaScript text to be put in a script.
-#' @param set_timeout If \code{TRUE} (default), the JavaScript provided is executed 250 milliseconds after the document is ready.  Otherwise, code is included as is.
+#' @param set_timeout If `TRUE` (default), the JavaScript provided is executed 250 milliseconds after the document is ready.  Otherwise, code is included as is.
 #' @export
 shinyjster_js <- function(..., set_timeout = TRUE) {
   js <- if (isTRUE(set_timeout)) {

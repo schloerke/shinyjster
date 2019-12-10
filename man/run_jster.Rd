@@ -36,18 +36,16 @@ use a random port.}
 to the \code{shiny.host} option, if set, or \code{"127.0.0.1"} if not. See
 Details.}
 
-\item{apps}{Vector of `appDir` values}
+\item{apps}{Vector of \code{appDir} values}
 
 \item{type}{Single value to determine how applications are executed. \describe{
- \item{\code{'parallel'}}{Runs apps using \code{parallel::mclapply} using \code{cores} cores}
- \item{\code{'callr'}}{Runs apps using \code{callr::r_bg} using \code{cores} cores}
- \item{\code{'serial'}}{Runs apps one after another using \code{lapply}. \code{port} is only used with option \code{'serial'}}
+\item{\code{'parallel'}}{Runs apps using \code{parallel::mclapply} using \code{cores} cores}
+\item{\code{'callr'}}{Runs apps using \code{callr::r_bg} using \code{cores} cores}
+\item{\code{'serial'}}{Runs apps one after another using \code{lapply}. \code{port} is only used with option \code{'serial'}}
 }}
 
 \item{cores}{Number of cores (if needed) to execute on.}
 }
 \description{
 Run an application with shinyjster enabled
-
-Run many applications with shinyjster enabled
 }
