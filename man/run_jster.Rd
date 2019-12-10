@@ -48,6 +48,4 @@ Details.}
 }
 \description{
 Run an application with shinyjster enabled
-
-Run many applications with shinyjster enabled
 }
