@@ -36,6 +36,39 @@ jobs:
           brew cask install google-chrome
           brew cask info google-chrome
 
+      - uses: r-lib/actions/setup-r@master
+        with:
+          r-version: ${{ matrix.config.r }}
+
+      - uses: r-lib/actions/setup-pandoc@master
+
+      - name: Cache R packages
+        if: false
+        # if: runner.os != 'Windows'
+        uses: actions/cache@v1
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-r-${{ matrix.config.r }}-${{ github.ref }}
+          restore_keys: |
+            ${{ runner.os }}-r-${{ matrix.config.r }}-${{ github.ref }}
+            ${{ runner.os }}-r-${{ matrix.config.r }}-${{ github.base_ref }}
+
+      - name: Install remotes
+        run: >
+          Rscript
+          -e "if (system.file(package = 'remotes') == '') install.packages('remotes')"
+
+      - name: Install dependencies
+        run: >
+          Rscript
+          -e "remotes::install_deps(dependencies = TRUE)"
+          -e "remotes::install_cran('renv')"
+          -e "lapply(unique(renv::dependencies(system.file('shinyjster', package = 'shinyjster'), quiet = TRUE)$Package), remotes::install_cran)"
+          -e "remotes::install_github('rstudio/shiny')"
+          -e "remotes::install_local(dependencies = TRUE)"
+
+      - name: Run headless check
+        run: Rscript -e "shinyjster::run_headless()"
 
   linux:
     name: linux
@@ -90,6 +123,7 @@ jobs:
         run: >
           Rscript
           -e "remotes::install_deps(dependencies = TRUE)"
+          -e "remotes::install_cran('renv')"
           -e "lapply(unique(renv::dependencies(system.file('shinyjster', package = 'shinyjster'), quiet = TRUE)$Package), remotes::install_cran)"
           -e "remotes::install_github('rstudio/shiny')"
           -e "remotes::install_local(dependencies = TRUE)"
