@@ -29,6 +29,9 @@ jobs:
 
       - name: Setup Chrome
         run: |
+          brew cask info google-chrome
           brew update
+          brew ls
+          brew cask info google-chrome
           brew cask install google-chrome
           brew cask info google-chrome
