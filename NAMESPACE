@@ -2,6 +2,7 @@
 
 export(js_script)
 export(run_headless)
+export(run_headless_linux)
 export(run_jster)
 export(run_jster_apps)
 export(shinyjster_js)

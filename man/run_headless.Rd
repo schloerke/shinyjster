@@ -2,9 +2,17 @@
 % Please edit documentation in R/run_headless.R
 \name{run_headless}
 \alias{run_headless}
+\alias{run_headless_linux}
 \title{Run many applications with shinyjster enabled}
 \usage{
 run_headless(
+  apps = apps_to_test(),
+  port = 8000,
+  host = "127.0.0.1",
+  debug_port = 9222
+)
+
+run_headless_linux(
   apps = apps_to_test(),
   port = 8000,
   host = "127.0.0.1",
