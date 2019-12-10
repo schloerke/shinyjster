@@ -2,7 +2,7 @@
 #'
 #' @inheritParams shiny::runApp
 #' @param apps Vector of `appDir` values
-#' @param debug_port Port to debug chrome on
+#' @param debug_port Port for chrome debugger
 #' @export
 run_headless <- function(
   apps = apps_to_test(),
