@@ -50,6 +50,9 @@ jobs:
         with:
           path: ${{ env.R_LIBS_USER }}
           key: ${{ runner.os }}-r-${{ matrix.config.r }}-${{ github.ref }}
+          restore_keys: |
+            ${{ runner.os }}-r-${{ matrix.config.r }}-${{ github.ref }}
+            ${{ runner.os }}-r-${{ matrix.config.r }}-${{ github.base_ref }}
 
       - name: Install remotes
         run: >
@@ -174,9 +177,10 @@ jobs:
       #     branch: ${{ github.ref }}
 
       - name: Git Push (PR)
+        uses: r-lib/actions/pr-push@master
         if: github.event_name == 'pull_request'
-        run: |
-          git push https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git HEAD:${{ github.head_ref }} || echo "No changes to push"
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Git Push (MASTER)
         if: github.event_name == 'push'
         run: |
