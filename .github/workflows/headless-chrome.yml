@@ -1,0 +1,34 @@
+on:
+  push:
+    branches:
+      - master
+      - ghactions
+  pull_request:
+    branches:
+      - master
+  # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#onschedule
+  schedule:
+    - cron:  '0 0 1,16 * *' # every 1st and 16th of month
+
+name: R-CMD-check
+
+jobs:
+  mac:
+    name: Chrome
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - { os: macOS-latest, r: '3.6'}
+    runs-on: ${{ matrix.config.os }}
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      CRAN: ${{ matrix.config.cran }}
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Setup Chrome
+        if: matrix.os == 'macOS-latest'
+        run: |
+          brew cask install google-chrome
+          brew cask info google-chrome
