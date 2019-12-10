@@ -75,7 +75,7 @@ jobs:
         run: Rscript -e "rcmdcheck::rcmdcheck(args = '--no-manual', error_on = 'note', check_dir = 'check')"
 
       - name: Upload check results
-        if: failure()
+        if: failure() # only for previous step
         uses: actions/upload-artifact@v1
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
@@ -89,6 +89,7 @@ jobs:
     runs-on: ${{ matrix.config.os }}
 
     name: Rituals
+    if: github.event_name == 'schedule'
 
     strategy:
       fail-fast: false
@@ -162,13 +163,17 @@ jobs:
           git add inst/assets
           git commit -m 'yarn build (rituals)' || echo "No yarn changes to commit"
 
-      - name: Git Push
+      # - name: GitHub Push
+      #   uses: ad-m/github-push-action@master
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     branch: ${{ github.ref }}
+
+      - name: Git Push (PR)
+        if: github.event_name == 'pull_request'
+        run: |
+          git push https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git HEAD:${{ github.head_ref }} || echo "No changes to push"
+      - name: Git Push (MASTER)
+        if: github.event_name == 'push'
         run: |
           git push https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git HEAD:${{ github.ref }} || echo "No changes to push"
-
-      - name: Upload check results
-        if: failure()
-        uses: actions/upload-artifact@v1
-        with:
-          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
-          path: check
