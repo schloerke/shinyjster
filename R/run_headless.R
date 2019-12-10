@@ -1,3 +1,9 @@
+#' Run many applications with shinyjster enabled
+#'
+#' @inheritParams shiny::runApp
+#' @param apps Vector of `appDir` values
+#' @param debug_port Port to debug chrome on
+#' @export
 run_headless <- function(
   apps = apps_to_test(),
   port = 8000,

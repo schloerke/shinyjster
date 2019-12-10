@@ -12,8 +12,6 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1") {
 }
 
 
-#' Run many applications with shinyjster enabled
-#'
 #' @param apps Vector of `appDir` values
 #' @param type Single value to determine how applications are executed. \describe{
 #'  \item{`'parallel'`}{Runs apps using `parallel::mclapply` using `cores` cores}
