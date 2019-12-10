@@ -10,7 +10,6 @@ name: Deploy gh-pages
 
 jobs:
   render:
-    if: false
     name: "Render pkgdown"
     runs-on: ubuntu-16.04
     env:
