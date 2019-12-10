@@ -5,7 +5,7 @@
 #' @param debug_port Port for chrome debugger
 #' @rdname run_headless
 #' @export
-run_headless <- function(
+run_headless_mac <- function(
   apps = apps_to_test(),
   port = 8000,
   host = "127.0.0.1",

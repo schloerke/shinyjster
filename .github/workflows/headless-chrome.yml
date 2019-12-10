@@ -63,12 +63,12 @@ jobs:
           Rscript
           -e "remotes::install_deps(dependencies = TRUE)"
           -e "remotes::install_cran('renv')"
+          -e "remotes::install_local(dependencies = TRUE)"
           -e "lapply(unique(renv::dependencies(system.file('shinyjster', package = 'shinyjster'), quiet = TRUE)$Package), remotes::install_cran)"
           -e "remotes::install_github('rstudio/shiny')"
-          -e "remotes::install_local(dependencies = TRUE)"
 
       - name: Run headless check
-        run: Rscript -e "shinyjster::run_headless()"
+        run: Rscript -e "shinyjster::run_headless_mac()"
 
   linux:
     name: linux
@@ -124,9 +124,9 @@ jobs:
           Rscript
           -e "remotes::install_deps(dependencies = TRUE)"
           -e "remotes::install_cran('renv')"
+          -e "remotes::install_local(dependencies = TRUE)"
           -e "lapply(unique(renv::dependencies(system.file('shinyjster', package = 'shinyjster'), quiet = TRUE)$Package), remotes::install_cran)"
           -e "remotes::install_github('rstudio/shiny')"
-          -e "remotes::install_local(dependencies = TRUE)"
 
       - name: Run headless check
         run: Rscript -e "shinyjster::run_headless_linux()"
