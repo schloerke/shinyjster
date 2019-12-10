@@ -760,8 +760,8 @@ var jster_1 = require("./jster");
 
 var shiny_1 = require("./shiny");
 
-window.jster = jster_1.jster;
 window.Jster = jster_1.Jster;
+window.jster = jster_1.jster;
 shiny_1.initJsterHooks();
 },{"./jster":"WLG3","./shiny":"CnUs"}]},{},["QCba"], null)
 //# sourceMappingURL=/shinyjster.js.map
