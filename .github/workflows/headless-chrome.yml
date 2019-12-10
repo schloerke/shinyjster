@@ -10,11 +10,11 @@ on:
   schedule:
     - cron:  '0 0 1,16 * *' # every 1st and 16th of month
 
-name: R-CMD-check
+name: Chrome
 
 jobs:
   mac:
-    name: Chrome
+    name: macOS
     strategy:
       fail-fast: false
       matrix:
