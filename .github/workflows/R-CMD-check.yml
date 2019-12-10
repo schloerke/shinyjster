@@ -89,7 +89,7 @@ jobs:
     runs-on: ${{ matrix.config.os }}
 
     name: Rituals
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
 
     strategy:
       fail-fast: false
