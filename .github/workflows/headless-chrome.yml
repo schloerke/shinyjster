@@ -28,7 +28,6 @@ jobs:
       - uses: actions/checkout@v1
 
       - name: Setup Chrome
-        if: matrix.os == 'macOS-latest'
         run: |
           brew cask install google-chrome
           brew cask info google-chrome
