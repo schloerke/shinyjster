@@ -101,6 +101,21 @@ class Jster {
   setupPromises(): Promise<unknown> {
     this.setProgress("yellow", "Running tests!", false);
 
+    // make sure shiny is fully initialized before advancing.
+    this.p = this.p.then((value) => {
+      return new Promise((resolve) => {
+        const wait = function() {
+          if (Shiny.setInputValue) {
+            resolve(value);
+          } else {
+            setTimeout(wait, 2);
+          }
+        };
+
+        wait();
+      });
+    });
+
     // for each fn
     this.fns.forEach(({ fn, timeout }, idx, fns) => {
       assertFunction(fn);
