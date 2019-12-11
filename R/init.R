@@ -136,12 +136,16 @@ shinyjster_server <- function(input, output, session) {
     } else {
       error_msg <- paste0(
         capture.output({
-          str(val$error)
+          if (all(c("x", "y", "message") %in% names(val$error))) {
+            cat("msg: ", val$error$message, "\nx: ", val$error$x, "\ny: ", val$error$x, sep = "")
+          } else {
+            str(val$error)
+          }
         }),
         collapse = "\n\t"
       )
 
-      jster_message("Error found! Error:\n\t", error_msg)
+      jster_message("JS error found! Error:\n\t", error_msg)
       if (interactive()) {
         ans <- utils::menu(
           choices = c("yes", "no"),
