@@ -58,14 +58,16 @@ jobs:
           Rscript
           -e "if (system.file(package = 'remotes') == '') install.packages('remotes')"
 
-      - name: Install dependencies
+      - name: Install shinyjster
         run: >
           Rscript
           -e "remotes::install_deps(dependencies = TRUE)"
-          -e "remotes::install_cran('renv')"
           -e "remotes::install_local(dependencies = TRUE)"
-          -e "lapply(unique(renv::dependencies(system.file('shinyjster', package = 'shinyjster'), quiet = TRUE)$Package), remotes::install_cran)"
-          -e "remotes::install_github('rstudio/shiny')"
+      - name: Install app deps
+        run: >
+          Rscript
+          -e "remotes::install_cran('renv')"
+          -e "lapply(print(unique(renv::dependencies(system.file('shinyjster', package = 'shinyjster'), quiet = TRUE)$Package)), remotes::install_cran)"
 
       - name: Run headless check
         run: Rscript -e "shinyjster::run_headless_mac()"
@@ -119,13 +121,19 @@ jobs:
           sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
           sudo -s eval "$sysreqs"
 
-      - name: Install dependencies
+      - name: Install shinyjster
         run: >
           Rscript
           -e "remotes::install_deps(dependencies = TRUE)"
-          -e "remotes::install_cran('renv')"
           -e "remotes::install_local(dependencies = TRUE)"
-          -e "lapply(unique(renv::dependencies(system.file('shinyjster', package = 'shinyjster'), quiet = TRUE)$Package), remotes::install_cran)"
+      - name: Install app deps
+        run: >
+          Rscript
+          -e "remotes::install_cran('renv')"
+          -e "lapply(print(unique(renv::dependencies(system.file('shinyjster', package = 'shinyjster'), quiet = TRUE)$Package)), remotes::install_cran)"
+      - name: Install rstudio/shiny
+        run: >
+          Rscript
           -e "remotes::install_github('rstudio/shiny')"
 
       - name: Run headless check
