@@ -116,11 +116,29 @@ shinyjster_server <- function(input, output, session) {
     val <- input$jster_done
     # str(val)
 
-    if (identical(val$type, "success")) {
-      jster_message("Success! Closing Browser window")
+    close_broser_window <- function(...) {
+      jster_message(..., "Closing Browser window")
       session$sendCustomMessage("shinyjster_msg_close_window", TRUE)
+}
+
+    if (identical(val$type, "success")) {
+      close_broser_window("Success! ")
     } else {
       jster_message("Error found!\n\tError:\n\t'", val$error, "'")
+      if (interactive()) {
+        ans <- utils::menu(
+          choices = c("yes", "no"),
+          graphics = FALSE,
+          title = "shinyjster - Error found! Continue checking?"
+        )
+        if (ans == "1") {
+          close_broser_window("Error found! ")
+        } else {
+          message("(Broken test app must now be stopped manually)")
+        }
+      } else {
+        close_broser_window("Error found! ")
+      }
     }
   })
 
