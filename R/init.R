@@ -134,14 +134,21 @@ shinyjster_server <- function(input, output, session) {
     if (identical(val$type, "success")) {
       close_broser_window("Success! ")
     } else {
-      jster_message("Error found!\n\tError:\n\t'", val$error, "'")
+      error_msg <- paste0(
+        capture.output({
+          str(val$error)
+        }),
+        collapse = "\n\t"
+      )
+
+      jster_message("Error found! Error:\n\t", error_msg)
       if (interactive()) {
         ans <- utils::menu(
           choices = c("yes", "no"),
           graphics = FALSE,
-          title = "shinyjster - Error found! Continue checking?"
+          title = "shinyjster - Error found! Keep shiny app alive?"
         )
-        if (ans == "1") {
+        if (ans == "2") {
           close_broser_window("Error found! ")
         } else {
           message("(Broken test app must now be stopped manually)")
