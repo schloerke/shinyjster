@@ -43,7 +43,7 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@master
 
       - name: Cache R packages
-        if: false
+        # if: false
         # if: runner.os != 'Windows'
         uses: actions/cache@v1
         with:
@@ -99,7 +99,7 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@master
 
       - name: Cache R packages
-        if: false
+        # if: false
         # if: runner.os != 'Windows'
         uses: actions/cache@v1
         with:
