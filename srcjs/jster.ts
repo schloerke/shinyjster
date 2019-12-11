@@ -36,14 +36,18 @@ class Jster {
     });
   }
 
-  private setProgress(color: string, txt: string): void {
-    this.setProgressText(txt);
+  private setProgress(color: string, txt: string, setInputValue): void {
+    this.setProgressText(txt, setInputValue);
     this.setProgressColor(color);
   }
 
-  private setProgressText(txt: string): void {
+  private setProgressText(txt: string, setInputValue): void {
     if ($) {
-      $("#shinyjster_progress").text(txt);
+      $("#shinyjster_progress_val").text(txt);
+    }
+    if (setInputValue !== false) {
+      setInputValue = this.initSetInputValue(setInputValue);
+      setInputValue("jster_progress", txt);
     }
   }
 
@@ -74,7 +78,7 @@ class Jster {
     if (this.hasCalled) {
       throw "`this.test()` has already been called";
     }
-    this.setProgress("green", "shinyjster - Adding tests!");
+    this.setProgress("green", "Adding tests!", false);
 
     let addFn = fn;
 
@@ -95,7 +99,7 @@ class Jster {
   }
 
   setupPromises(): Promise<unknown> {
-    this.setProgress("yellow", "shinyjster - Running tests!");
+    this.setProgress("yellow", "Running tests!", false);
 
     // for each fn
     this.fns.forEach(({ fn, timeout }, idx, fns) => {
@@ -106,7 +110,8 @@ class Jster {
         .then((value) => {
           this.setProgress(
             "yellow",
-            `shinyjster - Progress: ${idx + 1}/${fns.length} (waiting)`
+            `Progress: ${idx + 1}/${fns.length} (waiting)`,
+            undefined
           );
           return new Promise((resolve) => {
             setTimeout(function() {
@@ -118,7 +123,8 @@ class Jster {
         .then((value) => {
           this.setProgress(
             "yellow",
-            `shinyjster - Progress: ${idx + 1}/${fns.length} (running)`
+            `Progress: ${idx + 1}/${fns.length} (running)`,
+            undefined
           );
           return new Promise((resolve) => {
             fn(resolve, value);
@@ -151,12 +157,13 @@ class Jster {
 
     this.setupPromises().then(
       (value) => {
+        setInputValue = this.initSetInputValue(setInputValue);
         this.setProgress(
           "green",
-          `shinyjster - Progress: ${this.fns.length}/${this.fns.length} (done!)`
+          `Progress: ${this.fns.length}/${this.fns.length} (done!)`,
+          setInputValue
         );
 
-        setInputValue = this.initSetInputValue(setInputValue);
         // send success to shiny
         setInputValue("jster_done", {
           type: "success",
@@ -165,16 +172,21 @@ class Jster {
         });
       },
       (error) => {
+        setInputValue = this.initSetInputValue(setInputValue);
         // print error to progress area
         if ($) {
+          const errorMsg = error.message || error;
+
           this.setProgress(
             "red",
-            `${$("#shinyjster_progress").text()} - Error found: ${error}`
+            `${$(
+              "#shinyjster_progress_val"
+            ).text()} - Error found: ${errorMsg}`,
+            setInputValue
           );
         }
 
         // send error to shiny
-        setInputValue = this.initSetInputValue(setInputValue);
         setInputValue("jster_done", {
           type: "error",
           length: this.fns.length,

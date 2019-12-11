@@ -54,7 +54,8 @@ shinyjster_ui <- function() {
     shinyjster_js_dependencies(),
     htmltools::tags$div(
       id = "shinyjster_progress",
-      style = "position: absolute; left: 0px; bottom: 0px; padding: 5px;"
+      style = "position: absolute; left: 0px; bottom: 0px; padding: 5px;",
+      "shinyjster - ", htmltools::tags$span(id = "shinyjster_progress_val")
     )
   )
 }
@@ -112,6 +113,15 @@ shinyjster_js <- function(..., set_timeout = TRUE) {
 #' @importFrom utils packageVersion str
 #' @export
 shinyjster_server <- function(input, output, session) {
+
+  # shiny::observe({
+  #   str(shiny::reactiveValuesToList(input))
+  # })
+
+  shiny::observeEvent(input$jster_progress, {
+    jster_message(input$jster_progress)
+  })
+
   shiny::observeEvent(input$jster_done, {
     val <- input$jster_done
     # str(val)
@@ -119,7 +129,7 @@ shinyjster_server <- function(input, output, session) {
     close_broser_window <- function(...) {
       jster_message(..., "Closing Browser window")
       session$sendCustomMessage("shinyjster_msg_close_window", TRUE)
-}
+    }
 
     if (identical(val$type, "success")) {
       close_broser_window("Success! ")

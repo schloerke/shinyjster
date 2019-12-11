@@ -9,7 +9,11 @@ function isEqual(x: any, y: any) {
   if (xStr !== yStr) {
     console.log("x:", x);
     console.log("y:", y);
-    throw "x does not equal y";
+    throw {
+      message: `\`${x.toString()}\` does not equal \`${y.toString()}\``,
+      x: x,
+      y: y,
+    };
   }
   return true;
 }
@@ -25,7 +29,10 @@ function isFalse(x: any) {
 function isFunction(fn: any) {
   if (typeof fn !== "function") {
     console.log("fn: ", fn);
-    throw "fn is not a function";
+    throw {
+      message: `fn is not a function. fn: \`${fn.toString()}\``,
+      fn: fn.toString(),
+    };
   }
 }
 

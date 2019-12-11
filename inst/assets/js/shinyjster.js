@@ -210,7 +210,11 @@ function isEqual(x, y) {
   if (xStr !== yStr) {
     console.log("x:", x);
     console.log("y:", y);
-    throw "x does not equal y";
+    throw {
+      message: "`" + x.toString() + "` does not equal `" + y.toString() + "`",
+      x: x,
+      y: y
+    };
   }
 
   return true;
@@ -233,7 +237,10 @@ exports.isFalse = isFalse;
 function isFunction(fn) {
   if (typeof fn !== "function") {
     console.log("fn: ", fn);
-    throw "fn is not a function";
+    throw {
+      message: "fn is not a function. fn: `" + fn.toString() + "`",
+      fn: fn.toString()
+    };
   }
 }
 
@@ -537,14 +544,19 @@ function () {
     });
   }
 
-  Jster.prototype.setProgress = function (color, txt) {
-    this.setProgressText(txt);
+  Jster.prototype.setProgress = function (color, txt, setInputValue) {
+    this.setProgressText(txt, setInputValue);
     this.setProgressColor(color);
   };
 
-  Jster.prototype.setProgressText = function (txt) {
+  Jster.prototype.setProgressText = function (txt, setInputValue) {
     if (globals_1.$) {
-      globals_1.$("#shinyjster_progress").text(txt);
+      globals_1.$("#shinyjster_progress_val").text(txt);
+    }
+
+    if (setInputValue !== false) {
+      setInputValue = this.initSetInputValue(setInputValue);
+      setInputValue("jster_progress", txt);
     }
   };
 
@@ -587,7 +599,7 @@ function () {
       throw "`this.test()` has already been called";
     }
 
-    this.setProgress("green", "shinyjster - Adding tests!");
+    this.setProgress("green", "Adding tests!", false);
     var addFn = fn;
 
     if (fn.length == 0) {
@@ -609,7 +621,7 @@ function () {
   Jster.prototype.setupPromises = function () {
     var _this = this;
 
-    this.setProgress("yellow", "shinyjster - Running tests!"); // for each fn
+    this.setProgress("yellow", "Running tests!", false); // for each fn
 
     this.fns.forEach(function (_a, idx, fns) {
       var fn = _a.fn,
@@ -617,7 +629,7 @@ function () {
       assertFunction(fn);
       _this.p = _this.p // delay a little bit
       .then(function (value) {
-        _this.setProgress("yellow", "shinyjster - Progress: " + (idx + 1) + "/" + fns.length + " (waiting)");
+        _this.setProgress("yellow", "Progress: " + (idx + 1) + "/" + fns.length + " (waiting)", undefined);
 
         return new Promise(function (resolve) {
           setTimeout(function () {
@@ -626,7 +638,7 @@ function () {
         });
       }) // call the fn itself
       .then(function (value) {
-        _this.setProgress("yellow", "shinyjster - Progress: " + (idx + 1) + "/" + fns.length + " (running)");
+        _this.setProgress("yellow", "Progress: " + (idx + 1) + "/" + fns.length + " (running)", undefined);
 
         return new Promise(function (resolve) {
           fn(resolve, value);
@@ -662,9 +674,10 @@ function () {
 
     this.hasCalled = true;
     this.setupPromises().then(function (value) {
-      _this.setProgress("green", "shinyjster - Progress: " + _this.fns.length + "/" + _this.fns.length + " (done!)");
+      setInputValue = _this.initSetInputValue(setInputValue);
 
-      setInputValue = _this.initSetInputValue(setInputValue); // send success to shiny
+      _this.setProgress("green", "Progress: " + _this.fns.length + "/" + _this.fns.length + " (done!)", setInputValue); // send success to shiny
+
 
       setInputValue("jster_done", {
         type: "success",
@@ -672,13 +685,15 @@ function () {
         value: value
       });
     }, function (error) {
-      // print error to progress area
+      setInputValue = _this.initSetInputValue(setInputValue); // print error to progress area
+
       if (globals_1.$) {
-        _this.setProgress("red", globals_1.$("#shinyjster_progress").text() + " - Error found: " + error);
+        var errorMsg = error.message || error;
+
+        _this.setProgress("red", globals_1.$("#shinyjster_progress_val").text() + " - Error found: " + errorMsg, setInputValue);
       } // send error to shiny
 
 
-      setInputValue = _this.initSetInputValue(setInputValue);
       setInputValue("jster_done", {
         type: "error",
         length: _this.fns.length,
