@@ -203,6 +203,18 @@ function prettyJSON(x) {
 
 exports.prettyJSON = prettyJSON;
 
+function shortString(xStr, maxLength) {
+  if (maxLength === void 0) {
+    maxLength = 20;
+  }
+
+  if (xStr.length <= maxLength) {
+    return xStr;
+  }
+
+  return xStr.slice(0, maxLength) + "...";
+}
+
 function isEqual(x, y) {
   var xStr = prettyJSON(x);
   var yStr = prettyJSON(y);
@@ -211,7 +223,7 @@ function isEqual(x, y) {
     console.log("x:", x);
     console.log("y:", y);
     throw {
-      message: "`" + x.toString() + "` does not equal `" + y.toString() + "`",
+      message: shortString(xStr) + " does not equal " + shortString(yStr),
       x: x,
       y: y
     };
@@ -238,7 +250,7 @@ function isFunction(fn) {
   if (typeof fn !== "function") {
     console.log("fn: ", fn);
     throw {
-      message: "fn is not a function. fn: `" + fn.toString() + "`",
+      message: "fn is not a function. fn: " + shortString(fn.toString()),
       fn: fn.toString()
     };
   }
@@ -267,10 +279,10 @@ function isBusy() {
 exports.isBusy = isBusy;
 
 if (globals_1.$) {
-  globals_1.$(document).on("shiny:busy", function (event) {
+  globals_1.$(document).on("shiny:busy", function () {
     shinyIsIdle = false;
   });
-  globals_1.$(document).on("shiny:idle", function (event) {
+  globals_1.$(document).on("shiny:idle", function () {
     shinyIsIdle = true;
   });
 } // `waitUntilIdleFor` requires a timeout value
@@ -407,7 +419,7 @@ function isChecked(id) {
 exports.isChecked = isChecked;
 
 function label(id) {
-  return globals_1.$("#summary").parent().text().trim();
+  return globals_1.$("#" + id).parent().text().trim();
 }
 
 exports.label = label;
@@ -621,7 +633,21 @@ function () {
   Jster.prototype.setupPromises = function () {
     var _this = this;
 
-    this.setProgress("yellow", "Running tests!", false); // for each fn
+    this.setProgress("yellow", "Running tests!", false); // make sure shiny is fully initialized before advancing.
+
+    this.p = this.p.then(function (value) {
+      return new Promise(function (resolve) {
+        var wait = function wait() {
+          if (globals_1.Shiny.setInputValue) {
+            resolve(value);
+          } else {
+            setTimeout(wait, 2);
+          }
+        };
+
+        wait();
+      });
+    }); // for each fn
 
     this.fns.forEach(function (_a, idx, fns) {
       var fn = _a.fn,

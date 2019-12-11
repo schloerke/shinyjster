@@ -2,6 +2,13 @@ function prettyJSON(x: any) {
   return JSON.stringify(x, null, "  ");
 }
 
+function shortString(xStr: string, maxLength = 20) {
+  if (xStr.length <= maxLength) {
+    return xStr;
+  }
+  return `${xStr.slice(0, maxLength)}...`;
+}
+
 function isEqual(x: any, y: any) {
   const xStr = prettyJSON(x);
   const yStr = prettyJSON(y);
@@ -10,7 +17,7 @@ function isEqual(x: any, y: any) {
     console.log("x:", x);
     console.log("y:", y);
     throw {
-      message: `\`${x.toString()}\` does not equal \`${y.toString()}\``,
+      message: `${shortString(xStr)} does not equal ${shortString(yStr)}`,
       x: x,
       y: y,
     };
@@ -30,7 +37,7 @@ function isFunction(fn: any) {
   if (typeof fn !== "function") {
     console.log("fn: ", fn);
     throw {
-      message: `fn is not a function. fn: \`${fn.toString()}\``,
+      message: `fn is not a function. fn: ${shortString(fn.toString())}`,
       fn: fn.toString(),
     };
   }
