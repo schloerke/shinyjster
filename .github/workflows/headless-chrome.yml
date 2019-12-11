@@ -69,7 +69,7 @@ jobs:
         run: >
           Rscript
           -e "remotes::install_cran('renv')"
-          -e "lapply(print(unique(renv::dependencies(system.file('shinyjster', package = 'shinyjster'), quiet = TRUE)$Package)), remotes::install_cran)"
+          -e 'lapply(print(unique(renv::dependencies(system.file("shinyjster", package = "shinyjster"), quiet = TRUE)$Package)), remotes::install_cran)'
 
       - name: Run headless check
         run: Rscript -e "shinyjster::run_headless_mac()"
@@ -134,7 +134,7 @@ jobs:
         run: >
           Rscript
           -e "remotes::install_cran('renv')"
-          -e "lapply(print(unique(renv::dependencies(system.file('shinyjster', package = 'shinyjster'), quiet = TRUE)$Package)), remotes::install_cran)"
+          -e 'lapply(print(unique(renv::dependencies(system.file("shinyjster", package = "shinyjster"), quiet = TRUE)$Package)), remotes::install_cran)'
       - name: Install rstudio/shiny
         run: >
           Rscript
