@@ -63,6 +63,8 @@ jobs:
           Rscript
           -e "remotes::install_deps(dependencies = TRUE)"
           -e "remotes::install_local(dependencies = TRUE)"
+      - name: Add shinyjster matchers
+        run: echo "::add-matcher::.github/matchers/shinyjster.json"
       - name: Install app deps
         run: >
           Rscript
@@ -126,6 +128,8 @@ jobs:
           Rscript
           -e "remotes::install_deps(dependencies = TRUE)"
           -e "remotes::install_local(dependencies = TRUE)"
+      - name: Add shinyjster matchers
+        run: echo "::add-matcher::.github/matchers/shinyjster.json"
       - name: Install app deps
         run: >
           Rscript
