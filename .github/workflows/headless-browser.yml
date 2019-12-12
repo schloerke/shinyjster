@@ -98,6 +98,7 @@ jobs:
           Rscript
           -e "shinyjster::run_headless(browser = 'chrome')"
       - name: Run headless Firefox checks
+        if: false
         run: >
           Rscript
           -e "shinyjster::run_headless(browser = 'firefox')"
