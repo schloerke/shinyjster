@@ -8,7 +8,7 @@ run_headless(
   apps = apps_to_test(),
   port = 8000,
   host = "127.0.0.1",
-  debug_port = 9222,
+  debug_port = NULL,
   browser = c("chrome", "firefox")
 )
 }

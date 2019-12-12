@@ -8,7 +8,23 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1") {
   later::later(delay = 0.5, function() {
     utils::browseURL(url)
   })
-  shiny::runApp(appDir, port, host = host, launch.browser = FALSE)
+  return(
+    run_app(
+      appDir,
+      port = port,
+      host = host,
+      launch.browser = FALSE
+    )
+  )
+}
+
+run_app <- function(appDir, ...) {
+  ret <- shiny::runApp(appDir, ...)
+  tibble::tibble(
+    appDir = appDir,
+    successful = identical(ret$type, "success"),
+    returnValue = list(ret)
+  )
 }
 
 
@@ -23,7 +39,7 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1") {
 #' @export
 run_jster_apps <- function(
   apps,
-  type = c("parallel", "callr", "serial"),
+  type = c("parallel", "callr", "lapply"),
   cores = parallel::detectCores(),
   port = 8000,
   host = "127.0.0.1"
@@ -42,12 +58,14 @@ run_jster_apps_lapply <- function(
   port = 8000,
   host = "127.0.0.1"
 ){
-  lapply(apps, function(app) {
+  ret <- lapply(apps, function(app) {
     cat("shinyjster - ", "launching app: ", basename(app), "\n", sep = "")
+    on.exit({
+      cat("shinyjster - ", "closing app: ", basename(app), "\n", sep = "")
+    }, add = TRUE)
     run_jster(app, port = port, host = host)
-    cat("shinyjster - ", "closing app: ", basename(app), "\n", sep = "")
   })
-  invisible(TRUE)
+  do.call(rbind, ret)
 }
 
 
@@ -61,37 +79,27 @@ run_jster_apps_parallel <- function(
     stop("httpuv must be installed for this function to work")
   }
 
-  callr::r(
-    function(apps_, cores_, host_) {
-      parallel::mclapply(
-        apps_,
-        mc.cores = cores_,
-        mc.preschedule = FALSE,
-        FUN = function(app) {
-          cat("shinyjster - ", "launching app: ", basename(app), "\n", sep = "")
-          port <- httpuv::randomPort()
-          url <- paste0("http://", host_, ":", port, "/?shinyjster=1")
-          later::later(delay = 0.5, function() {
-            utils::browseURL(url)
-          })
+  ret <- parallel::mclapply(
+    apps,
+    mc.cores = cores,
+    mc.preschedule = FALSE,
+    FUN = function(app) {
+      cat("shinyjster - ", "launching app: ", basename(app), "\n", sep = "")
+      on.exit({
+        cat("shinyjster - ", "closing app: ", basename(app), "\n", sep = "")
+      }, add = TRUE)
+      port <- httpuv::randomPort()
+      url <- paste0("http://", host, ":", port, "/?shinyjster=1")
+      later::later(delay = 0.5, function() {
+        utils::browseURL(url)
+      })
 
-          # utils::browseURL(url)
-          shiny::runApp(app, port, host = host_, launch.browser = FALSE)
-          cat("shinyjster - ", "closing app: ", basename(app), "\n", sep = "")
-        }
-      )
-    },
-    list(
-      apps_ = apps,
-      cores_ = cores,
-      host_ = host
-    ),
-    env = callr::rcmd_safe_env()[! names(callr::rcmd_safe_env()) %in% "R_BROWSER"],
-    supervise = TRUE,
-    show = TRUE
+      # utils::browseURL(url)
+      run_app(app, port = port, host = host, launch.browser = FALSE)
+    }
   )
 
-  invisible()
+  do.call(rbind, ret)
 }
 
 
@@ -133,6 +141,9 @@ run_jster_apps_callr <- function(
       p = callr::r_bg(
         function(app_, host_, i_) {
           cat("shinyjster - ", "launching app", "\n", sep = "")
+          on.exit({
+            cat("shinyjster - ", "closing app", "\n", sep = "")
+          }, add = TRUE)
 
           port <- httpuv::randomPort()
           url <- paste0("http://", host_, ":", port, "/?shinyjster=1")
@@ -141,8 +152,7 @@ run_jster_apps_callr <- function(
           })
 
           # utils::browseURL(url)
-          shiny::runApp(app_, port, host = host_, launch.browser = FALSE)
-          cat("shinyjster - ", "closing app", "\n", sep = "")
+          shinyjster:::run_app(app_, port, host = host_, launch.browser = FALSE)
         },
         list(
           app_ = app,
@@ -158,11 +168,14 @@ run_jster_apps_callr <- function(
     )
   }
 
+  ret <- NULL
   print_process_output = function(i) {
+    pr <- processes[[i]]$p
+    ret <<- rbind(ret, pr$get_result())
     cat(
       paste(
         paste0("core[", i, "]: ", basename(processes[[i]]$app), " - "),
-        processes[[i]]$p$read_output_lines(),
+        pr$read_output_lines(),
         sep = "", collapse = "\n"
       ),
       "\n"
@@ -188,7 +201,7 @@ run_jster_apps_callr <- function(
     Sys.sleep(0.5)
   }
 
-  invisible(TRUE)
+  ret
 }
 
 

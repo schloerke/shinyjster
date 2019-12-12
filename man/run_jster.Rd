@@ -9,7 +9,7 @@ run_jster(appDir, port = 8000, host = "127.0.0.1")
 
 run_jster_apps(
   apps,
-  type = c("parallel", "callr", "serial"),
+  type = c("parallel", "callr", "lapply"),
   cores = parallel::detectCores(),
   port = 8000,
   host = "127.0.0.1"

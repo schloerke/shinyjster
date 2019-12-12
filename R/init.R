@@ -114,6 +114,10 @@ shinyjster_js <- function(..., set_timeout = TRUE) {
 #' @export
 shinyjster_server <- function(input, output, session) {
 
+  jster_return_val <- list(
+    type = "success"
+  )
+
   # shiny::observe({
   #   str(shiny::reactiveValuesToList(input))
   # })
@@ -134,6 +138,10 @@ shinyjster_server <- function(input, output, session) {
     if (identical(val$type, "success")) {
       close_broser_window("Success! ")
     } else {
+      # error found
+      jster_return_val$type <<- "error"
+      jster_return_val$error <<- val$error
+
       error_msg <- paste0(
         capture.output({
           if (all(c("x", "y", "message") %in% names(val$error))) {
@@ -171,6 +179,6 @@ shinyjster_server <- function(input, output, session) {
 
   shiny::observeEvent(input$jster_closing_window, {
     jster_message("Browser window has been closed. Stopping Shiny Application now.")
-    shiny::stopApp()
+    shiny::stopApp(jster_return_val)
   })
 }
