@@ -96,9 +96,9 @@ jobs:
       - name: Run headless Chrome checks
         run: >
           Rscript
-          -e "shinyjster::run_headless(browser = 'chrome')"
+          -e "shinyjster::run_headless(browser = 'chrome', type = 'lapply')"
       - name: Run headless Firefox checks
         if: false
         run: >
           Rscript
-          -e "shinyjster::run_headless(browser = 'firefox')"
+          -e "shinyjster::run_headless(browser = 'firefox', type = 'lapply')"
