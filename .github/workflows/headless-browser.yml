@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v1
 
       - name: Setup macOS Chrome
-        if: runner.os == "macOS-latest"
+        if: runner.os == 'macOS'
         run: |
           brew cask info google-chrome
           brew update
@@ -39,7 +39,7 @@ jobs:
           brew cask install google-chrome
           brew cask info google-chrome
       - name: Setup Linux Chrome
-        if: runner.os == "Linux"
+        if: runner.os == 'Linux'
         run: |
           which google-chrome
 
@@ -66,7 +66,7 @@ jobs:
           -e "remotes::install_github('r-hub/sysreqs')"
 
       - name: Install system dependencies
-        if: runner.os == "Linux"
+        if: runner.os == 'Linux'
         env:
           RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
         run: |
@@ -88,7 +88,7 @@ jobs:
           -e 'lapply(print(unique(renv::dependencies(system.file("shinyjster", package = "shinyjster"), quiet = TRUE)$Package)), remotes::install_cran)'
       # to avoid odd 'raw' bug
       - name: Install rstudio/shiny
-        if: runner.os == "Linux"
+        if: runner.os == 'Linux'
         run: >
           Rscript
           -e "remotes::install_github('rstudio/shiny')"
