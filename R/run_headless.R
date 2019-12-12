@@ -27,15 +27,15 @@ run_headless <- function(
   browser <- switch(
     # only match on the first element... avoids having to use missing or pmatch
     browser[1],
-    "chrome" = paste(
+    "chrome" = paste0(
         switch(system,
           "macOS" = "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome",
           "Linux" = "google-chrome",
           stop("Google chrome not implemented for system: ", system)
         ),
-        "--headless",
-        "--disable-gpu",
-        "--remote-debugging-port=", debug_port
+        " --headless",
+        " --disable-gpu",
+        " --remote-debugging-port=", debug_port
     ),
     "firefox" = paste0(
       switch(system,
