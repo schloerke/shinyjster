@@ -1,0 +1,105 @@
+on:
+  push:
+    branches:
+      - master
+      - ghactions
+  pull_request:
+    branches:
+      - master
+
+name: Rituals
+
+jobs:
+  Rituals:
+    runs-on: ${{ matrix.config.os }}
+
+    name: Rituals
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - { os: ubuntu-16.04, r: '3.6', cran: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"}
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      CRAN: ${{ matrix.config.cran }}
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: r-lib/actions/pr-fetch@master
+        if: github.event_name == 'pull_request'
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: r-lib/actions/setup-r@master
+        with:
+          r-version: ${{ matrix.config.r }}
+
+      - uses: r-lib/actions/setup-pandoc@master
+
+      - name: Git Config
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+      - name: Cache R packages
+        if: runner.os != 'Windows'
+        uses: actions/cache@v1
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-r-${{ matrix.config.r }}-rituals-${{ github.ref }}
+          restore_keys: |
+            ${{ runner.os }}-r-${{ matrix.config.r }}-rituals-${{ github.ref }}
+            ${{ runner.os }}-r-${{ matrix.config.r }}-${{ github.ref }}
+
+      - name: Install remotes
+        run: >
+          Rscript
+          -e "if (system.file(package = 'remotes') == '') install.packages('remotes')"
+          -e "remotes::install_github('r-hub/sysreqs')"
+      - name: Install system dependencies
+        if: runner.os == 'Linux'
+        env:
+          RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
+        run: |
+          sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
+          sudo -s eval "$sysreqs"
+      - name: Install dependencies
+        run: >
+          Rscript
+          -e "remotes::install_deps(dependencies = TRUE)"
+
+      - name: Document
+        run: |
+          Rscript -e 'remotes::install_cran("roxygen2")'
+          Rscript -e 'roxygen2::roxygenise()'
+          git add man/\* NAMESPACE
+          git commit -m 'Document (GitHub Actions)' || echo "No documentation changes to commit"
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Build JS
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
+          git add inst/assets
+          git commit -m 'yarn build (GitHub Actions)' || echo "No yarn changes to commit"
+
+      - name: Code Coverage
+        run: |
+          Rscript -e 'remotes::install_cran("covr")'
+          Rscript -e 'covr::codecov(token = "${{secrets.CODECOV_TOKEN}}")'
+
+      - name: Git Push (PR)
+        uses: r-lib/actions/pr-push@master
+        if: github.event_name == 'pull_request'
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Git Push (MASTER)
+        if: github.event_name == 'push'
+        run: |
+          git push https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git HEAD:${{ github.ref }} || echo "No changes to push"
