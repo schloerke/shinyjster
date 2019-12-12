@@ -137,7 +137,13 @@ shinyjster_server <- function(input, output, session) {
       error_msg <- paste0(
         capture.output({
           if (all(c("x", "y", "message") %in% names(val$error))) {
-            cat("msg: ", val$error$message, "\nx: ", val$error$x, "\ny: ", val$error$x, sep = "")
+            cat(
+              "msg: ", val$error$message,
+              "\nx: ", val$error$x,
+              "\ny: ", val$error$y,
+              "\nxStr: ", val$error$xStr,
+              "\nyStr: ", val$error$yStr,
+              sep = "")
           } else {
             str(val$error)
           }

@@ -13,13 +13,15 @@ function isEqual(x: any, y: any) {
   const xStr = prettyJSON(x);
   const yStr = prettyJSON(y);
 
-  if (xStr !== yStr) {
+  if (xStr != yStr) {
     console.log("x:", x);
     console.log("y:", y);
     throw {
       message: `${shortString(xStr)} does not equal ${shortString(yStr)}`,
       x: x,
       y: y,
+      xStr: xStr,
+      yStr: yStr,
     };
   }
   return true;
