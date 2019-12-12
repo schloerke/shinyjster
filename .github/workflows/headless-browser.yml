@@ -29,19 +29,19 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: Setup macOS Chrome
+      - name: Setup macOS Browsers
         if: runner.os == 'macOS'
         run: |
-          brew cask info google-chrome
           brew update
-          brew ls
-          brew cask info google-chrome
           brew cask install google-chrome
           brew cask info google-chrome
-      - name: Setup Linux Chrome
+          brew cask install firefox
+          brew cask info firefox
+      - name: Setup Linux Browsers
         if: runner.os == 'Linux'
         run: |
           which google-chrome
+          which firefox
 
       - uses: r-lib/actions/setup-r@master
         with:
@@ -77,7 +77,7 @@ jobs:
         run: >
           Rscript
           -e "remotes::install_deps(dependencies = TRUE)"
-          -e "remotes::install_local(dependencies = TRUE)"
+          -e "remotes::install_local(dependencies = TRUE, force = TRUE)"
       - name: Add shinyjster matchers
         run: echo "::add-matcher::.github/matchers/shinyjster.json"
 
