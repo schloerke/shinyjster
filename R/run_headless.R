@@ -1,9 +1,9 @@
 #' Run many applications with shinyjster enabled
 #'
-#' @inheritParams shiny::runApp
-#' @param apps Vector of `appDir` values
+#' @inheritParams run_jster
 #' @param debug_port Port for chrome debugger
 #' @param browser Browser to be set for testing.  If using `"chrome"` or `"firefox"`, the system application will be used.
+#' @param assert Logical which determines if [assert_jster] should be run on the final output
 #' @rdname run_headless
 #' @export
 run_headless <- function(

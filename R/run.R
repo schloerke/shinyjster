@@ -8,22 +8,23 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1") {
   later::later(delay = 0.5, function() {
     utils::browseURL(url)
   })
-  return(
-    run_app(
+
+  upgrade_app_output(
+    shiny::runApp(
       appDir,
       port = port,
       host = host,
       launch.browser = FALSE
-    )
+    ),
+    appDir = appDir
   )
 }
 
-run_app <- function(appDir, ...) {
-  ret <- shiny::runApp(appDir, ...)
+upgrade_app_output <- function(output, appDir) {
   tibble::tibble(
     appDir = appDir,
-    successful = identical(ret$type, "success"),
-    returnValue = list(ret)
+    successful = identical(output$type, "success"),
+    returnValue = list(output)
   )
 }
 
@@ -95,11 +96,16 @@ run_jster_apps_parallel <- function(
       })
 
       # utils::browseURL(url)
-      run_app(app, port = port, host = host, launch.browser = FALSE)
+      return(
+        shiny::runApp(app, port = port, host = host, launch.browser = FALSE)
+      )
     }
   )
 
-  do.call(rbind, ret)
+  do.call(
+    rbind,
+    mapply(ret, apps, FUN = upgrade_app_output, SIMPLIFY = FALSE)
+  )
 }
 
 
@@ -152,7 +158,7 @@ run_jster_apps_callr <- function(
           })
 
           # utils::browseURL(url)
-          shinyjster:::run_app(app_, port, host = host_, launch.browser = FALSE)
+          shiny::runApp(app_, port, host = host_, launch.browser = FALSE)
         },
         list(
           app_ = app,
@@ -171,10 +177,11 @@ run_jster_apps_callr <- function(
   ret <- NULL
   print_process_output = function(i) {
     pr <- processes[[i]]$p
-    ret <<- rbind(ret, pr$get_result())
+    appDir <- processes[[i]]$app
+    ret <<- rbind(ret, upgrade_app_output(pr$get_result(), appDir = appDir))
     cat(
       paste(
-        paste0("core[", i, "]: ", basename(processes[[i]]$app), " - "),
+        paste0("core[", i, "]: ", basename(appDir), " - "),
         pr$read_output_lines(),
         sep = "", collapse = "\n"
       ),

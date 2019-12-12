@@ -110,7 +110,7 @@ shinyjster_js <- function(..., set_timeout = TRUE) {
 #'
 #' Function to be called within the shiny server
 #' @param input,output,session Shiny server function parameters
-#' @importFrom utils packageVersion str
+#' @importFrom utils packageVersion str capture.output
 #' @export
 shinyjster_server <- function(input, output, session) {
 
