@@ -10,7 +10,7 @@ on:
   schedule:
     - cron:  '0 0 1,16 * *' # every 1st and 16th of month
 
-name: Headless Jster
+name: Headless Browser
 
 jobs:
 
