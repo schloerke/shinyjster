@@ -9,7 +9,9 @@ run_headless(
   port = 8000,
   host = "127.0.0.1",
   debug_port = NULL,
-  browser = c("chrome", "firefox")
+  browser = c("chrome", "firefox"),
+  type = c("parallel", "callr", "lapply"),
+  assert = TRUE
 )
 }
 \arguments{
