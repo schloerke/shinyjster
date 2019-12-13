@@ -55,9 +55,10 @@ jobs:
           ls "/c/Program Files (x86)/Google/Chrome/Application"
           ls "C:\Program Files (x86)\Google\Chrome\Application"
           cd "C:\Program Files (x86)\Google\Chrome\Application"
-          ./chrome.exe --no-sandbox --version
-          'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe' --no-sandbox --version
-          '/c/Program Files (x86)/Google/Chrome/Application/chrome.exe' --no-sandbox --version
+          ./chrome.exe --headless --disable-gpu --dump-dom https://www.google.com/
+          ./chrome.exe --no-sandbox --headless --disable-gpu --dump-dom https://www.google.com/
+          'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe' --headless --disable-gpu --dump-dom https://www.google.com/
+          'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe' --no-sandbox --headless --disable-gpu --dump-dom https://www.google.com/
 
       - uses: r-lib/actions/setup-r@master
         with:
