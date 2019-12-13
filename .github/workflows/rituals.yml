@@ -11,11 +11,10 @@ name: Rituals
 
 jobs:
   Rituals:
+    name: Rituals
     if: false
     runs-on: ${{ matrix.config.os }}
 
-    name: Rituals
-    if: github.event_name == 'push' || github.event_name == 'pull_request'
 
     strategy:
       fail-fast: false
