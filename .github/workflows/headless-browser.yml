@@ -49,10 +49,12 @@ jobs:
         shell: bash
         # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/development-tools-for-github-actions#add-a-system-path-add-path
         run: |
-          ls "C:\Program Files (x86)\Google\"
-          ls "C:\Program Files (x86)\Google\Chrome\"
-          ls "C:\Program Files (x86)\Google\Chrome\Application\"
-          echo "::add-path::'C:\Program Files (x86)\Google\Chrome\Application\'"
+          pwd
+          ls "C:\Program Files (x86)"
+          ls "C:\Program Files (x86)\Google"
+          ls "C:\Program Files (x86)\Google\Chrome"
+          ls "C:\Program Files (x86)\Google\Chrome\Application"
+          echo "::add-path::'C:\Program Files (x86)\Google\Chrome\Application'"
           which chrome
 
       - uses: r-lib/actions/setup-r@master
