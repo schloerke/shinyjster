@@ -55,9 +55,9 @@ jobs:
           ls "/c/Program Files (x86)/Google/Chrome/Application"
           ls "C:\Program Files (x86)\Google\Chrome\Application"
           cd "C:\Program Files (x86)\Google\Chrome\Application"
-          ./chrome.exe --version
-          'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe' --version
-          '/c/Program Files (x86)/Google/Chrome/Application/chrome.exe' --version
+          ./chrome.exe --no-sandbox --version
+          'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe' --no-sandbox --version
+          '/c/Program Files (x86)/Google/Chrome/Application/chrome.exe' --no-sandbox --version
 
       - uses: r-lib/actions/setup-r@master
         with:
