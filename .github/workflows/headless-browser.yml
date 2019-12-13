@@ -54,7 +54,14 @@ jobs:
           ls "C:\Program Files (x86)\Google"
           ls "C:\Program Files (x86)\Google\Chrome"
           ls "C:\Program Files (x86)\Google\Chrome\Application"
+          echo "$PATH"
           echo "::add-path::'C:\Program Files (x86)\Google\Chrome\Application'"
+          echo "::add-path::'/c/Program Files (x86)/Google/Chrome/Application'"
+      - name: Confirm Setup Windows Browsers
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          echo "$PATH"
           which chrome
 
       - uses: r-lib/actions/setup-r@master
