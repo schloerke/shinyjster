@@ -52,6 +52,9 @@ jobs:
         if: runner.os == 'Windows'
         shell: bash
         run: |
+          ls "/c/Program Files (x86)/Google/Chrome/Application"
+          ls "C:\Program Files (x86)\Google\Chrome\Application"
+          '/c/Program Files (x86)/Google/Chrome/Application/chrome' --version
           'C:\Program Files (x86)\Google\Chrome\Application\chrome' --version
 
       - uses: r-lib/actions/setup-r@master
