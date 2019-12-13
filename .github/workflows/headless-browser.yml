@@ -48,8 +48,8 @@ jobs:
         if: runner.os == 'Windows'
         shell: bash
         run: |
-          ls C:\Program\ Files\ (x86)
-          ls C:\Program\ Files
+          ls "C:\Program Files"
+          ls "C:\Program Files (x86)"
           which chrome
 
       - uses: r-lib/actions/setup-r@master
