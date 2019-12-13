@@ -46,9 +46,9 @@ jobs:
           which firefox
       - name: Setup Windows Browsers
         if: runner.os == 'Windows'
+        shell: bash
         run: |
-          which google-chrome
-          which firefox
+          which chrome
 
       - uses: r-lib/actions/setup-r@master
         with:
@@ -101,6 +101,7 @@ jobs:
           -e "remotes::install_github('rstudio/shiny')"
 
       - name: Run headless Chrome checks
+        shell: bash
         run: >
           Rscript
           -e "shinyjster::run_headless(browser = 'chrome', type = 'lapply')"
