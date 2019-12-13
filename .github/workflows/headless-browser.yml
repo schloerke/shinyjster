@@ -50,6 +50,7 @@ jobs:
           which firefox
       - name: Confirm Windows Browsers
         if: runner.os == 'Windows'
+        shell: bash
         run: |
           'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe' --headless --disable-gpu --dump-dom https://www.google.com/
 
