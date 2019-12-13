@@ -47,9 +47,12 @@ jobs:
       - name: Setup Windows Browsers
         if: runner.os == 'Windows'
         shell: bash
+        # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/development-tools-for-github-actions#add-a-system-path-add-path
         run: |
-          ls "C:\Program Files"
-          ls "C:\Program Files (x86)"
+          echo "::add-path::C:\Program Files (x86)\Google\Chrome\Application\"
+          ls "C:\Program Files (x86)\Google\"
+          ls "C:\Program Files (x86)\Google\Chrome\"
+          ls "C:\Program Files (x86)\Google\Chrome\Application\"
           which chrome
 
       - uses: r-lib/actions/setup-r@master
