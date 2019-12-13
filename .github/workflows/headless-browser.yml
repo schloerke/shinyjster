@@ -33,6 +33,7 @@ jobs:
 
       - name: Setup macOS Browsers
         if: runner.os == 'macOS'
+        shell: bash
         run: |
           brew update
           brew cask install google-chrome
@@ -41,10 +42,12 @@ jobs:
           brew cask info firefox
       - name: Confirm macOS Browsers
         if: runner.os == 'macOS'
+        shell: bash
         run: |
           '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --version
       - name: Confirm Linux Browsers
         if: runner.os == 'Linux'
+        shell: bash
         run: |
           google-chrome --version
           which firefox
@@ -71,12 +74,14 @@ jobs:
             ${{ runner.os }}-r-${{ matrix.config.r }}-${{ github.base_ref }}
 
       - name: Install remotes
+        shell: bash
         run: >
           Rscript
           -e "if (system.file(package = 'remotes') == '') install.packages('remotes')"
 
       - name: Install system dependencies
         if: runner.os == 'Linux'
+        shell: bash
         env:
           RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
         run: |
@@ -85,6 +90,7 @@ jobs:
           sudo -s eval "$sysreqs"
 
       - name: Install shinyjster
+        shell: bash
         run: >
           Rscript
           -e "remotes::install_deps(dependencies = TRUE)"
@@ -93,6 +99,7 @@ jobs:
         run: echo "::add-matcher::.github/matchers/shinyjster.json"
 
       - name: Install app deps
+        shell: bash
         run: >
           Rscript
           -e "remotes::install_cran('renv')"
@@ -100,6 +107,7 @@ jobs:
       # to avoid odd 'raw' bug
       - name: Install rstudio/shiny
         if: runner.os == 'Linux'
+        shell: bash
         run: >
           Rscript
           -e "remotes::install_github('rstudio/shiny')"
@@ -111,6 +119,7 @@ jobs:
           -e "shinyjster::run_headless(browser = 'chrome', type = 'lapply')"
       - name: Run headless Firefox checks
         if: false
+        shell: bash
         run: >
           Rscript
           -e "shinyjster::run_headless(browser = 'firefox', type = 'lapply')"
