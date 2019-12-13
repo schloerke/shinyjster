@@ -39,9 +39,9 @@ run_headless <- function(
     browser[1],
     "chrome" = paste0(
         switch(system,
-          "macOS" = "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome",
+          "macOS" = "'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'",
           "Linux" = "google-chrome",
-          "Windows" = "chrome",
+          "Windows" = "'C:/Program Files (x86)/Google/Chrome/Application/chrome'",
           stop("Google chrome not implemented for system: ", system)
         ),
         " --headless",

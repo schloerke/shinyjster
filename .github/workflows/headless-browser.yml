@@ -39,30 +39,20 @@ jobs:
           brew cask info google-chrome
           brew cask install firefox
           brew cask info firefox
-      - name: Setup Linux Browsers
+      - name: Confirm macOS Browsers
+        if: runner.os == 'macOS'
+        run: |
+          '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --version
+      - name: Confirm Linux Browsers
         if: runner.os == 'Linux'
         run: |
-          which google-chrome
+          google-chrome --version
           which firefox
-      - name: Setup Windows Browsers
-        if: runner.os == 'Windows'
-        shell: bash
-        # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/development-tools-for-github-actions#add-a-system-path-add-path
-        run: |
-          pwd
-          ls "C:\Program Files (x86)"
-          ls "C:\Program Files (x86)\Google"
-          ls "C:\Program Files (x86)\Google\Chrome"
-          ls "C:\Program Files (x86)\Google\Chrome\Application"
-          echo "$PATH"
-          # echo "::add-path::C:\Program Files (x86)\Google\Chrome\Application"
-          echo "::add-path::/c/Program Files (x86)/Google/Chrome/Application"
-      - name: Confirm Setup Windows Browsers
+      - name: Confirm Windows Browsers
         if: runner.os == 'Windows'
         shell: bash
         run: |
-          echo "$PATH"
-          which chrome
+          'C:/Program Files (x86)/Google/Chrome/Application/chrome' --version
 
       - uses: r-lib/actions/setup-r@master
         with:
