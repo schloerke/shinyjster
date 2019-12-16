@@ -10,7 +10,7 @@ run_headless(
   host = "127.0.0.1",
   debug_port = NULL,
   browser = c("chrome", "firefox"),
-  type = c("parallel", "callr", "lapply"),
+  type = c("lapply", "parallel", "callr"),
   assert = TRUE
 )
 }
