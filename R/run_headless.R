@@ -45,7 +45,8 @@ run_headless <- function(
         c(
           "--headless",
           "--disable-gpu",
-          paste0("--remote-debugging-port=", debug_port)
+          paste0("--remote-debugging-port=", debug_port),
+          url
         ),
         wait = FALSE
       )
