@@ -12,89 +12,111 @@ run_headless <- function(
   host = "127.0.0.1",
   debug_port = NULL,
   browser = c("chrome", "firefox"),
-  type = c("parallel", "callr", "lapply"),
+  type = c("lapply", "parallel", "callr"),
   assert = TRUE
 ) {
-  system <-
-    if (.Platform[["OS.type"]] == "unix") {
-      if (Sys.info()[["sysname"]] == "Darwin") {
-        "macOS"
-      } else {
-        "Linux"
-      }
-    } else {
-      "Windows"
-    }
 
-  if (is.null(debug_port)) {
-    debug_port <- switch(browser[1],
-      "chrome" = 9222,
-      "firefox" = 9223,
-      9221
-    )
+  if (missing(browser)) {
+    browser <- match.arg(browser)
   }
 
   if (
-    identical(browser[1], "chrome") &&
-    identical(system, "Windows")
+    is.character(browser) &&
+    length(browser) == 1 &&
+    browser %in% c("chrome", "firefox")
   ) {
-    browser <- function(url) {
-      cat("Opening browser with system2\n")
-      system2(
-        "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
-        c(
-          "--headless",
-          "--disable-gpu",
-          paste0("--remote-debugging-port=", debug_port),
-          url
-        ),
-        wait = FALSE
+    system <- gh_actions_system()
+
+    if (is.null(debug_port)) {
+      debug_port <- switch(browser,
+        "chrome" = 9222,
+        "firefox" = 9223,
+        9221
       )
     }
-  } else {
+
     browser <- switch(
-      # only match on the first element... avoids having to use missing or pmatch
-      browser[1],
-      "chrome" = paste0(
-          switch(system,
-            "macOS" = "'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'",
-            "Linux" = "google-chrome",
-            "Windows" = stop("implemented above"),
-            stop("Google chrome not implemented for system: ", system)
-          ),
-          " --headless",
-          " --disable-gpu",
-          " --remote-debugging-port=", debug_port
-      ),
-      "firefox" = paste0(
-        switch(system,
+      browser,
+      "chrome" = local({
+        program <- switch(
+          system,
+          "macOS" = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+          "Linux" = "google-chrome",
+          "Windows" = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+          stop("Google chrome not implemented for system: ", system)
+        )
+        function(url) {
+          browse_url(
+            url,
+            program,
+            c(
+              "--headless",
+              "--disable-gpu",
+              paste0("--remote-debugging-port=", debug_port)
+            )
+          )
+        }
+      }),
+      "firefox" = local({
+        program <- switch(
+          system,
           "macOS" = "/Applications/Firefox.app/Contents/MacOS/firefox-bin",
           "Linux" = "firefox",
           stop("Firefox not implemented for system: ", system)
-        ),
-        " -P headless",
-        " -headless", # it is a single dash
-        " -new-tab",
-        # https://developer.mozilla.org/en-US/docs/Tools/Remote_Debugging/Debugging_Firefox_Desktop
-        # Note: in Windows, the start-debugger-server call will only have one dash:
-        " --start-debugger-server ", debug_port
-      ),
+        )
+        function(url) {
+          browse_url(
+            url,
+            program,
+            c(
+              "-P", "headless",
+              "-headless", # it is a single dash
+              "-new-tab",
+              # https://developer.mozilla.org/en-US/docs/Tools/Remote_Debugging/Debugging_Firefox_Desktop
+              # Note: in Windows, the start-debugger-server call will only have one dash:
+              "--start-debugger-server", debug_port
+            )
+          )
+        }
+      }),
+
       # pass through
-      browser
+      stop("Browser value not implemented. Browser: ", browser)
     )
   }
-  print(browser)
+
   op_browser <- getOption("browser")
   on.exit({
     options(browser = op_browser)
   }, add = TRUE)
   options(browser = browser)
 
-  ret <- run_jster_apps(apps = apps, port = port, host = host, type = type)
+  ret <- run_jster_apps(apps = apps, port = port, host = host, type = match.arg(type))
 
   if (assert) {
     assert_jster(ret)
   } else {
     ret
+  }
+}
+
+
+gh_actions_system <- function() {
+  if (.Platform[["OS.type"]] == "unix") {
+    if (Sys.info()[["sysname"]] == "Darwin") {
+      "macOS"
+    } else {
+      "Linux"
+    }
+  } else {
+    "Windows"
+  }
+}
+
+browse_url <- function(url, program, args, ..., wait = FALSE) {
+  if (gh_actions_system() == "Windows") {
+    system2(program, c(args, url), ..., wait = wait)
+  } else {
+    browseURL(url, paste0(c(paste0("'", program, "'"), args), collapse = " "))
   }
 }
