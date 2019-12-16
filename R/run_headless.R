@@ -69,7 +69,18 @@ run_headless <- function(
   on.exit({
     options(browser = op_browser)
   }, add = TRUE)
-  options(browser = browser)
+
+  if (identical(system, "Windows")) {
+    options(browser = function(url) {
+      cat("Opening browser with call: \n", paste0(browser, " ", url), "\n")
+      system(
+        paste0(browser, " ", url),
+        wait = FALSE
+      )
+    })
+  } else {
+    options(browser = browser)
+  }
 
   ret <- run_jster_apps(apps = apps, port = port, host = host, type = type)
 
