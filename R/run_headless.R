@@ -117,6 +117,6 @@ browse_url <- function(url, program, args, ..., wait = FALSE) {
   if (gh_actions_system() == "Windows") {
     system2(program, c(args, url), ..., wait = wait)
   } else {
-    browseURL(url, paste0(c(paste0("'", program, "'"), args), collapse = " "))
+    utils::browseURL(url, paste0(c(paste0("'", program, "'"), args), collapse = " "))
   }
 }
