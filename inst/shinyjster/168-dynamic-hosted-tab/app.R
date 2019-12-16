@@ -28,6 +28,7 @@ ui <- fluidPage(
     )
   ),
   shinyjster_js("
+
   var counter = 0;
   var js = jster();
 
