@@ -105,6 +105,7 @@ jobs:
           -e "remotes::install_github('rstudio/shiny')"
 
       - name: Run headless Chrome checks
+        shell: bash
         run: >
           Rscript
           -e "shinyjster::run_headless(browser = 'chrome', type = 'lapply')"
