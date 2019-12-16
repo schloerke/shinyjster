@@ -222,6 +222,9 @@ apps_to_test <- function() {
     "01-hello-fail",
     "132-async-events"
   )
+  if (gh_actions_system() == "Windows") {
+    bad_apps <- c(bad_apps, "022-unicode-chinese")
+  }
 
   app_dir <- system.file("shinyjster", package = "shinyjster")
   apps <- dir(app_dir, full.names = TRUE)
