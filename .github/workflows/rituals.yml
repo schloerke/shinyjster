@@ -12,7 +12,7 @@ name: Rituals
 jobs:
   Rituals:
     name: Rituals
-    if: false
+    # if: false
     runs-on: ${{ matrix.config.os }}
 
 
