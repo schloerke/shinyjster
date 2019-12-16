@@ -34,53 +34,60 @@ run_headless <- function(
     )
   }
 
-  browser <- switch(
-    # only match on the first element... avoids having to use missing or pmatch
-    browser[1],
-    "chrome" = paste0(
-        switch(system,
-          "macOS" = "'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'",
-          "Linux" = "google-chrome",
-          "Windows" = "'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'",
-          stop("Google chrome not implemented for system: ", system)
+  if (
+    identical(browser[1], "chrome") &&
+    identical(system, "Windows")
+  ) {
+    browser <- function(url) {
+      cat("Opening browser with system2\n")
+      system2(
+        "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+        c(
+          "--headless",
+          "--disable-gpu",
+          paste0("--remote-debugging-port=", debug_port)
         ),
-        " --headless",
-        " --disable-gpu",
-        " --remote-debugging-port=", debug_port
-    ),
-    "firefox" = paste0(
-      switch(system,
-        "macOS" = "/Applications/Firefox.app/Contents/MacOS/firefox-bin",
-        "Linux" = "firefox",
-        stop("Firefox not implemented for system: ", system)
+        wait = FALSE
+      )
+    }
+  } else {
+    browser <- switch(
+      # only match on the first element... avoids having to use missing or pmatch
+      browser[1],
+      "chrome" = paste0(
+          switch(system,
+            "macOS" = "'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'",
+            "Linux" = "google-chrome",
+            "Windows" = stop("implemented above"),
+            stop("Google chrome not implemented for system: ", system)
+          ),
+          " --headless",
+          " --disable-gpu",
+          " --remote-debugging-port=", debug_port
       ),
-      " -P headless",
-      " -headless", # it is a single dash
-      " -new-tab",
-      # https://developer.mozilla.org/en-US/docs/Tools/Remote_Debugging/Debugging_Firefox_Desktop
-      # Note: in Windows, the start-debugger-server call will only have one dash:
-      " --start-debugger-server ", debug_port
-    ),
-    # pass through
-    browser
-  )
+      "firefox" = paste0(
+        switch(system,
+          "macOS" = "/Applications/Firefox.app/Contents/MacOS/firefox-bin",
+          "Linux" = "firefox",
+          stop("Firefox not implemented for system: ", system)
+        ),
+        " -P headless",
+        " -headless", # it is a single dash
+        " -new-tab",
+        # https://developer.mozilla.org/en-US/docs/Tools/Remote_Debugging/Debugging_Firefox_Desktop
+        # Note: in Windows, the start-debugger-server call will only have one dash:
+        " --start-debugger-server ", debug_port
+      ),
+      # pass through
+      browser
+    )
+  }
   print(browser)
   op_browser <- getOption("browser")
   on.exit({
     options(browser = op_browser)
   }, add = TRUE)
-
-  if (identical(system, "Windows")) {
-    options(browser = function(url) {
-      cat("Opening browser with call: \n", paste0(browser, " ", url), "\n")
-      system(
-        paste0(browser, " ", url),
-        wait = FALSE
-      )
-    })
-  } else {
-    options(browser = browser)
-  }
+  options(browser = browser)
 
   ret <- run_jster_apps(apps = apps, port = port, host = host, type = type)
 
