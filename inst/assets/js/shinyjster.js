@@ -666,14 +666,22 @@ function isEqual(x, y, contextObj) {
 
 exports.isEqual = isEqual;
 
-function isTrue(x) {
-  return isEqual(x, true);
+function isTrue(x, contextObj) {
+  if (contextObj === void 0) {
+    contextObj = undefined;
+  }
+
+  return isEqual(x, true, contextObj);
 }
 
 exports.isTrue = isTrue;
 
-function isFalse(x) {
-  return isEqual(x, false);
+function isFalse(x, contextObj) {
+  if (contextObj === void 0) {
+    contextObj = undefined;
+  }
+
+  return isEqual(x, false, contextObj);
 }
 
 exports.isFalse = isFalse;

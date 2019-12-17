@@ -43,12 +43,12 @@ function isEqual(x: any, y: any, contextObj: any = undefined) {
   return true;
 }
 
-function isTrue(x: any) {
-  return isEqual(x, true);
+function isTrue(x: any, contextObj: any = undefined) {
+  return isEqual(x, true, contextObj);
 }
 
-function isFalse(x: any) {
-  return isEqual(x, false);
+function isFalse(x: any, contextObj: any = undefined) {
+  return isEqual(x, false, contextObj);
 }
 
 function isFunction(fn: any) {
