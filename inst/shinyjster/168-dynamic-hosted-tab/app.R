@@ -29,11 +29,12 @@ ui <- fluidPage(
   ),
   shinyjster_js("
   var counter = 0;
-  var js = jster();
+  var jst = jster(200);
 
   // init working tabs
   function add_button_click() {
-    js.add(function() { $('#add').click(); });
+    jst.add(Jster.shiny.waitUntilStable);
+    jst.add(function() { $('#add').click(); });
   }
   add_button_click()
   add_button_click()
@@ -41,7 +42,8 @@ ui <- fluidPage(
 
   // click tabs to cause error state
   function add_click_tab(idx) {
-    js.add(function() { $($('#tabs a').get(idx)).click(); });
+    jst.add(Jster.shiny.waitUntilStable);
+    jst.add(function() { $($('#tabs a').get(idx)).click(); });
   }
   add_click_tab(0)
   add_click_tab(1)
@@ -55,7 +57,8 @@ ui <- fluidPage(
 
   // calculate value of active tab to get sum to check if working
   function add_active_pane_counter() {
-    js.add(function() {
+    jst.add(Jster.shiny.waitUntilStable);
+    jst.add(function() {
       var val = $('.tab-pane.active .val').text() - 0;
       counter = counter + val;
     });
@@ -71,7 +74,8 @@ ui <- fluidPage(
   add_click_tab(7); add_active_pane_counter();
 
   // verify the tabs work
-  js.add(function() {
+  jst.add(Jster.shiny.waitUntilStable);
+  jst.add(function() {
     var sum = 0;
     var len = $('.tab-pane').get().length;
     for (var i = 0; i < len; i++) {
@@ -83,7 +87,7 @@ ui <- fluidPage(
     }
   });
 
-  js.test();
+  jst.test();
   ")
 )
 

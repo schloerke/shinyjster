@@ -1,8 +1,8 @@
 on:
   issue_comment:
-    types: [created, edited]
+    types: [created]
   pull_request_review_comment:
-    types: [created, edited]
+    types: [created]
 name: Commands
 jobs:
 
@@ -40,12 +40,12 @@ jobs:
         run: >
           Rscript
           -e "if (system.file(package = 'remotes') == '') install.packages('remotes')"
-          -e "remotes::install_github('r-hub/sysreqs')"
       - name: Install system dependencies
         if: runner.os == 'Linux'
         env:
           RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
         run: |
+          Rscript -e "remotes::install_github('r-hub/sysreqs')"
           sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
           sudo -s eval "$sysreqs"
       - name: Install dependencies

@@ -36,7 +36,8 @@
   },
   "dependencies": {
     "core-js": "3",
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.15",
+    "util-inspect": "https://github.com/deecewan/browser-util-inspect#c0b4350"
   },
   "husky": {
     "hooks": {

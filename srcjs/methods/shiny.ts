@@ -9,10 +9,10 @@ function isBusy(): boolean {
   return !shinyIsIdle;
 }
 if ($) {
-  $(document).on("shiny:busy", function(event) {
+  $(document).on("shiny:busy", function() {
     shinyIsIdle = false;
   });
-  $(document).on("shiny:idle", function(event) {
+  $(document).on("shiny:idle", function() {
     shinyIsIdle = true;
   });
 }

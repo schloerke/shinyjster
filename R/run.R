@@ -8,7 +8,24 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1") {
   later::later(delay = 0.5, function() {
     utils::browseURL(url)
   })
-  shiny::runApp(appDir, port, host = host, launch.browser = FALSE)
+
+  upgrade_app_output(
+    shiny::runApp(
+      appDir,
+      port = port,
+      host = host,
+      launch.browser = FALSE
+    ),
+    appDir = appDir
+  )
+}
+
+upgrade_app_output <- function(output, appDir) {
+  tibble::tibble(
+    appDir = appDir,
+    successful = identical(output$type, "success"),
+    returnValue = list(output)
+  )
 }
 
 
@@ -23,7 +40,7 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1") {
 #' @export
 run_jster_apps <- function(
   apps,
-  type = c("parallel", "callr", "serial"),
+  type = c("parallel", "callr", "lapply"),
   cores = parallel::detectCores(),
   port = 8000,
   host = "127.0.0.1"
@@ -42,12 +59,14 @@ run_jster_apps_lapply <- function(
   port = 8000,
   host = "127.0.0.1"
 ){
-  lapply(apps, function(app) {
+  ret <- lapply(apps, function(app) {
     cat("shinyjster - ", "launching app: ", basename(app), "\n", sep = "")
+    on.exit({
+      cat("shinyjster - ", "closing app: ", basename(app), "\n", sep = "")
+    }, add = TRUE)
     run_jster(app, port = port, host = host)
-    cat("shinyjster - ", "closing app: ", basename(app), "\n", sep = "")
   })
-  invisible(TRUE)
+  do.call(rbind, ret)
 }
 
 
@@ -61,37 +80,32 @@ run_jster_apps_parallel <- function(
     stop("httpuv must be installed for this function to work")
   }
 
-  callr::r(
-    function(apps_, cores_, host_) {
-      parallel::mclapply(
-        apps_,
-        mc.cores = cores_,
-        mc.preschedule = FALSE,
-        FUN = function(app) {
-          cat("shinyjster - ", "launching app: ", basename(app), "\n", sep = "")
-          port <- httpuv::randomPort()
-          url <- paste0("http://", host_, ":", port, "/?shinyjster=1")
-          later::later(delay = 0.5, function() {
-            utils::browseURL(url)
-          })
+  ret <- parallel::mclapply(
+    apps,
+    mc.cores = cores,
+    mc.preschedule = FALSE,
+    FUN = function(app) {
+      cat("shinyjster - ", "launching app: ", basename(app), "\n", sep = "")
+      on.exit({
+        cat("shinyjster - ", "closing app: ", basename(app), "\n", sep = "")
+      }, add = TRUE)
+      port <- httpuv::randomPort()
+      url <- paste0("http://", host, ":", port, "/?shinyjster=1")
+      later::later(delay = 0.5, function() {
+        utils::browseURL(url)
+      })
 
-          # utils::browseURL(url)
-          shiny::runApp(app, port, host = host_, launch.browser = FALSE)
-          cat("shinyjster - ", "closing app: ", basename(app), "\n", sep = "")
-        }
+      # utils::browseURL(url)
+      return(
+        shiny::runApp(app, port = port, host = host, launch.browser = FALSE)
       )
-    },
-    list(
-      apps_ = apps,
-      cores_ = cores,
-      host_ = host
-    ),
-    env = callr::rcmd_safe_env()[! names(callr::rcmd_safe_env()) %in% "R_BROWSER"],
-    supervise = TRUE,
-    show = TRUE
+    }
   )
 
-  invisible()
+  do.call(
+    rbind,
+    mapply(ret, apps, FUN = upgrade_app_output, SIMPLIFY = FALSE)
+  )
 }
 
 
@@ -133,6 +147,9 @@ run_jster_apps_callr <- function(
       p = callr::r_bg(
         function(app_, host_, i_) {
           cat("shinyjster - ", "launching app", "\n", sep = "")
+          on.exit({
+            cat("shinyjster - ", "closing app", "\n", sep = "")
+          }, add = TRUE)
 
           port <- httpuv::randomPort()
           url <- paste0("http://", host_, ":", port, "/?shinyjster=1")
@@ -142,7 +159,6 @@ run_jster_apps_callr <- function(
 
           # utils::browseURL(url)
           shiny::runApp(app_, port, host = host_, launch.browser = FALSE)
-          cat("shinyjster - ", "closing app", "\n", sep = "")
         },
         list(
           app_ = app,
@@ -158,11 +174,15 @@ run_jster_apps_callr <- function(
     )
   }
 
+  ret <- NULL
   print_process_output = function(i) {
+    pr <- processes[[i]]$p
+    appDir <- processes[[i]]$app
+    ret <<- rbind(ret, upgrade_app_output(pr$get_result(), appDir = appDir))
     cat(
       paste(
-        paste0("core[", i, "]: ", basename(processes[[i]]$app), " - "),
-        processes[[i]]$p$read_output_lines(),
+        paste0("core[", i, "]: ", basename(appDir), " - "),
+        pr$read_output_lines(),
         sep = "", collapse = "\n"
       ),
       "\n"
@@ -188,7 +208,7 @@ run_jster_apps_callr <- function(
     Sys.sleep(0.5)
   }
 
-  invisible(TRUE)
+  ret
 }
 
 
@@ -202,6 +222,9 @@ apps_to_test <- function() {
     "01-hello-fail",
     "132-async-events"
   )
+  if (gh_actions_system() == "Windows") {
+    bad_apps <- c(bad_apps, "022-unicode-chinese")
+  }
 
   app_dir <- system.file("shinyjster", package = "shinyjster")
   apps <- dir(app_dir, full.names = TRUE)

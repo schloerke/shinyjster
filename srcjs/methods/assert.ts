@@ -1,15 +1,44 @@
+import stringify from "util-inspect";
+
 function prettyJSON(x: any) {
-  return JSON.stringify(x, null, "  ");
+  return stringify(x, { depth: 4 });
 }
 
-function isEqual(x: any, y: any) {
+function shortString(xStr: string, maxLength = 20) {
+  if (xStr.length <= maxLength) {
+    return xStr;
+  }
+  return `${xStr.slice(0, maxLength)}...`;
+}
+
+function isEqual(x: any, y: any, contextObj: any = undefined) {
   const xStr = prettyJSON(x);
   const yStr = prettyJSON(y);
 
-  if (xStr !== yStr) {
+  if (xStr != yStr) {
     console.log("x:", x);
     console.log("y:", y);
-    throw "x does not equal y";
+    const throwObj: {
+      message: string;
+      x: any;
+      y: any;
+      xStr: string;
+      yStr: string;
+      contextStr?: string;
+    } = {
+      message: `${shortString(xStr)} does not equal ${shortString(yStr)}`,
+      x: x,
+      y: y,
+      xStr: xStr,
+      yStr: yStr,
+    };
+
+    if (contextObj) {
+      console.log("context: ", contextObj);
+      throwObj.contextStr = prettyJSON(contextObj);
+    }
+
+    throw throwObj;
   }
   return true;
 }
@@ -25,7 +54,10 @@ function isFalse(x: any) {
 function isFunction(fn: any) {
   if (typeof fn !== "function") {
     console.log("fn: ", fn);
-    throw "fn is not a function";
+    throw {
+      message: `fn is not a function. fn: ${shortString(fn.toString())}`,
+      fn: fn.toString(),
+    };
   }
 }
 

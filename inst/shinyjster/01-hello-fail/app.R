@@ -23,7 +23,7 @@ ui <- fluidPage(
     jst.add(function() { $('#button').click(); });
     jst.add(function() { $('#button').click(); });
     jst.add(Jster.shiny.waitUntilIdle);
-    jst.add(function() { if ($('#number').text() !== 'NOT 3') throw 'text does not equal \"NOT 3\"' });
+    jst.add(function() { Jster.assert.isEqual($('#number').text(), 'NOT 3', {number: $('#number')}) });
     jst.test();
   ")
 

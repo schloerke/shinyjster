@@ -45,7 +45,22 @@ ui <- fluidPage(
   make_row(uiOutput, "ui", "UI"),
   shinyjster_js("
     var jst = jster();
-    jst.add(Jster.shiny.waitUntilIdle);
+    jst.add(Jster.shiny.waitUntilStable);
+    jst.add(function(done) {
+      var wait = function() {
+
+        if ($('#DataTables_Table_0_processing').css('display') != 'none') {
+          setTimeout(wait, 20);
+          return;
+        }
+        if ($('#DataTables_Table_1_processing').css('display') != 'none') {
+          setTimeout(wait, 20);
+          return;
+        }
+        done();
+      }
+      wait();
+    })
     jst.add(function() {
       var assertEqual = function(id) {
         console.log('id: ', id);

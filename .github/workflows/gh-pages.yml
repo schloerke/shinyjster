@@ -9,8 +9,16 @@ on:
 name: Deploy gh-pages
 
 jobs:
+  # # added so that the workflow doesn't fail.
+  # always_runner:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Always run
+  #       run: echo "This job is used to prevent the workflow status from showing as failed when all other jobs are skipped"
+
   render:
     name: "Render pkgdown"
+    # if: false
     runs-on: ubuntu-16.04
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -29,18 +37,19 @@ jobs:
         run: >
           Rscript
           -e "if (system.file(package = 'remotes') == '') install.packages('remotes')"
-          -e "remotes::install_github('r-hub/sysreqs')"
       - name: Install system dependencies
         if: runner.os == 'Linux'
         env:
           RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
         run: |
+          Rscript -e "remotes::install_github('r-hub/sysreqs')"
           sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
           sudo -s eval "$sysreqs"
       - name: Install dependencies
         run: >
           Rscript
           -e "remotes::install_deps(dependencies = TRUE)"
+          -e "remotes::install_local(dependencies = TRUE, force = TRUE)"
           -e 'remotes::install_cran("pkgdown")'
       - name: Render site
         run: >

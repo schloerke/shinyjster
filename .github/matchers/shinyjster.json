@@ -1,0 +1,26 @@
+{
+  "problemMatcher": [
+    {
+      "owner": "shinyjster",
+      "pattern": [{
+        "regexp": "^(Error|Warning)(?: in (.*) )?: (.*)$",
+        "severity": 1,
+        "code": 2,
+        "message": 3
+      }]
+    },
+    {
+      "owner": "shinyjster-js-error",
+      "pattern": [
+        {
+          "regexp": "^shinyjster - JS (error) found",
+          "severity": 1
+        },
+        {
+          "regexp": "\tmsg: (.*)$",
+          "message": 1
+        }
+      ]
+    }
+  ]
+}

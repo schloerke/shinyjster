@@ -9,7 +9,7 @@ function isChecked(id: string) {
 }
 
 function label(id: string) {
-  return $("#summary")
+  return $(`#${id}`)
     .parent()
     .text()
     .trim();
