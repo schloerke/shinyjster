@@ -102,9 +102,9 @@ js_for_id <- function(select_id, output_id, test_val) {
       Jster.selectize.clickOption('", select_id, "', 1); // select second item
     });
     jst.add(Jster.shiny.waitUntilStable);
+    jst.add(Jster.shiny.waitUntilStable);
     jst.add(function() {
       console.log('chosen second choice')
-      Jster.assert.isEqual($('#", output_id, "').text(), '[1] \"", test_val$expected[[2]]$value, "\"');
       Jster.assert.isEqual($('#", output_id, "').text(), '[1] \"", test_val$expected[[2]]$value, "\"');
     });
   ")
