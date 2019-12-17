@@ -9,16 +9,16 @@ on:
 name: Deploy gh-pages
 
 jobs:
-  # added so that the workflow doesn't fail.
-  always_runner:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Always run
-        run: echo "This job is used to prevent the workflow status from showing as failed when all other jobs are skipped"
+  # # added so that the workflow doesn't fail.
+  # always_runner:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Always run
+  #       run: echo "This job is used to prevent the workflow status from showing as failed when all other jobs are skipped"
 
   render:
     name: "Render pkgdown"
-    if: false
+    # if: false
     runs-on: ubuntu-16.04
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
