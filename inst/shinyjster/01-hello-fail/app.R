@@ -23,7 +23,7 @@ ui <- fluidPage(
     jst.add(function() { $('#button').click(); });
     jst.add(function() { $('#button').click(); });
     jst.add(Jster.shiny.waitUntilIdle);
-    jst.add(function() { Jster.assert.isEqual($('#number').text(), 'NOT 3') });
+    jst.add(function() { Jster.assert.isEqual($('#number').text(), 'NOT 3', {number: $('#number')}) });
     jst.test();
   ")
 
@@ -32,7 +32,7 @@ ui <- fluidPage(
 server <- function(input, output, session) {
 
   # include shinyjster_server call at top of server definition
-  shinyjster_server(input, output, session)
+  # shinyjster_server(input, output, session)
 
   output$number <- renderText({
     input$button

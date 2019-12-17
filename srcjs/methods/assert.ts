@@ -1,5 +1,7 @@
+import stringify from "util-inspect";
+
 function prettyJSON(x: any) {
-  return JSON.stringify(x, null, "  ");
+  return stringify(x, { depth: 4 });
 }
 
 function shortString(xStr: string, maxLength = 20) {
@@ -9,20 +11,34 @@ function shortString(xStr: string, maxLength = 20) {
   return `${xStr.slice(0, maxLength)}...`;
 }
 
-function isEqual(x: any, y: any) {
+function isEqual(x: any, y: any, contextObj: any = undefined) {
   const xStr = prettyJSON(x);
   const yStr = prettyJSON(y);
 
   if (xStr != yStr) {
     console.log("x:", x);
     console.log("y:", y);
-    throw {
+    const throwObj: {
+      message: string;
+      x: any;
+      y: any;
+      xStr: string;
+      yStr: string;
+      contextStr?: string;
+    } = {
       message: `${shortString(xStr)} does not equal ${shortString(yStr)}`,
       x: x,
       y: y,
       xStr: xStr,
       yStr: yStr,
     };
+
+    if (contextObj) {
+      console.log("context: ", contextObj);
+      throwObj.contextStr = prettyJSON(contextObj);
+    }
+
+    throw throwObj;
   }
   return true;
 }
