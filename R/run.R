@@ -145,8 +145,9 @@ run_jster_apps_callr <- function(
     processes[[i]] <<- list(
       app = app,
       p = callr::r_bg(
-        function(app_, host_, i_) {
+        function(app_, host_, i_, browser_op_) {
           cat("shinyjster - ", "launching app", "\n", sep = "")
+          options(browser = browser_op_)
           on.exit({
             cat("shinyjster - ", "closing app", "\n", sep = "")
           }, add = TRUE)
@@ -163,7 +164,8 @@ run_jster_apps_callr <- function(
         list(
           app_ = app,
           host_ = host,
-          i_ = i
+          i_ = i,
+          browser_op_ = getOption("browser") # pass through browser setting
         ),
         env = callr::rcmd_safe_env()[! names(callr::rcmd_safe_env()) %in% "R_BROWSER"],
         supervise = TRUE,

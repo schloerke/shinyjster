@@ -4,6 +4,7 @@
 #' @param debug_port Port for chrome debugger
 #' @param browser Browser to be set for testing.  If using `"chrome"` or `"firefox"`, the system application will be used.
 #' @param assert Logical which determines if [assert_jster] should be run on the final output
+#' @param ... params passed to [run_jster]
 #' @rdname run_headless
 #' @export
 run_headless <- function(
@@ -12,8 +13,9 @@ run_headless <- function(
   host = "127.0.0.1",
   debug_port = NULL,
   browser = c("chrome", "firefox"),
-  type = c("lapply", "parallel", "callr"),
-  assert = TRUE
+  assert = TRUE,
+  ...,
+  type = c("lapply", "parallel", "callr")
 ) {
 
   if (missing(browser)) {
@@ -46,7 +48,7 @@ run_headless <- function(
           stop("Google chrome not implemented for system: ", system)
         )
         function(url) {
-          browse_url(
+          shinyjster:::.processx_browse_url(
             url,
             program,
             c(
@@ -65,16 +67,18 @@ run_headless <- function(
           stop("Firefox not implemented for system: ", system)
         )
         function(url) {
-          browse_url(
+          shinyjster:::.processx_browse_url(
             url,
             program,
             c(
               "-P", "headless",
               "-headless", # it is a single dash
+              # "-new-instance",
               "-new-tab",
+              # "-safe-mode",
               # https://developer.mozilla.org/en-US/docs/Tools/Remote_Debugging/Debugging_Firefox_Desktop
-              # Note: in Windows, the start-debugger-server call will only have one dash:
-              "--start-debugger-server", debug_port
+              "-start-debugger-server", debug_port,
+              NULL
             )
           )
         }
@@ -91,7 +95,7 @@ run_headless <- function(
   }, add = TRUE)
   options(browser = browser)
 
-  ret <- run_jster_apps(apps = apps, port = port, host = host, type = match.arg(type))
+  ret <- run_jster_apps(apps = apps, port = port, host = host, type = match.arg(type), ...)
 
   if (assert) {
     assert_jster(ret)
@@ -119,4 +123,20 @@ browse_url <- function(url, program, args, ..., wait = FALSE) {
   } else {
     utils::browseURL(url, paste0(c(paste0("'", program, "'"), args), collapse = " "))
   }
+}
+
+
+#' @export
+.processx_browse_url <- function(url, program, args, ...) {
+  proc <- processx::process$new(
+    program,
+    c(args, url),
+    stdout = "|",     # be able to read stdout
+    stderr= "2>&1",   # put error output in stdout
+    echo_cmd = TRUE,  # display command
+    supervise = TRUE, # kill when R process is terminated
+    cleanup = FALSE   # do not kill on gc
+  )
+
+  invisible()
 }
