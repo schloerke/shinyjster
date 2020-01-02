@@ -48,14 +48,19 @@ run_headless <- function(
           stop("Google chrome not implemented for system: ", system)
         )
         function(url) {
-          shinyjster:::.processx_browse_url(
-            url,
+          processx::process$new(
             program,
             c(
               "--headless",
               "--disable-gpu",
-              paste0("--remote-debugging-port=", debug_port)
-            )
+              paste0("--remote-debugging-port=", debug_port),
+              url
+            ),
+            stdout = "|",     # be able to read stdout
+            stderr= "2>&1",   # put error output in stdout
+            echo_cmd = TRUE,  # display command
+            supervise = TRUE, # kill when R process is terminated
+            cleanup = FALSE   # do not kill on gc
           )
         }
       }),
@@ -67,8 +72,7 @@ run_headless <- function(
           stop("Firefox not implemented for system: ", system)
         )
         function(url) {
-          shinyjster:::.processx_browse_url(
-            url,
+          processx::process$new(
             program,
             c(
               "-P", "headless",
@@ -78,8 +82,13 @@ run_headless <- function(
               # "-safe-mode",
               # https://developer.mozilla.org/en-US/docs/Tools/Remote_Debugging/Debugging_Firefox_Desktop
               "-start-debugger-server", debug_port,
-              NULL
-            )
+              url
+            ),
+            stdout = "|",     # be able to read stdout
+            stderr= "2>&1",   # put error output in stdout
+            echo_cmd = TRUE,  # display command
+            supervise = TRUE, # kill when R process is terminated
+            cleanup = FALSE   # do not kill on gc
           )
         }
       }),
@@ -123,20 +132,4 @@ browse_url <- function(url, program, args, ..., wait = FALSE) {
   } else {
     utils::browseURL(url, paste0(c(paste0("'", program, "'"), args), collapse = " "))
   }
-}
-
-
-#' @export
-.processx_browse_url <- function(url, program, args, ...) {
-  proc <- processx::process$new(
-    program,
-    c(args, url),
-    stdout = "|",     # be able to read stdout
-    stderr= "2>&1",   # put error output in stdout
-    echo_cmd = TRUE,  # display command
-    supervise = TRUE, # kill when R process is terminated
-    cleanup = FALSE   # do not kill on gc
-  )
-
-  invisible()
 }
