@@ -33,14 +33,14 @@ upgrade_app_output <- function(output, appDir) {
 #' @param type Single value to determine how applications are executed. \describe{
 #'  \item{`'parallel'`}{Runs apps using `parallel::mclapply` using `cores` cores}
 #'  \item{`'callr'`}{Runs apps using `callr::r_bg` using `cores` cores}
-#'  \item{`'serial'`}{Runs apps one after another using `lapply`. `port` is only used with option `'serial'`}
+#'  \item{`'serial'`}{Runs apps one after another using `lapply`. `port` is only used with options `'serial'` and `'lapply'`}
 #' }
 #' @param cores Number of cores (if needed) to execute on.
 #' @rdname run_jster
 #' @export
 run_jster_apps <- function(
   apps,
-  type = c("parallel", "callr", "lapply"),
+  type = c("serial", "parallel", "callr", "lapply"),
   cores = parallel::detectCores(),
   port = 8000,
   host = "127.0.0.1"
@@ -49,13 +49,14 @@ run_jster_apps <- function(
   switch(match.arg(type),
     "parallel" = run_jster_apps_parallel(apps, cores = cores, host = host),
     "callr" = run_jster_apps_callr(apps, cores = cores, host = host),
-    run_jster_apps_lapply(apps, cores = cores, port = port, host = host)
+    "serial" = run_jster_apps_serial(apps, port = port, host = host),
+    "lapply" = ,
+    run_jster_apps_lapply(apps, port = port, host = host)
   )
 }
 
 run_jster_apps_lapply <- function(
   apps = apps_to_test(),
-  cores = parallel::detectCores(),
   port = 8000,
   host = "127.0.0.1"
 ){
@@ -67,6 +68,48 @@ run_jster_apps_lapply <- function(
     run_jster(app, port = port, host = host)
   })
   do.call(rbind, ret)
+}
+
+run_jster_apps_serial <- function(
+  apps = apps_to_test(),
+  port = 8000,
+  host = "127.0.0.1"
+){
+  ret <- lapply(apps, function(app) {
+    callr::r(
+      function(app_, port_, host_, browser_op_) {
+        cat("shinyjster - ", "launching app: ", basename(app_), "\n", sep = "")
+        options(browser = browser_op_)
+
+        on.exit({
+          cat("shinyjster - ", "closing app: ", basename(app_), "\n", sep = "")
+        }, add = TRUE)
+
+        url <- paste0("http://", host_, ":", port_, "/?shinyjster=1")
+        later::later(delay = 0.5, function() {
+          utils::browseURL(url)
+        })
+
+        # utils::browseURL(url)
+        return(
+          shiny::runApp(app_, port = port_, host = host_, launch.browser = FALSE)
+        )
+      },
+      list(
+        app_ = app,
+        port_ = port,
+        host_ = host,
+        browser_op_ = getOption("browser")
+      ),
+      show = TRUE,
+      spinner = TRUE
+    )
+  })
+
+  do.call(
+    rbind,
+    mapply(ret, apps, FUN = upgrade_app_output, SIMPLIFY = FALSE)
+  )
 }
 
 

@@ -108,9 +108,9 @@ jobs:
         shell: bash
         run: >
           Rscript
-          -e "shinyjster::run_headless(browser = 'chrome', type = 'lapply')"
+          -e "shinyjster::run_headless(browser = 'chrome', type = 'serial')"
       - name: Run headless Firefox checks
         if: false
         run: >
           Rscript
-          -e "shinyjster::run_headless(browser = 'firefox', type = 'lapply')"
+          -e "shinyjster::run_headless(browser = 'firefox', type = 'serial')"

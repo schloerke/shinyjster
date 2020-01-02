@@ -15,7 +15,7 @@ run_headless <- function(
   browser = c("chrome", "firefox"),
   assert = TRUE,
   ...,
-  type = c("lapply", "parallel", "callr")
+  type = c("serial", "lapply", "parallel", "callr")
 ) {
 
   if (missing(browser)) {

@@ -9,7 +9,7 @@ run_jster(appDir, port = 8000, host = "127.0.0.1")
 
 run_jster_apps(
   apps,
-  type = c("parallel", "callr", "lapply"),
+  type = c("serial", "parallel", "callr", "lapply"),
   cores = parallel::detectCores(),
   port = 8000,
   host = "127.0.0.1"
@@ -41,7 +41,7 @@ Details.}
 \item{type}{Single value to determine how applications are executed. \describe{
 \item{\code{'parallel'}}{Runs apps using \code{parallel::mclapply} using \code{cores} cores}
 \item{\code{'callr'}}{Runs apps using \code{callr::r_bg} using \code{cores} cores}
-\item{\code{'serial'}}{Runs apps one after another using \code{lapply}. \code{port} is only used with option \code{'serial'}}
+\item{\code{'serial'}}{Runs apps one after another using \code{lapply}. \code{port} is only used with options \code{'serial'} and \code{'lapply'}}
 }}
 
 \item{cores}{Number of cores (if needed) to execute on.}
