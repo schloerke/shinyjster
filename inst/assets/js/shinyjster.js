@@ -925,6 +925,39 @@ function currentOption(id) {
 }
 
 exports.currentOption = currentOption;
+exports.value = currentOption;
+
+function setValue(id, value) {
+  globals_1.$("#" + id).val(value);
+  globals_1.$("#" + id).trigger("change");
+  return;
+}
+
+exports.setValue = setValue;
+},{"../globals":"eS2z"}],"JqBx":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+
+var globals_1 = require("../globals");
+
+function getEle(id) {
+  if (id === void 0) {
+    id = "._bookmark_";
+  }
+
+  return globals_1.$(document.getElementById(id));
+}
+
+function click(id) {
+  if (id === void 0) {
+    id = "._bookmark_";
+  }
+
+  return getEle(id).click();
+}
+
+exports.click = click;
 },{"../globals":"eS2z"}],"Y0XI":[function(require,module,exports) {
 "use strict";
 
@@ -960,6 +993,8 @@ var unicode = __importStar(require("./unicode"));
 
 var input = __importStar(require("./input"));
 
+var bookmark = __importStar(require("./bookmark"));
+
 var methods = {
   assert: assert,
   selectize: selectize,
@@ -970,10 +1005,11 @@ var methods = {
   checkbox: checkbox,
   image: image,
   unicode: unicode,
-  input: input
+  input: input,
+  bookmark: bookmark
 };
 exports.methods = methods;
-},{"./selectize":"ceOt","./assert":"UK2R","./shiny":"owfG","./button":"bPYC","./radio":"ZV6I","./download":"by4Q","./checkbox":"k4af","./image":"eFjc","./unicode":"nUGZ","./input":"nPXt"}],"WLG3":[function(require,module,exports) {
+},{"./selectize":"ceOt","./assert":"UK2R","./shiny":"owfG","./button":"bPYC","./radio":"ZV6I","./download":"by4Q","./checkbox":"k4af","./image":"eFjc","./unicode":"nUGZ","./input":"nPXt","./bookmark":"JqBx"}],"WLG3":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -1198,6 +1234,7 @@ function () {
   Jster.image = methods_1.methods.image;
   Jster.unicode = methods_1.methods.unicode;
   Jster.input = methods_1.methods.input;
+  Jster.bookmark = methods_1.methods.bookmark;
   return Jster;
 }();
 

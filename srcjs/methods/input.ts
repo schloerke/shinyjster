@@ -10,4 +10,10 @@ function currentOption(id: string) {
   return $(`#${id}`).val();
 }
 
-export { label, currentOption };
+function setValue(id: string, value: string) {
+  $(`#${id}`).val(value);
+  $(`#${id}`).trigger("change");
+  return;
+}
+
+export { label, currentOption, currentOption as value, setValue };

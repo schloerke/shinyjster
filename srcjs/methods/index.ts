@@ -8,6 +8,7 @@ import * as checkbox from "./checkbox";
 import * as image from "./image";
 import * as unicode from "./unicode";
 import * as input from "./input";
+import * as bookmark from "./bookmark";
 
 const methods = {
   assert: assert,
@@ -20,6 +21,7 @@ const methods = {
   image: image,
   unicode: unicode,
   input: input,
+  bookmark: bookmark,
 };
 
 export { methods };

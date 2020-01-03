@@ -26,6 +26,7 @@ class Jster {
   static image = methods.image;
   static unicode = methods.unicode;
   static input = methods.input;
+  static bookmark = methods.bookmark;
 
   constructor(timeout: number) {
     this.hasCalled = false;
