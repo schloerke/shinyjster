@@ -61,7 +61,7 @@ function values(id: string) {
 }
 
 function label(id: string) {
-  return $(`label[for="${id}-selectized"]`)
+  return $(`label[for="${id}-selectized"]:visible`)
     .text()
     .trim();
 }

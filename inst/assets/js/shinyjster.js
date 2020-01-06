@@ -188,7 +188,7 @@ function values(id) {
 exports.values = values;
 
 function label(id) {
-  return globals_1.$("label[for=\"" + id + "-selectized\"]").text().trim();
+  return globals_1.$("label[for=\"" + id + "-selectized\"]:visible").text().trim();
 }
 
 exports.label = label;
