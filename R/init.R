@@ -112,7 +112,7 @@ shinyjster_js <- function(..., set_timeout = TRUE) {
 #' @param input,output,session Shiny server function parameters
 #' @importFrom utils packageVersion str capture.output
 #' @export
-shinyjster_server <- function(input, output, session) {
+shinyjster_server <- function(input, output, session = shiny::getDefaultReactiveDomain()) {
 
   jster_return_val <- list(
     type = "success"
