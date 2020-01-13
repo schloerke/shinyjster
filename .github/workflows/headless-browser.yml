@@ -27,7 +27,6 @@ jobs:
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       CRAN: ${{ matrix.config.cran }}
-    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v1
 
@@ -106,6 +105,7 @@ jobs:
 
       - name: Run headless Chrome checks
         shell: bash
+        timeout-minutes: 10
         run: >
           Rscript
           -e "shinyjster::run_headless(browser = 'chrome', type = 'serial')"
