@@ -105,7 +105,7 @@ jobs:
 
       - name: Run headless Chrome checks
         shell: bash
-        timeout-minutes: 10
+        timeout-minutes: 20
         run: >
           Rscript
           -e "shinyjster::run_headless(browser = 'chrome', type = 'serial')"
