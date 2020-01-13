@@ -4,7 +4,7 @@
 \alias{shinyjster_server}
 \title{Shiny server helper}
 \usage{
-shinyjster_server(input, output, session)
+shinyjster_server(input, output, session = shiny::getDefaultReactiveDomain())
 }
 \arguments{
 \item{input, output, session}{Shiny server function parameters}
