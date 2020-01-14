@@ -1033,6 +1033,11 @@ function () {
   }
 
   Jster.prototype.setProgress = function (color, txt, setInputValue) {
+    if (globals_1.$) {
+      // make sure the status bar is displayed
+      globals_1.$("#shinyjster_progress").css("display", "");
+    }
+
     this.setProgressText(txt, setInputValue);
     this.setProgressColor(color);
   };

@@ -38,6 +38,11 @@ class Jster {
   }
 
   private setProgress(color: string, txt: string, setInputValue): void {
+    if ($) {
+      // make sure the status bar is displayed
+      $("#shinyjster_progress").css("display", "");
+    }
+
     this.setProgressText(txt, setInputValue);
     this.setProgressColor(color);
   }
