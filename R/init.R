@@ -54,7 +54,7 @@ shinyjster_ui <- function() {
     shinyjster_js_dependencies(),
     htmltools::tags$div(
       id = "shinyjster_progress",
-      style = "position: absolute; left: 0px; bottom: 0px; padding: 5px;",
+      style = "display: none; position: absolute; left: 0px; bottom: 0px; padding: 5px;",
       "shinyjster - ", htmltools::tags$span(id = "shinyjster_progress_val")
     )
   )
@@ -113,6 +113,7 @@ shinyjster_js <- function(..., set_timeout = TRUE) {
 #' @importFrom utils packageVersion str capture.output
 #' @export
 shinyjster_server <- function(input, output, session = shiny::getDefaultReactiveDomain()) {
+  force(session)
 
   jster_return_val <- list(
     type = "success"
