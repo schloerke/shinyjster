@@ -4,20 +4,30 @@
 #' @rdname run_jster
 #' @export
 run_jster <- function(appDir, port = 8000, host = "127.0.0.1") {
+
   url <- paste0("http://", host, ":", port, "/?shinyjster=1")
   later::later(delay = 0.5, function() {
     utils::browseURL(url)
   })
 
-  upgrade_app_output(
-    shiny::runApp(
+  if (file.exists(appDir) && !dir.exists(appDir) && grepl("\\.rmd$", tolower(appDir))) {
+    # is and Rmd file
+    res <- rmarkdown::run(appDir, shiny_args = list(
+      port = port,
+      host = host,
+      launch.browser = FALSE
+    ))
+  } else {
+    # is a regular shiny app
+    res <- shiny::runApp(
       appDir,
       port = port,
       host = host,
       launch.browser = FALSE
-    ),
-    appDir = appDir
-  )
+    )
+  }
+
+  upgrade_app_output(res, appDir = appDir)
 }
 
 upgrade_app_output <- function(output, appDir) {
