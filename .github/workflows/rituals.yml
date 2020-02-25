@@ -102,11 +102,17 @@ jobs:
           Rscript -e 'remotes::install_cran("covr")'
           Rscript -e 'covr::codecov(token = "${{secrets.CODECOV_TOKEN}}")'
 
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       - name: Selenium Jar
         run: |
           cd inst/selenium
           mvn package
-          cp inst/selenium/target/selenium-1.0.0-jar-with-dependencies.jar selenium.jar
+          cp target/selenium-1.0.0-jar-with-dependencies.jar selenium.jar
           git add selenium.jar
           git commit -m 'Maven build (GitHub Actions)' || echo "No Maven changes to commit"
 
