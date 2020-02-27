@@ -111,25 +111,25 @@ jobs:
         shell: bash
         run: >
           Rscript
-          -e "shinyjster::run_apps(apps = head(shinyjsters:::apps_to_test()), browser = shinyjster::selenium_chrome(), type = 'serial')"
+          -e "shinyjster::run_jster_apps(apps = head(shinyjsters:::apps_to_test()), browser = shinyjster::selenium_chrome(), type = 'serial')"
 
       - name: Run headless Firefox checks
         if: always()
         shell: bash
         run: >
           Rscript
-          -e "shinyjster::run_apps(apps = head(shinyjsters:::apps_to_test()), browser = shinyjster::selenium_firefox(), type = 'serial')"
+          -e "shinyjster::run_jster_apps(apps = head(shinyjsters:::apps_to_test()), browser = shinyjster::selenium_firefox(), type = 'serial')"
 
       - name: Run headless Edge checks
         if: always() && (runner.os == 'Windows' || runner.os == 'macOS')
         shell: bash
         run: >
           Rscript
-          -e "shinyjster::run_apps(apps = head(shinyjsters:::apps_to_test()), browser = shinyjster::selenium_edge(), type = 'serial')"
+          -e "shinyjster::run_jster_apps(apps = head(shinyjsters:::apps_to_test()), browser = shinyjster::selenium_edge(), type = 'serial')"
 
       - name: Run headless IE checks
         if: always() && runner.os == 'Windows'
         shell: bash
         run: >
           Rscript
-          -e "shinyjster::run_apps(apps = head(shinyjsters:::apps_to_test()), browser = shinyjster::selenium_ie(), type = 'serial')"
+          -e "shinyjster::run_jster_apps(apps = head(shinyjsters:::apps_to_test()), browser = shinyjster::selenium_ie(), type = 'serial')"
