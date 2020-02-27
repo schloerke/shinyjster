@@ -5,14 +5,20 @@
 \alias{run_jster_apps}
 \title{Run an application with shinyjster enabled}
 \usage{
-run_jster(appDir, port = 8000, host = "127.0.0.1")
+run_jster(
+  appDir,
+  port = 8000,
+  host = "127.0.0.1",
+  browser = getOption("browser")
+)
 
 run_jster_apps(
   apps,
-  type = c("serial", "parallel", "callr", "lapply"),
+  type = c("serial", "callr", "lapply"),
   cores = parallel::detectCores(),
   port = 8000,
-  host = "127.0.0.1"
+  host = "127.0.0.1",
+  browser = getOption("browser")
 )
 }
 \arguments{
@@ -36,10 +42,18 @@ use a random port.}
 to the \code{shiny.host} option, if set, or \code{"127.0.0.1"} if not. See
 Details.}
 
+\item{browser}{a non-empty character string giving the name of the
+    program to be used as the HTML browser.  It should be in the PATH,
+    or a full path specified.  Alternatively, an \R function to be
+    called to invoke the browser.
+
+    Under Windows \code{NULL} is also allowed (and is the default), and
+    implies that the file association mechanism will be used.
+  }
+
 \item{apps}{Vector of \code{appDir} values}
 
 \item{type}{Single value to determine how applications are executed. \describe{
-\item{\code{'parallel'}}{Runs apps using \code{parallel::mclapply} using \code{cores} cores}
 \item{\code{'callr'}}{Runs apps using \code{callr::r_bg} using \code{cores} cores}
 \item{\code{'serial'}}{Runs apps one after another using \code{lapply}. \code{port} is only used with options \code{'serial'} and \code{'lapply'}}
 }}
@@ -49,3 +63,10 @@ Details.}
 \description{
 Run an application with shinyjster enabled
 }
+\section{Functions}{
+\itemize{
+\item \code{run_jster}: Run a single shiny application with shinyjster enabled
+
+\item \code{run_jster_apps}: Run a set of Shiny applications with shinyjster enabled
+}}
+
