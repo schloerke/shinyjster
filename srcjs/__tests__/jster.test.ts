@@ -1,9 +1,13 @@
-import { jster } from "../jster";
-
 const setInputMock = function(key: string, value: string): void {
   key + value;
   return;
 };
+
+window.Shiny = {
+  setInputValue: setInputMock,
+};
+
+import { jster } from "../jster";
 
 test("basic jster works", (doneTest) => {
   const jst = jster(1);
@@ -43,6 +47,10 @@ test("basic jster works", (doneTest) => {
   });
 
   jst.test(function(key, info) {
+    if (key != "jster_done") {
+      return;
+    }
+
     // console.log(key, info);
     expect(info).toStrictEqual({
       type: "success",
