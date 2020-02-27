@@ -111,14 +111,14 @@ jobs:
         shell: bash
         run: >
           Rscript
-          -e "shinyjster::run_jster_apps(apps = head(shinyjster:::apps_to_test()), browser = shinyjster::selenium_chrome(), type = 'serial')"
+          -e "shinyjster::run_jster_apps(apps = head(shinyjster:::apps_to_test()), browser = shinyjster::selenium_chrome(headless = TRUE), type = 'serial')"
 
       - name: Run headless Firefox checks
         if: always()
         shell: bash
         run: >
           Rscript
-          -e "shinyjster::run_jster_apps(apps = head(shinyjster:::apps_to_test()), browser = shinyjster::selenium_firefox(), type = 'serial')"
+          -e "shinyjster::run_jster_apps(apps = head(shinyjster:::apps_to_test()), browser = shinyjster::selenium_firefox(headless = TRUE), type = 'serial')"
 
       - name: Run headless Edge checks
         if: always() && (runner.os == 'Windows' || runner.os == 'macOS')
