@@ -18,8 +18,6 @@ fun help() {
                 
                 DRIVER: Name of a Selenium driver. Valid names are: $types
                 DIMENSIONS: Window dimension, in pixels, of the format 1200x800
-                X: Width of the browser window in pixels.
-                Y: Height of the browser window in pixels.
                 URL: URL to visit.
                 XPATH: XPath selector string. When the selector matches any elements on the page, this tool exits successfully.
                 TIMEOUT: The number of seconds to wait for the selector to match before exiting with an error.
