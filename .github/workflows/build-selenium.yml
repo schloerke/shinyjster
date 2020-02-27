@@ -2,6 +2,7 @@ on:
   push:
     paths:
       - inst/selenium/src/main/java/selenium/Main.java
+      - inst/selenium/src/main/kotlin/com/rstudio/seleniumRunner/Main.kt
 
 name: Selenium
 
