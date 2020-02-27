@@ -107,7 +107,7 @@ jobs:
 
 
       - name: Run headless Chrome checks
-        timeout-minutes: 10
+        timeout-minutes: 3
         if: always()
         shell: bash
         run: >
@@ -115,7 +115,7 @@ jobs:
           -e "shinyjster::run_jster_apps(apps = head(shinyjster:::apps_to_test()), browser = shinyjster::selenium_chrome(headless = TRUE), type = 'serial')"
 
       - name: Run headless Firefox checks
-        timeout-minutes: 10
+        timeout-minutes: 3
         if: always()
         shell: bash
         run: >
@@ -123,7 +123,7 @@ jobs:
           -e "shinyjster::run_jster_apps(apps = head(shinyjster:::apps_to_test()), browser = shinyjster::selenium_firefox(headless = TRUE), type = 'serial')"
 
       - name: Run headless Edge checks
-        timeout-minutes: 10
+        timeout-minutes: 3
         if: always() && (runner.os == 'Windows' || runner.os == 'macOS')
         shell: bash
         run: >
@@ -131,7 +131,7 @@ jobs:
           -e "shinyjster::run_jster_apps(apps = head(shinyjster:::apps_to_test()), browser = shinyjster::selenium_edge(), type = 'serial')"
 
       - name: Run headless IE checks
-        timeout-minutes: 10
+        timeout-minutes: 3
         if: always() && runner.os == 'Windows'
         shell: bash
         run: >
