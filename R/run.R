@@ -68,7 +68,7 @@ run_jster_apps <- function(
   switch(match.arg(type),
     # "parallel" = run_jster_apps_parallel(apps, cores = cores, host = host, browser = browser),
     "callr" = run_jster_apps_callr(apps, cores = cores, host = host, browser = browser),
-    "serial" = run_jster_apps_serial(apps, port = port, host = host, browser = browser),
+    "serial" = run_jster_apps_serial(apps, host = host, browser = browser),
     "lapply" = ,
     run_jster_apps_lapply(apps, port = port, host = host, browser = browser)
   )
@@ -76,12 +76,15 @@ run_jster_apps <- function(
 
 run_jster_apps_lapply <- function(
   apps = apps_to_test(),
-  port = 8000,
+  port = NULL,
   host = "127.0.0.1",
   browser = getOption("browser")
-){
+) {
   ret <- lapply(apps, function(app) {
     cat("shinyjster - ", "launching app: ", basename(app), "\n", sep = "")
+    if (is.null(port)) {
+      port <- httpuv::randomPort()
+    }
     on.exit({
       cat("shinyjster - ", "closing app: ", basename(app), "\n", sep = "")
     }, add = TRUE)
@@ -92,25 +95,23 @@ run_jster_apps_lapply <- function(
 
 run_jster_apps_serial <- function(
   apps = apps_to_test(),
-  port = 8000,
   host = "127.0.0.1",
   browser = getOption("browser")
 ){
   ret <- lapply(apps, function(app) {
     callr::r(
-      function(run_jster_, app_, port_, host_, browser_) {
+      function(run_jster_, app_, host_, browser_) {
         cat("shinyjster - ", "launching app: ", basename(app_), "\n", sep = "")
 
         on.exit({
           cat("shinyjster - ", "closing app: ", basename(app_), "\n", sep = "")
         }, add = TRUE)
 
-        run_jster_(app = app_, port = port_, host = host_, browser = browser_)
+        run_jster_(app = app_, port = httpuv::randomPort(), host = host_, browser = browser_)
       },
       list(
         run_jster_ = run_jster,
         app_ = app,
-        port_ = port,
         host_ = host,
         browser_ = browser
       ),
