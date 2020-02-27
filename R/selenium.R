@@ -112,6 +112,4 @@ selenium_build <- function() {
   # copy file
   jar_save_file <- file.path(selenium_folder, "selenium.jar")
   file.copy(with_deps_file, jar_save_file, overwrite = TRUE)
-
-
 }
