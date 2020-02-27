@@ -267,6 +267,17 @@ run_jster_apps_callr <- function(
 
 
 
+gh_actions_system <- function() {
+  if (.Platform[["OS.type"]] == "unix") {
+    if (Sys.info()[["sysname"]] == "Darwin") {
+      "macOS"
+    } else {
+      "Linux"
+    }
+  } else {
+    "Windows"
+  }
+}
 apps_to_test <- function() {
   bad_apps <- c(
     "01-hello-fail",
