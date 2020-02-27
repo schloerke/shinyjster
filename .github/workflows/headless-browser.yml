@@ -88,8 +88,8 @@ jobs:
           Rscript
           -e "remotes::install_deps(dependencies = TRUE)"
           -e "remotes::install_local(dependencies = TRUE, force = TRUE)"
-      - name: Add shinyjster matchers
-        run: echo "::add-matcher::.github/matchers/shinyjster.json"
+      # - name: Add shinyjster matchers
+      #   run: echo "::add-matcher::.github/matchers/shinyjster.json"
 
       - name: Install app deps
         run: >
@@ -103,14 +103,33 @@ jobs:
           Rscript
           -e "remotes::install_github('rstudio/shiny')"
 
+
+
+
       - name: Run headless Chrome checks
+        if: always()
         shell: bash
-        timeout-minutes: 20
         run: >
           Rscript
-          -e "shinyjster::run_headless(browser = 'chrome', type = 'serial')"
+          -e "shinyjster::run_apps(apps = head(shinyjsters:::apps_to_test()), browser = shinyjster::selenium_chrome(), type = 'serial')"
+
       - name: Run headless Firefox checks
-        if: false
+        if: always()
+        shell: bash
         run: >
           Rscript
-          -e "shinyjster::run_headless(browser = 'firefox', type = 'serial')"
+          -e "shinyjster::run_apps(apps = head(shinyjsters:::apps_to_test()), browser = shinyjster::selenium_firefox(), type = 'serial')"
+
+      - name: Run headless Edge checks
+        if: always() && (runner.os == 'Windows' || runner.os == 'macOS')
+        shell: bash
+        run: >
+          Rscript
+          -e "shinyjster::run_apps(apps = head(shinyjsters:::apps_to_test()), browser = shinyjster::selenium_edge(), type = 'serial')"
+
+      - name: Run headless IE checks
+        if: always() && runner.os == 'Windows'
+        shell: bash
+        run: >
+          Rscript
+          -e "shinyjster::run_apps(apps = head(shinyjsters:::apps_to_test()), browser = shinyjster::selenium_ie(), type = 'serial')"
