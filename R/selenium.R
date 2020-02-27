@@ -95,3 +95,23 @@ selenium_ie <- function(timeout = 2 * 60, headless = FALSE) {
     selenium_browser(url, "ie", headless, timeout)
   }
 }
+
+
+
+
+selenium_build <- function() {
+  selenium_folder <- system.file("selenium", package = "shinyjster")
+
+  system(paste0(
+    "cd '", selenium_folder, "' && ",
+    "mvn package"
+  ))
+
+  # find file
+  with_deps_file <- dir(file.path(selenium_folder, "target"), full.names = TRUE, pattern = "with-dependencies.jar$")[1]
+  # copy file
+  jar_save_file <- file.path(selenium_folder, "selenium.jar")
+  file.copy(with_deps_file, jar_save_file, overwrite = TRUE)
+
+
+}
