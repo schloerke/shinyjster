@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
 import kotlin.system.exitProcess
 
+// Types are chrome,firefox,opera,edge,phantomjs,iexplorer,selenium_server_standalone,chromium
 val types = enumValues<DriverManagerType>().map { it.name.toLowerCase() }.joinToString(",")
 
 fun help() {
