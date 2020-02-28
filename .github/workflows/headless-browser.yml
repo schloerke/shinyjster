@@ -112,7 +112,7 @@ jobs:
         shell: bash
         run: >
           Rscript
-          -e "shinyjster::run_jster_apps(apps = head(shinyjster:::apps_to_test()), browser = shinyjster::selenium_ie(), type = 'serial')"
+          -e "shinyjster::run_jster_apps(apps = rev(head(shinyjster:::apps_to_test())), browser = shinyjster::selenium_ie(), type = 'serial')"
 
       - name: Run headless Edge checks
         timeout-minutes: 3
@@ -120,7 +120,7 @@ jobs:
         shell: bash
         run: >
           Rscript
-          -e "shinyjster::run_jster_apps(apps = head(shinyjster:::apps_to_test()), browser = shinyjster::selenium_edge(), type = 'serial')"
+          -e "shinyjster::run_jster_apps(apps = rev(head(shinyjster:::apps_to_test())), browser = shinyjster::selenium_edge(), type = 'serial')"
 
       - name: Run headless Chrome checks
         timeout-minutes: 3
@@ -128,7 +128,7 @@ jobs:
         shell: bash
         run: >
           Rscript
-          -e "shinyjster::run_jster_apps(apps = head(shinyjster:::apps_to_test()), browser = shinyjster::selenium_chrome(headless = TRUE), type = 'serial')"
+          -e "shinyjster::run_jster_apps(apps = rev(head(shinyjster:::apps_to_test())), browser = shinyjster::selenium_chrome(headless = TRUE), type = 'serial')"
 
       - name: Run headless Firefox checks
         timeout-minutes: 3
@@ -136,4 +136,4 @@ jobs:
         shell: bash
         run: >
           Rscript
-          -e "shinyjster::run_jster_apps(apps = head(shinyjster:::apps_to_test()), browser = shinyjster::selenium_firefox(headless = TRUE), type = 'serial')"
+          -e "shinyjster::run_jster_apps(apps = rev(head(shinyjster:::apps_to_test())), browser = shinyjster::selenium_firefox(headless = TRUE), type = 'serial')"
