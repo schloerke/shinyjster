@@ -113,7 +113,7 @@ jobs:
           Rscript
           -e "if (!requireNamespace('pkgload')) remotes::install_cran('pkgload')"
           -e "pkgload::load_all(); selenium_build()"
-          -e "remotes::install_local()"
+          -e "remotes::install_local(force = TRUE)"
 
       - name: Run headless IE checks
         timeout-minutes: 20
