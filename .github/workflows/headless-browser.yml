@@ -111,10 +111,12 @@ jobs:
         shell: bash
         run: >
           Rscript
-          -e "shinyjster:::selenium_build()"
+          -e "if (!requireNamespace('pkgload')) remotes::install_cran('pkgload')"
+          -e "pkgload::load_all(); selenium_build()"
+          -e "remotes::install_local()"
 
       - name: Run headless IE checks
-        timeout-minutes: 5
+        timeout-minutes: 20
         if: always() && runner.os == 'Windows'
         shell: bash
         run: >
@@ -122,7 +124,7 @@ jobs:
           -e "shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_ie(), type = 'serial')"
 
       - name: Run headless Edge checks
-        timeout-minutes: 5
+        timeout-minutes: 20
         if: always() && (runner.os == 'Windows' || runner.os == 'macOS')
         shell: bash
         run: >
@@ -130,7 +132,7 @@ jobs:
           -e "shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_edge(), type = 'serial')"
 
       - name: Run headless Chrome checks
-        timeout-minutes: 5
+        timeout-minutes: 20
         if: always()
         shell: bash
         run: >
@@ -138,7 +140,7 @@ jobs:
           -e "shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_chrome(headless = TRUE), type = 'serial')"
 
       - name: Run headless Firefox checks
-        timeout-minutes: 5
+        timeout-minutes: 20
         if: always()
         shell: bash
         run: >
