@@ -10,6 +10,9 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
   # # MUST be written to namespace all outside functions... allows for use when passed into callr
   ######
 
+  if (is.null(port)) {
+    port <- httpuv::randomPort()
+  }
 
   url <- paste0("http://", host, ":", port, "/?shinyjster=1")
   force(browser)
@@ -50,8 +53,9 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
 #' @param apps Vector of `appDir` values
 #' @param type Single value to determine how applications are executed. \describe{
 # '  \item{`'parallel'`}{Runs apps using `parallel::mclapply` using `cores` cores}
-#'  \item{`'callr'`}{Runs apps using `callr::r_bg` using `cores` cores}
-#'  \item{`'serial'`}{Runs apps one after another using `lapply`. `port` is only used with options `'serial'` and `'lapply'`}
+#'  \item{`'serial'`}{Runs apps one after another using `lapply`. `port` will be random for each app unless specified.}
+#'  \item{`'callr'`}{Runs apps using `callr::r_bg` using `cores` cores. `port` will be random for each app to allow concurrent execution.}
+#'  \item{`'lapply'`}{Runs apps in succession using `lapply`. `port` will be random for each app unless specified.}
 #' }
 #' @param cores Number of cores (if needed) to execute on.
 #' @describeIn run_jster Run a set of Shiny applications with shinyjster enabled
@@ -60,7 +64,7 @@ run_jster_apps <- function(
   apps,
   type = c("serial", "callr", "lapply"),
   cores = parallel::detectCores(),
-  port = 8000,
+  port = NULL,
   host = "127.0.0.1",
   browser = getOption("browser")
 ) {
@@ -68,7 +72,7 @@ run_jster_apps <- function(
   switch(match.arg(type),
     # "parallel" = run_jster_apps_parallel(apps, cores = cores, host = host, browser = browser),
     "callr" = run_jster_apps_callr(apps, cores = cores, host = host, browser = browser),
-    "serial" = run_jster_apps_serial(apps, host = host, browser = browser),
+    "serial" = run_jster_apps_serial(apps, port = port, host = host, browser = browser),
     "lapply" = ,
     run_jster_apps_lapply(apps, port = port, host = host, browser = browser)
   )
@@ -82,9 +86,6 @@ run_jster_apps_lapply <- function(
 ) {
   ret <- lapply(apps, function(app) {
     cat("shinyjster - ", "launching app: ", basename(app), "\n", sep = "")
-    if (is.null(port)) {
-      port <- httpuv::randomPort()
-    }
     on.exit({
       cat("shinyjster - ", "closing app: ", basename(app), "\n", sep = "")
     }, add = TRUE)
@@ -95,23 +96,25 @@ run_jster_apps_lapply <- function(
 
 run_jster_apps_serial <- function(
   apps = apps_to_test(),
+  port = NULL,
   host = "127.0.0.1",
   browser = getOption("browser")
 ){
   ret <- lapply(apps, function(app) {
     callr::r(
-      function(run_jster_, app_, host_, browser_) {
+      function(run_jster_, app_, port_, host_, browser_) {
         cat("shinyjster - ", "launching app: ", basename(app_), "\n", sep = "")
 
         on.exit({
           cat("shinyjster - ", "closing app: ", basename(app_), "\n", sep = "")
         }, add = TRUE)
 
-        run_jster_(app = app_, port = httpuv::randomPort(), host = host_, browser = browser_)
+        run_jster_(app = app_, port = port_, host = host_, browser = browser_)
       },
       list(
         run_jster_ = run_jster,
         app_ = app,
+        port_ = port,
         host_ = host,
         browser_ = browser
       ),
@@ -204,7 +207,7 @@ run_jster_apps_callr <- function(
 
           run_jster_(
             app = app_,
-            port = httpuv::randomPort(),
+            port = NULL,
             host = host_,
             browser = browser_
           )

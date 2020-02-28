@@ -16,7 +16,7 @@ run_jster_apps(
   apps,
   type = c("serial", "callr", "lapply"),
   cores = parallel::detectCores(),
-  port = 8000,
+  port = NULL,
   host = "127.0.0.1",
   browser = getOption("browser")
 )
@@ -54,8 +54,9 @@ Details.}
 \item{apps}{Vector of \code{appDir} values}
 
 \item{type}{Single value to determine how applications are executed. \describe{
-\item{\code{'callr'}}{Runs apps using \code{callr::r_bg} using \code{cores} cores}
-\item{\code{'serial'}}{Runs apps one after another using \code{lapply}. \code{port} is only used with options \code{'serial'} and \code{'lapply'}}
+\item{\code{'serial'}}{Runs apps one after another using \code{lapply}. \code{port} will be random for each app unless specified.}
+\item{\code{'callr'}}{Runs apps using \code{callr::r_bg} using \code{cores} cores. \code{port} will be random for each app to allow concurrent execution.}
+\item{\code{'lapply'}}{Runs apps in succession using \code{lapply}. \code{port} will be random for each app unless specified.}
 }}
 
 \item{cores}{Number of cores (if needed) to execute on.}
