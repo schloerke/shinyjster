@@ -20,12 +20,11 @@ fun help() {
                 DRIVER: Name of a Selenium driver. Valid names are: $types
                 DIMENSIONS: Window dimension, in pixels, of the format 1200x800
                 URL: URL to visit.
-                XPATH: XPath selector string. When the selector matches any elements on the page, this tool exits successfully.
-                TIMEOUT: The number of seconds to wait for the selector to match before exiting with an error.
+                TIMEOUT: The number of seconds to wait for the window to close itself before exiting with an error.
                 OPTION: Zero or more arguments to add as Selenium driver options.
                 
             Example:
-                java -jar selenium.jar chrome 1200x800 https://news.google.com/ '//body' 30 --headless
+                java -jar selenium.jar chrome 1200x800 https://news.google.com/ 30 --headless
         """.trimIndent())
     exitProcess(0)
 }
@@ -37,6 +36,7 @@ fun driverOptions(driverName: String, args: List<String>): Any? {
         "firefox" -> "org.openqa.selenium.firefox.FirefoxOptions"
         "opera" -> "org.openqa.selenium.opera.OperaOptions"
         "iexplorer" -> "org.openqa.selenium.ie.InternetExplorerOptions"
+        "edge" -> "org.openqa.selenium.edge.EdgeOptions"
         else -> error("$driverName does not support options.")
     }
     val klass = Class.forName(className)
@@ -47,15 +47,15 @@ fun driverOptions(driverName: String, args: List<String>): Any? {
 }
 
 fun main(args: Array<String>) {
-    if (args.size < 5) {
+    if (args.size < 4) {
         println("Missing required arguments.")
         help()
     }
 
-    val (driverName, dims, url, xPath, timeoutStr) = args
+    val (driverName, dims, url, timeoutStr) = args
     val timeout = timeoutStr.toLong()
     val (x, y) = dims.split("x").map { it.toInt() }
-    val opts = args.drop(5)
+    val opts = args.drop(4)
 
     val driverType = enumValueOf<DriverManagerType>(driverName.toUpperCase())
     WebDriverManager.getInstance(driverType).setup()
@@ -70,10 +70,8 @@ fun main(args: Array<String>) {
     driver.manage().window().size = Dimension(x, y)
     driver.get(url)
 
-    val sel = By.xpath(xPath)
-
     try {
-        WebDriverWait(driver, timeout).until(ExpectedConditions.presenceOfElementLocated(sel))
+        WebDriverWait(driver, timeout).until(ExpectedConditions.numberOfWindowsToBe(0))
     } finally {
         driver.quit()
     }
