@@ -4,6 +4,7 @@ import io.github.bonigarcia.wdm.DriverManagerType
 import io.github.bonigarcia.wdm.WebDriverManager
 import org.openqa.selenium.By
 import org.openqa.selenium.Dimension
+import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
@@ -15,7 +16,7 @@ val types = enumValues<DriverManagerType>().map { it.name.toLowerCase() }.joinTo
 fun help() {
     println("""
             Usage:
-                selenium DRIVER DIMENSIONS URL XPATH TIMEOUT [OPTION]...
+                selenium DRIVER DIMENSIONS URL TIMEOUT [OPTION]...
                 
                 DRIVER: Name of a Selenium driver. Valid names are: $types
                 DIMENSIONS: Window dimension, in pixels, of the format 1200x800
@@ -68,10 +69,10 @@ fun main(args: Array<String>) {
     } as WebDriver
 
     driver.manage().window().size = Dimension(x, y)
-    driver.get(url)
+    (driver as JavascriptExecutor).executeScript("window.open('${url}')")
 
     try {
-        WebDriverWait(driver, timeout).until(ExpectedConditions.numberOfWindowsToBe(0))
+        WebDriverWait(driver, timeout).until(ExpectedConditions.numberOfWindowsToBe(1))
     } finally {
         driver.quit()
     }
