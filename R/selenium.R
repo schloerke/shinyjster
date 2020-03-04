@@ -91,7 +91,6 @@ selenium_chrome <- function(timeout = 2 * 60, dimensions = "1800x1200", headless
 #' @export
 selenium_firefox <- function(timeout = 2 * 60, dimensions = "1800x1200", headless = TRUE) {
   function(url) {
-    browser()
     selenium_browser(
       url = url,
       browser_name = "firefox",
