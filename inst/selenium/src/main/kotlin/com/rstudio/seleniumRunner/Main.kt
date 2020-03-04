@@ -17,13 +17,13 @@ fun help() {
     println("""
             Usage:
                 selenium DRIVER DIMENSIONS URL TIMEOUT [OPTION]...
-                
+
                 DRIVER: Name of a Selenium driver. Valid names are: $types
                 DIMENSIONS: Window dimension, in pixels, of the format 1200x800
                 URL: URL to visit.
                 TIMEOUT: The number of seconds to wait for the window to close itself before exiting with an error.
                 OPTION: Zero or more arguments to add as Selenium driver options.
-                
+
             Example:
                 java -jar selenium.jar chrome 1200x800 https://news.google.com/ 30 --headless
         """.trimIndent())

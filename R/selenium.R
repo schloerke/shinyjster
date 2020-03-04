@@ -2,8 +2,9 @@
 selenium_browser <- function(
   url,
   browser_name = c("chrome", "firefox", "edge", "ie"),
-  headless = TRUE,
-  timeout = 2 * 60
+  timeout = 2 * 60,
+  dimensions = "1800x1200",
+  ...
 ) {
 
   # check and download
@@ -12,7 +13,6 @@ selenium_browser <- function(
     stop("`url` must be a character value of size 1")
   }
   browser_name <- match.arg(browser_name)
-  headless <- isTRUE(headless)
   if (!is.numeric(timeout) || length(timeout) != 1) {
     stop("`timeout` must be a numeric value of size 1")
   }
@@ -23,28 +23,34 @@ selenium_browser <- function(
     message("`timeout` should not be more than 10 minutes (600 seconds). Setting `timeout` to 600 seconds")
     timeout <- 600
   }
+  if (!is.character(dimensions)) {
+    stop("`dimensions` should be a character string in the form of `WIDTHxHEIGHT")
+  }
 
   selenium_file <- system.file("selenium/selenium.jar", package = "shinyjster")
+
+  # java -jar selenium.jar chrome 1200x800 https://news.google.com/ 30 --headless
   p <- processx::process$new(
     "java",
     c(
       "-jar",
       selenium_file,
-      "--url", url,
-      "--timeout", floor(timeout),
-      if (headless) "--headless",
-      "--browser", browser_name
+      browser_name,
+      dimensions,
+      url,
+      timeout,
+      ...
     ),
-    stdout = "|",     # be able to read stdout
-    stderr= "2>&1",   # put error output in stdout
-    echo_cmd = TRUE,  # display command
-    supervise = FALSE, # kill when R process is terminated
-    cleanup = FALSE   # do not kill on gc
+    stdout = "|",      # be able to read stdout
+    stderr= "2>&1",    # put error output in stdout
+    echo_cmd = TRUE,   # display command
+    supervise = FALSE, # do not supervise process
+    cleanup = FALSE    # do not kill on gc
   )
   p_check <- function() {
     if(p$is_alive()) {
       later::later(p_check, delay = 0.1)
-      return()
+      return(invisible())
     }
     if (!identical(p$get_exit_status(), 0L)) {
       cat("Output:\n")
@@ -66,33 +72,57 @@ selenium_browser <- function(
 #' This function assumes selenium is installed and all appropriate web browsers are installed.
 #'
 #' @param timeout Number of seconds before selenium closes the browser
-#' @param headless Logical which determines if the browser can run headless
+#' @param dimensions A string in the form of \verb{"WIDTHxHEIGHT"}. Ex: \code{"1800x1200"}
+#' @param headless Logical which determines if the browser can run headless. Defaults to \code{TRUE} where possible.
 #' @describeIn selenium Opens a Chrome web browser
 #' @export
-selenium_chrome <- function(timeout = 2 * 60, headless = FALSE) {
+selenium_chrome <- function(timeout = 2 * 60, dimensions = "1800x1200", headless = TRUE) {
   function(url) {
-    selenium_browser(url, "chrome", headless, timeout)
+    selenium_browser(
+      url = url,
+      browser_name = "chrome",
+      timeout = timeout,
+      dimensions = dimensions,
+      if (isTRUE(headless)) "--headless"
+    )
   }
 }
 #' @describeIn selenium Opens a Firefox web browser
 #' @export
-selenium_firefox <- function(timeout = 2 * 60, headless = FALSE) {
+selenium_firefox <- function(timeout = 2 * 60, dimensions = "1800x1200", headless = TRUE) {
   function(url) {
-    selenium_browser(url, "firefox", headless, timeout)
+    browser()
+    selenium_browser(
+      url = url,
+      browser_name = "firefox",
+      timeout = timeout,
+      dimensions = dimensions,
+      if (isTRUE(headless)) "-headless"
+    )
   }
 }
 #' @describeIn selenium Opens an Edge web browser
 #' @export
-selenium_edge <- function(timeout = 2 * 60, headless = FALSE) {
+selenium_edge <- function(timeout = 2 * 60, dimensions = "1800x1200") {
   function(url) {
-    selenium_browser(url, "edge", headless, timeout)
+    selenium_browser(
+      url = url,
+      browser_name = "edge",
+      timeout = timeout,
+      dimensions = dimensions
+    )
   }
 }
 #' @describeIn selenium Opens an IE web browser
 #' @export
-selenium_ie <- function(timeout = 2 * 60, headless = FALSE) {
+selenium_ie <- function(timeout = 2 * 60, dimensions = "1800x1200") {
   function(url) {
-    selenium_browser(url, "ie", headless, timeout)
+    selenium_browser(
+      url = url,
+      browser_name = "ie",
+      timeout = timeout,
+      dimensions = dimensions
+    )
   }
 }
 
