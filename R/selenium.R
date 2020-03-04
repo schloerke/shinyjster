@@ -1,7 +1,7 @@
 
 selenium_browser <- function(
   url,
-  browser_name = c("chrome", "firefox", "edge", "ie"),
+  browser_name = c("chrome", "firefox", "edge", "iexplorer"),
   timeout = 2 * 60,
   dimensions = "1800x1200",
   ...
