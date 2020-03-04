@@ -93,7 +93,7 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session) {
-  shinyjster_server(input, outout, session)
+  shinyjster_server(input, output, session)
 
   n <- 0
   observeEvent(input$add, {
