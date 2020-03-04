@@ -118,7 +118,7 @@ selenium_ie <- function(timeout = 2 * 60, dimensions = "1800x1200") {
   function(url) {
     selenium_browser(
       url = url,
-      browser_name = "ie",
+      browser_name = "iexplorer",
       timeout = timeout,
       dimensions = dimensions
     )
