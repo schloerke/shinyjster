@@ -106,17 +106,17 @@ jobs:
 
 
 
-      - name: Try building jar on mac
-        if: runner.os == 'macOS'
-        shell: bash
-        run: >
-          Rscript
-          -e "if (!requireNamespace('pkgload')) remotes::install_cran('pkgload')"
-          -e "pkgload::load_all(); selenium_build()"
-          -e "remotes::install_local(force = TRUE)"
+      # - name: Try building jar on mac
+      #   if: runner.os == 'macOS'
+      #   shell: bash
+      #   run: >
+      #     Rscript
+      #     -e "if (!requireNamespace('pkgload')) remotes::install_cran('pkgload')"
+      #     -e "pkgload::load_all(); selenium_build()"
+      #     -e "remotes::install_local(force = TRUE)"
 
       - name: Run headless IE checks
-        timeout-minutes: 20
+        timeout-minutes: 15
         if: always() && runner.os == 'Windows'
         shell: bash
         run: >
@@ -124,15 +124,16 @@ jobs:
           -e "shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_ie(), type = 'serial')"
 
       - name: Run headless Edge checks
-        timeout-minutes: 20
-        if: always() && (runner.os == 'Windows' || runner.os == 'macOS')
+        timeout-minutes: 15
+        # if: always() && (runner.os == 'Windows' || runner.os == 'macOS')
+        if: always() && runner.os == 'Windows'
         shell: bash
         run: >
           Rscript
           -e "shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_edge(), type = 'serial')"
 
       - name: Run headless Chrome checks
-        timeout-minutes: 20
+        timeout-minutes: 15
         if: always()
         shell: bash
         run: >
@@ -140,7 +141,7 @@ jobs:
           -e "shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_chrome(headless = TRUE), type = 'serial')"
 
       - name: Run headless Firefox checks
-        timeout-minutes: 20
+        timeout-minutes: 15
         if: always()
         shell: bash
         run: >
