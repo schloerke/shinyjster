@@ -4,7 +4,8 @@ Version: 0.0.0.9003
 Authors@R:
     c(
       person("Barret", "Schloerke", , "barret@rstudio.com", c("aut", "cre"),
-             comment = c(ORCID = "0000-0001-9986-114X"))
+             comment = c(ORCID = "0000-0001-9986-114X")),
+      person("RStudio", role = c("cph", "fnd"))
     )
 Description: Run JavaScript testing on Shiny applications.  On successful testing, 'shinyjster' will auto-kill the Shiny application on a successful test to speed up manual testing.
 License: MIT + file LICENSE

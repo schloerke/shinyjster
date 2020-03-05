@@ -1,13 +1,24 @@
 #' Run an application with shinyjster enabled
 #'
 #' @inheritParams shiny::runApp
-#' @rdname run_jster
+#' @inheritParams utils::browseURL
+#' @describeIn run_jster Run a single shiny application with shinyjster enabled
 #' @export
-run_jster <- function(appDir, port = 8000, host = "127.0.0.1") {
+run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOption("browser")) {
+  ######
+  # START-NAMESPACED-CODE
+  # # MUST be written to namespace all outside functions... allows for use when passed into callr
+  ######
+
+  if (is.null(port)) {
+    port <- httpuv::randomPort()
+  }
 
   url <- paste0("http://", host, ":", port, "/?shinyjster=1")
+  force(browser)
+  force(url)
   later::later(delay = 0.5, function() {
-    utils::browseURL(url)
+    utils::browseURL(url, browser = browser)
   })
 
   if (file.exists(appDir) && !dir.exists(appDir) && grepl("\\.rmd$", tolower(appDir))) {
@@ -27,146 +38,136 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1") {
     )
   }
 
-  upgrade_app_output(res, appDir = appDir)
-}
-
-upgrade_app_output <- function(output, appDir) {
   tibble::tibble(
     appDir = appDir,
-    successful = identical(output$type, "success"),
-    returnValue = list(output)
+    successful = identical(res$type, "success"),
+    returnValue = list(res)
   )
+  ######
+  # END-NAMESPACED-CODE
+  ######
 }
+
 
 
 #' @param apps Vector of `appDir` values
 #' @param type Single value to determine how applications are executed. \describe{
-#'  \item{`'parallel'`}{Runs apps using `parallel::mclapply` using `cores` cores}
-#'  \item{`'callr'`}{Runs apps using `callr::r_bg` using `cores` cores}
-#'  \item{`'serial'`}{Runs apps one after another using `lapply`. `port` is only used with options `'serial'` and `'lapply'`}
+# '  \item{`'parallel'`}{Runs apps using `parallel::mclapply` using `cores` cores}
+#'  \item{`'serial'`}{Runs apps one after another using `lapply`. `port` will be random for each app unless specified.}
+#'  \item{`'callr'`}{Runs apps using `callr::r_bg` using `cores` cores. `port` will be random for each app to allow concurrent execution.}
+#'  \item{`'lapply'`}{Runs apps in succession using `lapply`. `port` will be random for each app unless specified.}
 #' }
 #' @param cores Number of cores (if needed) to execute on.
-#' @rdname run_jster
+#' @describeIn run_jster Run a set of Shiny applications with shinyjster enabled
 #' @export
 run_jster_apps <- function(
   apps,
-  type = c("serial", "parallel", "callr", "lapply"),
+  type = c("serial", "callr", "lapply"),
   cores = parallel::detectCores(),
-  port = 8000,
-  host = "127.0.0.1"
+  port = NULL,
+  host = "127.0.0.1",
+  browser = getOption("browser")
 ) {
 
   switch(match.arg(type),
-    "parallel" = run_jster_apps_parallel(apps, cores = cores, host = host),
-    "callr" = run_jster_apps_callr(apps, cores = cores, host = host),
-    "serial" = run_jster_apps_serial(apps, port = port, host = host),
+    # "parallel" = run_jster_apps_parallel(apps, cores = cores, host = host, browser = browser),
+    "callr" = run_jster_apps_callr(apps, cores = cores, host = host, browser = browser),
+    "serial" = run_jster_apps_serial(apps, port = port, host = host, browser = browser),
     "lapply" = ,
-    run_jster_apps_lapply(apps, port = port, host = host)
+    run_jster_apps_lapply(apps, port = port, host = host, browser = browser)
   )
 }
 
 run_jster_apps_lapply <- function(
   apps = apps_to_test(),
-  port = 8000,
-  host = "127.0.0.1"
-){
+  port = NULL,
+  host = "127.0.0.1",
+  browser = getOption("browser")
+) {
   ret <- lapply(apps, function(app) {
     cat("shinyjster - ", "launching app: ", basename(app), "\n", sep = "")
     on.exit({
       cat("shinyjster - ", "closing app: ", basename(app), "\n", sep = "")
     }, add = TRUE)
-    run_jster(app, port = port, host = host)
+    run_jster(app, port = port, host = host, browser = browser)
   })
   do.call(rbind, ret)
 }
 
 run_jster_apps_serial <- function(
   apps = apps_to_test(),
-  port = 8000,
-  host = "127.0.0.1"
+  port = NULL,
+  host = "127.0.0.1",
+  browser = getOption("browser")
 ){
   ret <- lapply(apps, function(app) {
     callr::r(
-      function(app_, port_, host_, browser_op_) {
+      function(run_jster_, app_, port_, host_, browser_) {
         cat("shinyjster - ", "launching app: ", basename(app_), "\n", sep = "")
-        options(browser = browser_op_)
 
         on.exit({
           cat("shinyjster - ", "closing app: ", basename(app_), "\n", sep = "")
         }, add = TRUE)
 
-        url <- paste0("http://", host_, ":", port_, "/?shinyjster=1")
-        later::later(delay = 0.5, function() {
-          utils::browseURL(url)
-        })
-
-        # utils::browseURL(url)
-        return(
-          shiny::runApp(app_, port = port_, host = host_, launch.browser = FALSE)
-        )
+        run_jster_(app = app_, port = port_, host = host_, browser = browser_)
       },
       list(
+        run_jster_ = run_jster,
         app_ = app,
         port_ = port,
         host_ = host,
-        browser_op_ = getOption("browser")
+        browser_ = browser
       ),
       show = TRUE,
       spinner = TRUE
     )
   })
 
-  do.call(
-    rbind,
-    mapply(ret, apps, FUN = upgrade_app_output, SIMPLIFY = FALSE)
-  )
+  do.call(rbind, ret)
 }
 
 
-run_jster_apps_parallel <- function(
-  apps = apps_to_test(),
-  cores = parallel::detectCores(),
-  host = "127.0.0.1"
-) {
+# run_jster_apps_parallel <- function(
+#   apps = apps_to_test(),
+#   cores = parallel::detectCores(),
+#   host = "127.0.0.1",
+#   browser = getOption("browser")
+# ) {
 
-  if (!requireNamespace("httpuv", quietly = TRUE)) {
-    stop("httpuv must be installed for this function to work")
-  }
+#   if (!requireNamespace("httpuv", quietly = TRUE)) {
+#     stop("httpuv must be installed for this function to work")
+#   }
 
-  ret <- parallel::mclapply(
-    apps,
-    mc.cores = cores,
-    mc.preschedule = FALSE,
-    FUN = function(app) {
-      cat("shinyjster - ", "launching app: ", basename(app), "\n", sep = "")
-      on.exit({
-        cat("shinyjster - ", "closing app: ", basename(app), "\n", sep = "")
-      }, add = TRUE)
-      port <- httpuv::randomPort()
-      url <- paste0("http://", host, ":", port, "/?shinyjster=1")
-      later::later(delay = 0.5, function() {
-        utils::browseURL(url)
-      })
+#   run_jster_ <- run_jster
+#   ret <- parallel::mclapply(
+#     apps,
+#     mc.cores = cores,
+#     mc.preschedule = FALSE,
+#     FUN = function(app) {
+#       cat("shinyjster - ", "launching app: ", basename(app), "\n", sep = "")
+#       on.exit({
+#         cat("shinyjster - ", "closing app: ", basename(app), "\n", sep = "")
+#       }, add = TRUE)
 
-      # utils::browseURL(url)
-      return(
-        shiny::runApp(app, port = port, host = host, launch.browser = FALSE)
-      )
-    }
-  )
+#       run_jster_(
+#         app,
+#         port = httpuv::randomPort(),
+#         host = host,
+#         browser = browser
+#       )
+#     }
+#   )
 
-  do.call(
-    rbind,
-    mapply(ret, apps, FUN = upgrade_app_output, SIMPLIFY = FALSE)
-  )
-}
+#   do.call(rbind, ret)
+# }
 
 
 
 run_jster_apps_callr <- function(
   apps = apps_to_test(),
   cores = parallel::detectCores(),
-  host = "127.0.0.1"
+  host = "127.0.0.1",
+  browser = getOption("browser")
 ) {
 
   if (!requireNamespace("httpuv", quietly = TRUE)) {
@@ -198,27 +199,25 @@ run_jster_apps_callr <- function(
     processes[[i]] <<- list(
       app = app,
       p = callr::r_bg(
-        function(app_, host_, i_, browser_op_) {
+        function(run_jster_, app_, host_, i_, browser_) {
           cat("shinyjster - ", "launching app", "\n", sep = "")
-          options(browser = browser_op_)
           on.exit({
             cat("shinyjster - ", "closing app", "\n", sep = "")
           }, add = TRUE)
 
-          port <- httpuv::randomPort()
-          url <- paste0("http://", host_, ":", port, "/?shinyjster=1")
-          later::later(delay = 0.5, function() {
-            utils::browseURL(url)
-          })
-
-          # utils::browseURL(url)
-          shiny::runApp(app_, port, host = host_, launch.browser = FALSE)
+          run_jster_(
+            app = app_,
+            port = NULL,
+            host = host_,
+            browser = browser_
+          )
         },
         list(
+          run_jster_ = run_jster,
           app_ = app,
           host_ = host,
           i_ = i,
-          browser_op_ = getOption("browser") # pass through browser setting
+          browser_ = browser
         ),
         env = callr::rcmd_safe_env()[! names(callr::rcmd_safe_env()) %in% "R_BROWSER"],
         supervise = TRUE,
@@ -233,7 +232,7 @@ run_jster_apps_callr <- function(
   print_process_output = function(i) {
     pr <- processes[[i]]$p
     appDir <- processes[[i]]$app
-    ret <<- rbind(ret, upgrade_app_output(pr$get_result(), appDir = appDir))
+    ret <<- rbind(ret, pr$get_result())
     cat(
       paste(
         paste0("core[", i, "]: ", basename(appDir), " - "),
@@ -272,6 +271,17 @@ run_jster_apps_callr <- function(
 
 
 
+gh_actions_system <- function() {
+  if (.Platform[["OS.type"]] == "unix") {
+    if (Sys.info()[["sysname"]] == "Darwin") {
+      "macOS"
+    } else {
+      "Linux"
+    }
+  } else {
+    "Windows"
+  }
+}
 apps_to_test <- function() {
   bad_apps <- c(
     "01-hello-fail",

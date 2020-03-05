@@ -88,8 +88,8 @@ jobs:
           Rscript
           -e "remotes::install_deps(dependencies = TRUE)"
           -e "remotes::install_local(dependencies = TRUE, force = TRUE)"
-      - name: Add shinyjster matchers
-        run: echo "::add-matcher::.github/matchers/shinyjster.json"
+      # - name: Add shinyjster matchers
+      #   run: echo "::add-matcher::.github/matchers/shinyjster.json"
 
       - name: Install app deps
         run: >
@@ -103,14 +103,47 @@ jobs:
           Rscript
           -e "remotes::install_github('rstudio/shiny')"
 
-      - name: Run headless Chrome checks
+
+
+
+      # - name: Try building jar on mac
+      #   if: runner.os == 'macOS'
+      #   shell: bash
+      #   run: >
+      #     Rscript
+      #     -e "if (!requireNamespace('pkgload')) remotes::install_cran('pkgload')"
+      #     -e "pkgload::load_all(); selenium_build()"
+      #     -e "remotes::install_local(force = TRUE)"
+
+      - name: Run headless IE checks
+        timeout-minutes: 15
+        if: always() && runner.os == 'Windows'
         shell: bash
-        timeout-minutes: 20
         run: >
           Rscript
-          -e "shinyjster::run_headless(browser = 'chrome', type = 'serial')"
+          -e "shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_ie(), type = 'serial')"
+
+      - name: Run headless Edge checks
+        timeout-minutes: 15
+        # if: always() && (runner.os == 'Windows' || runner.os == 'macOS')
+        if: always() && runner.os == 'Windows'
+        shell: bash
+        run: >
+          Rscript
+          -e "shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_edge(), type = 'serial')"
+
+      - name: Run headless Chrome checks
+        timeout-minutes: 15
+        if: always()
+        shell: bash
+        run: >
+          Rscript
+          -e "shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_chrome(headless = TRUE), type = 'serial')"
+
       - name: Run headless Firefox checks
-        if: false
+        timeout-minutes: 15
+        if: always()
+        shell: bash
         run: >
           Rscript
-          -e "shinyjster::run_headless(browser = 'firefox', type = 'serial')"
+          -e "shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_firefox(headless = TRUE), type = 'serial')"
