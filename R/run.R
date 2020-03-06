@@ -96,7 +96,7 @@ run_jster_apps <- function(
   cores = parallel::detectCores(),
   port = NULL,
   host = "127.0.0.1",
-  browser = getOption("browser")
+  browser = selenium_chrome()
 ) {
 
   switch(match.arg(type),
@@ -131,9 +131,13 @@ run_jster_apps_serial <- function(
   browser = getOption("browser")
 ){
   ret <- lapply(apps, function(app) {
+    cat("shinyjster - ", "launching app: ", basename(app_), "\n", sep = "")
     callr::r(
       function(run_jster_, app_, port_, host_, browser_) {
-        cat("shinyjster - ", "launching app: ", basename(app_), "\n", sep = "")
+        cat("shinyjster - ", "starting app: ", basename(app_), "\n", sep = "")
+        on.exit({
+          cat("shinyjster - ", "stopped app: ", basename(app_), "\n", sep = "")
+        }, add = TRUE)
 
         on.exit({
           cat("shinyjster - ", "closing app: ", basename(app_), "\n", sep = "")
