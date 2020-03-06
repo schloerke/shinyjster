@@ -69,9 +69,9 @@ fun main(args: Array<String>) {
     } as WebDriver
 
     driver.manage().window().size = Dimension(x, y)
-    try {
-        (driver as JavascriptExecutor).executeScript("window.open('${url}')")
+    (driver as JavascriptExecutor).executeScript("window.open('${url}')")
 
+    try {
         WebDriverWait(driver, timeout).until(ExpectedConditions.numberOfWindowsToBe(1))
     } finally {
         driver.quit()
