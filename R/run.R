@@ -131,13 +131,14 @@ run_jster_apps_serial <- function(
   browser = getOption("browser")
 ){
   ret <- lapply(apps, function(app) {
-    cat("shinyjster - ", "launching app: ", basename(app_), "\n", sep = "")
+    cat("shinyjster - ", "launching app: ", basename(app), "\n", sep = "")
+    on.exit({
+      cat("shinyjster - ", "stopped app: ", basename(app), "\n", sep = "")
+    }, add = TRUE)
+
     callr::r(
       function(run_jster_, app_, port_, host_, browser_) {
         cat("shinyjster - ", "starting app: ", basename(app_), "\n", sep = "")
-        on.exit({
-          cat("shinyjster - ", "stopped app: ", basename(app_), "\n", sep = "")
-        }, add = TRUE)
 
         on.exit({
           cat("shinyjster - ", "closing app: ", basename(app_), "\n", sep = "")
