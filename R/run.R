@@ -43,7 +43,7 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
       # had a bad exit.
       message("")
       cat("Output:\n")
-      cat(proc$read_output())
+      cat(proc$read_all_output())
       stop("Browser process exited with a non-zero status before Shiny closed. Status: ", proc$get_exit_status())
     }
   }

@@ -47,6 +47,23 @@ selenium_browser <- function(
     supervise = FALSE, # do not supervise process
     cleanup = FALSE    # do not kill on gc
   )
+
+  # display output
+  p_output <- function() {
+    if (p$is_alive()) {
+      later::later(delay = 0.1, p_output)
+    } else {
+      cat("Selenium Processx closed\n")
+    }
+
+    output <- p$read_output()
+    if (nchar(output) > 0) {
+      cat(output, "\n")
+    }
+    invisible()
+  }
+  p_output()
+
   invisible(p)
 }
 
