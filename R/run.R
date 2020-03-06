@@ -327,5 +327,5 @@ apps_to_test <- function() {
   bad_pos <- basename(apps) %in% bad_apps
   apps <- apps[!bad_pos]
 
-  apps
+  sample(apps, length(apps))
 }
