@@ -7,11 +7,8 @@ function initJsterHooks(): void {
   ) {
     if (!canClose) return;
 
-    setTimeout(() => {
-      console.log("shinyjster: - closing window!");
-      window.close();
-    }, 500);
-    Shiny.setInputValue("jster_closing_window", "closing");
+    console.log("shinyjster: - closing window!");
+    window.close();
   });
 }
 

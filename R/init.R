@@ -116,12 +116,14 @@ shinyjster_server <- function(input, output, session = shiny::getDefaultReactive
   force(session)
 
   jster_return_val <- list(
-    type = "success"
+    type = "Session closed early"
   )
 
-  # shiny::observe({
-  #   str(shiny::reactiveValuesToList(input))
-  # })
+  # whenever the session stops, stop the whole application
+  session$onSessionEnded(function() {
+    jster_message("Browser window has been closed. Stopping Shiny Application now.")
+    shiny::stopApp(jster_return_val)
+  })
 
   shiny::observeEvent(input$jster_progress, {
     jster_message(input$jster_progress)
@@ -137,6 +139,7 @@ shinyjster_server <- function(input, output, session = shiny::getDefaultReactive
     }
 
     if (identical(val$type, "success")) {
+      jster_return_val$type <<- "success"
       close_broser_window("Success! ")
     } else {
       # error found
@@ -178,8 +181,4 @@ shinyjster_server <- function(input, output, session = shiny::getDefaultReactive
     }
   })
 
-  shiny::observeEvent(input$jster_closing_window, {
-    jster_message("Browser window has been closed. Stopping Shiny Application now.")
-    shiny::stopApp(jster_return_val)
-  })
 }

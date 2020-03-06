@@ -2967,11 +2967,8 @@ function initJsterHooks() {
   // use event.target to obtain the output element
   globals_1.Shiny.addCustomMessageHandler("shinyjster_msg_close_window", function (canClose) {
     if (!canClose) return;
-    setTimeout(function () {
-      console.log("shinyjster: - closing window!");
-      window.close();
-    }, 500);
-    globals_1.Shiny.setInputValue("jster_closing_window", "closing");
+    console.log("shinyjster: - closing window!");
+    window.close();
   });
 }
 
