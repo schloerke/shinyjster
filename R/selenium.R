@@ -50,16 +50,17 @@ selenium_browser <- function(
 
   # display output
   p_output <- function() {
+    output <- p$read_output()
+    if (nchar(output) > 0) {
+      cat(output, "\n")
+    }
+
     if (p$is_alive()) {
       later::later(delay = 0.1, p_output)
     } else {
       cat("Selenium Processx closed\n")
     }
 
-    output <- p$read_output()
-    if (nchar(output) > 0) {
-      cat(output, "\n")
-    }
     invisible()
   }
   p_output()
