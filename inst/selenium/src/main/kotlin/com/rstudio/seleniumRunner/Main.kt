@@ -69,11 +69,16 @@ fun main(args: Array<String>) {
         driverClass.getDeclaredConstructor(optionsObject::class.java).newInstance(optionsObject)
     } as WebDriver
 
-    driver.manage().window().size = Dimension(x, y)
-    (driver as JavascriptExecutor).executeScript("window.open('${url}')")
-
     try {
-        WebDriverWait(driver, timeout).until(ExpectedConditions.numberOfWindowsToBe(1))
+        driver.manage().window().size = Dimension(x, y)
+        (driver as JavascriptExecutor).executeScript("window.open('${url}')")
+
+        val minWindows = when(driverName) {
+            "iexplorer" -> 0
+            else -> 1
+        }
+
+        WebDriverWait(driver, timeout).until(ExpectedConditions.numberOfWindowsToBe(minWindows))
     } finally {
         driver.quit()
     }
