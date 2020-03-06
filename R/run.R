@@ -59,7 +59,7 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
       )
       cat("Response:\n")
       str(res)
-      stop("Browser process did not exit with a status of 0. Status: ", p$get_exit_status())
+      stop("Browser process did not exit with a status of 0. Status: ", proc$get_exit_status())
     }
   }
 
