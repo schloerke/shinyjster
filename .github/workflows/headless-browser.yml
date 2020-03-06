@@ -98,7 +98,8 @@ jobs:
         shell: bash
         run: >
           Rscript
-          -e "shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_ie(), type = 'serial')"
+          -e "jsdt <- shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_ie(), type = 'serial')"
+          -e "shinyjster::assert_jster(jsdt)"
 
       - name: Run headless Edge checks
         timeout-minutes: 15
@@ -107,7 +108,8 @@ jobs:
         shell: bash
         run: >
           Rscript
-          -e "shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_edge(), type = 'serial')"
+          -e "jsdt <- shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_edge(), type = 'serial')"
+          -e "shinyjster::assert_jster(jsdt)"
 
       - name: Run headless Chrome checks
         timeout-minutes: 15
@@ -115,7 +117,8 @@ jobs:
         shell: bash
         run: >
           Rscript
-          -e "shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_chrome(headless = TRUE), type = 'serial')"
+          -e "jsdt <- shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_chrome(headless = TRUE), type = 'serial')"
+          -e "shinyjster::assert_jster(jsdt)"
 
       - name: Run headless Firefox checks
         timeout-minutes: 15
@@ -123,4 +126,5 @@ jobs:
         shell: bash
         run: >
           Rscript
-          -e "shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_firefox(headless = TRUE), type = 'serial')"
+          -e "jsdt <- shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_firefox(headless = TRUE), type = 'serial')"
+          -e "shinyjster::assert_jster(jsdt)"

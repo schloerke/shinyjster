@@ -1,3 +1,4 @@
+
 #' Run an application with shinyjster enabled
 #'
 #' @inheritParams shiny::runApp
