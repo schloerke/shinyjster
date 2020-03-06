@@ -17,7 +17,7 @@ selenium_browser <- function(
     stop("`timeout` must be a numeric value of size 1")
   }
   if (timeout < 30) {
-    message("`timeout` should be at least 30 seconds. Setting `timeout` to 30 seconds")
+    # message("`timeout` should be at least 30 seconds. Setting `timeout` to 30 seconds")
     # timeout <- 30
   } else if (timeout > 600) {
     message("`timeout` should not be more than 10 minutes (600 seconds). Setting `timeout` to 600 seconds")
