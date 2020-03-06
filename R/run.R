@@ -25,13 +25,16 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
 
   # periodically check to see if shiny was started, but the browser did not start properly
   check_if_bad_exit <- function() {
-    if (isTRUE(attr(browser, "no_check"))) {
-      # do not check functions that will not behave
-      ## IE webdriver (`selenium_ie`) does not behave well and will close early
-      # return()
-    }
     if (!inherits(proc, "process")) {
       # not a processx obj.
+      return()
+    }
+    if (isTRUE(attr(browser, "no_check"))) {
+      # do not check functions that will not behave
+      ## IE webdriver java jar (`selenium_ie`) does not behave well and will close early,
+      ## However, the web browser will still exist.
+      ## This currently makes it hard to detect if an error has occured while launching the browser,
+      ## so we will not check/throw an error for Selenium IE
       return()
     }
     if (proc$is_alive()) {
