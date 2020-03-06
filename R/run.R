@@ -24,25 +24,30 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
   })
 
   # periodically check to see if shiny was started, but the browser did not start properly
-  # check_if_bad_exit <- function() {
-  #   if (!inherits(proc, "process")) {
-  #     # not a processx obj.
-  #     return()
-  #   }
-  #   if (proc$is_alive()) {
-  #     # process is working after 10 seconds, success!
-  #     return()
-  #   }
-  #   # proc is dead
-  #   if (!identical(proc$get_exit_status(), 0L)) {
-  #     # had a bad exit.
-  #     message("")
-  #     cat("Output:\n")
-  #     cat(proc$read_output())
-  #     stop("Browser process exited with a non-zero status before Shiny closed. Status: ", proc$get_exit_status())
-  #   }
-  # }
-  # cancel_check <- later::later(delay = 10, check_if_bad_exit)
+  check_if_bad_exit <- function() {
+    if (isTRUE(attr(browser, "no_check"))) {
+      # do not check functions that will not behave
+      ## IE webdriver (`selenium_ie`) does not behave well and will close early
+      # return()
+    }
+    if (!inherits(proc, "process")) {
+      # not a processx obj.
+      return()
+    }
+    if (proc$is_alive()) {
+      # process is working after 10 seconds, success!
+      return()
+    }
+    # proc is dead
+    if (!identical(proc$get_exit_status(), 0L)) {
+      # had a bad exit.
+      message("")
+      cat("Output:\n")
+      cat(proc$read_output())
+      stop("Browser process exited with a non-zero status before Shiny closed. Status: ", proc$get_exit_status())
+    }
+  }
+  cancel_check <- later::later(delay = 10, check_if_bad_exit)
 
   if (file.exists(appDir) && !dir.exists(appDir) && grepl("\\.rmd$", tolower(appDir))) {
     # is and Rmd file
