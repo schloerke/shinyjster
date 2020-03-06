@@ -22,6 +22,31 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
     proc <<- utils::browseURL(url, browser = browser)
   })
 
+  # periodically check to see if shiny was started, but the browser did not start properly
+  has_finished_test <- FALSE
+  check_if_bad_exit <- function() {
+    if (!inherits(proc, "process")) {
+      # not a processx obj.
+      return()
+    }
+    if (has_finished_test) {
+      # Shiny has finished. Don't care how the process exited
+      return()
+    }
+    if (proc$is_alive()) {
+      # process is working after 10 seconds, success!
+      return()
+    }
+    # proc is dead
+    if (!identical(proc$get_exit_status(), 0L)) {
+      # had a bad exit.
+      cat("Output:\n")
+      cat(proc$read_output())
+      stop("Browser process exited with a non-zero status before Shiny closed. Status: ", proc$get_exit_status())
+    }
+  }
+  later::later(delay = 10, check_if_bad_exit)
+
   if (file.exists(appDir) && !dir.exists(appDir) && grepl("\\.rmd$", tolower(appDir))) {
     # is and Rmd file
     res <- rmarkdown::run(appDir, shiny_args = list(
@@ -38,30 +63,7 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
       launch.browser = FALSE
     )
   }
-
-  # if the app launched a browser using processx, wait up to 30s for it to close
-  if (inherits(proc, "process")) {
-    proc$wait(30 * 1000)
-    if(proc$is_alive()) {
-      cat("Output:\n")
-      cat(
-        proc$read_output()
-      )
-      cat("Response:\n")
-      str(res)
-      stop("Browser process did not shut down within 30 seconds after shiny had closed")
-    }
-    # proc is dead
-    if (!identical(proc$get_exit_status(), 0L)) {
-      cat("Output:\n")
-      cat(
-        proc$read_output()
-      )
-      cat("Response:\n")
-      str(res)
-      stop("Browser process did not exit with a status of 0. Status: ", proc$get_exit_status())
-    }
-  }
+  has_finished_test <- TRUE
 
   tibble::tibble(
     appDir = appDir,
