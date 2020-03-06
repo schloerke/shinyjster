@@ -30,29 +30,6 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: Setup macOS Browsers
-        if: runner.os == 'macOS'
-        run: |
-          brew update
-          brew cask install google-chrome
-          brew cask info google-chrome
-          brew cask install firefox
-          brew cask info firefox
-      - name: Confirm macOS Browsers
-        if: runner.os == 'macOS'
-        run: |
-          '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --version
-      - name: Confirm Linux Browsers
-        if: runner.os == 'Linux'
-        run: |
-          google-chrome --version
-          which firefox
-      - name: Confirm Windows Browsers
-        if: runner.os == 'Windows'
-        shell: bash
-        run: |
-          'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe' --headless --disable-gpu --dump-dom https://www.google.com/
-
       - uses: r-lib/actions/setup-r@master
         with:
           r-version: ${{ matrix.config.r }}
