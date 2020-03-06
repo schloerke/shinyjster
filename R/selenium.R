@@ -47,21 +47,7 @@ selenium_browser <- function(
     supervise = FALSE, # do not supervise process
     cleanup = FALSE    # do not kill on gc
   )
-  p_check <- function() {
-    if(p$is_alive()) {
-      later::later(p_check, delay = 0.1)
-      return(invisible())
-    }
-    if (!identical(p$get_exit_status(), 0L)) {
-      cat("Output:\n")
-      cat(
-        p$read_output()
-      )
-      stop("Browser did not exit with a status of 0. Status: ", p$get_exit_status())
-    }
-  }
-  p_check()
-
+  invisible(p)
 }
 
 

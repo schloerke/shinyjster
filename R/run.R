@@ -17,8 +17,9 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
   url <- paste0("http://", host, ":", port, "/?shinyjster=1")
   force(browser)
   force(url)
+  proc <- NULL
   later::later(delay = 0.5, function() {
-    utils::browseURL(url, browser = browser)
+    proc <<- utils::browseURL(url, browser = browser)
   })
 
   if (file.exists(appDir) && !dir.exists(appDir) && grepl("\\.rmd$", tolower(appDir))) {
@@ -36,6 +37,30 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
       host = host,
       launch.browser = FALSE
     )
+  }
+
+  # if the app launched a browser using processx, wait up to 30s for it to close
+  if (inherits(proc, "process")) {
+    proc$wait(30 * 1000)
+    if(proc$is_alive()) {
+      cat("Output:\n")
+      cat(
+        proc$read_output()
+      )
+      cat("Response:\n")
+      str(res)
+      stop("Browser process did not shut down within 30 seconds after shiny had closed")
+    }
+    # proc is dead
+    if (!identical(proc$get_exit_status(), 0L)) {
+      cat("Output:\n")
+      cat(
+        proc$read_output()
+      )
+      cat("Response:\n")
+      str(res)
+      stop("Browser process did not exit with a status of 0. Status: ", p$get_exit_status())
+    }
   }
 
   tibble::tibble(
