@@ -1,4 +1,4 @@
-import { Shiny } from "./globals";
+import { Shiny, $ } from "./globals";
 
 function initJsterHooks(): void {
   // use event.target to obtain the output element
@@ -10,6 +10,13 @@ function initJsterHooks(): void {
     console.log("shinyjster: - closing window!");
     window.close();
   });
+
+  if ($) {
+    $(document).on("shiny:disconnected", function() {
+      console.log("shinyjster: - lost connection. Closing window!");
+      window.close();
+    });
+  }
 }
 
 export { initJsterHooks };

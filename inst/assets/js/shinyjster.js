@@ -2970,6 +2970,13 @@ function initJsterHooks() {
     console.log("shinyjster: - closing window!");
     window.close();
   });
+
+  if (globals_1.$) {
+    globals_1.$(document).on("shiny:disconnected", function () {
+      console.log("shinyjster: - lost connection. Closing window!");
+      window.close();
+    });
+  }
 }
 
 exports.initJsterHooks = initJsterHooks;
