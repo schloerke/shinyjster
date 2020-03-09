@@ -27,5 +27,3 @@ Suggests:
     parallel
 Language: en-US
 Roxygen: list(markdown = TRUE)
-Remotes:
-  rstudio/rmarkdown
