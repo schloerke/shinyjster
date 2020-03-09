@@ -69,7 +69,17 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
     )
   }
   # Shiny has finished. Don't care how the process exited
-  # cancel_check()
+  cancel_check()
+
+  later::later(delay = 2, function() {
+    if (inherits(proc, "process")) {
+      if (proc$is_alive()) {
+        # If the process is still running, kill it.
+        # The proc is not needed at this point and should not exist.
+        proc$kill()
+      }
+    }
+  })
 
   tibble::tibble(
     appDir = appDir,
