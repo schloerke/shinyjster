@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - master
+      - headless
       - ghactions
   pull_request:
     branches:
