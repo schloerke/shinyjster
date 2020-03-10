@@ -76,7 +76,7 @@ fun main(args: Array<String>) {
         override fun handle(sig: Signal) {
             println("\nReceived kill signal. Quitting driver...")
             driver.quit();
-            println("\nDriver has quit!")
+            println("\nDriver has quit! Exiting...")
             System.exit(1)
         }
     })
