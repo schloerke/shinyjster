@@ -76,7 +76,9 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
       if (proc$is_alive()) {
         # If the process is still running, kill it.
         # The proc is not needed at this point and should not exist.
+        message("Proc is still alive. Killing the proc!")
         proc$kill()
+        message("Proc killed")
       }
     }
   })
