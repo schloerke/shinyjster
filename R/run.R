@@ -51,7 +51,7 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
       stop("Browser process exited with a non-zero status before Shiny closed. Status: ", proc$get_exit_status())
     }
   }
-  # cancel_check <- later::later(delay = 10, check_if_bad_exit)
+  cancel_check <- later::later(delay = 10, check_if_bad_exit)
 
   if (file.exists(appDir) && !dir.exists(appDir) && grepl("\\.rmd$", tolower(appDir))) {
     # is and Rmd file
@@ -70,11 +70,11 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
     )
   }
   # Shiny has finished. Don't care how the process exited
-  # cancel_check()
+  cancel_check()
 
   if (inherits(proc, "process")) {
     if (proc$is_alive()) {
-      message("Proc is alive. Sleeping...")
+      # message("Proc is alive. Sleeping...")
       Sys.sleep(2)
       if (proc$is_alive()) {
         # If the process is still running, kill it.
@@ -82,6 +82,7 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
         message("Proc is still alive. Killing the proc!")
         proc$signal(tools::SIGINT)
         message("Waiting....")
+        Sys.sleep(2)
         if (proc$is_alive()) {
           message("Proc is alive!!!")
         } else {
