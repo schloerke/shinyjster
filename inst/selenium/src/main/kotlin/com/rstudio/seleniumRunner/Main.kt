@@ -9,6 +9,8 @@ import org.openqa.selenium.WebDriver
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
 import kotlin.system.exitProcess
+import sun.misc.Signal
+import sun.misc.SignalHandler
 
 // Types are chrome,firefox,opera,edge,phantomjs,iexplorer,selenium_server_standalone,chromium
 val types = enumValues<DriverManagerType>().map { it.name.toLowerCase() }.joinToString(",")
@@ -49,6 +51,7 @@ fun driverOptions(driverName: String, args: List<String>): Any? {
 
 
 fun main(args: Array<String>) {
+
     if (args.size < 4) {
         println("Missing required arguments.")
         help()
@@ -68,6 +71,15 @@ fun main(args: Array<String>) {
     } else {
         driverClass.getDeclaredConstructor(optionsObject::class.java).newInstance(optionsObject)
     } as WebDriver
+
+    Signal.handle(Signal("INT"), object : SignalHandler {
+        override fun handle(sig: Signal) {
+            println("\nReceived kill signal. Quitting driver...")
+            driver.quit();
+            println("\nDriver has quit!")
+            System.exit(1)
+        }
+    })
 
     try {
         driver.manage().window().size = Dimension(x, y)
