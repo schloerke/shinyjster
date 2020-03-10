@@ -99,7 +99,7 @@ jobs:
         shell: bash
         run: >
           Rscript
-          -e "jsdt <- shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_ie(verbose = FALSE), type = 'serial')"
+          -e "jsdt <- shinyjster::run_jster_apps(apps = shinyjster:::apps_to_test(), browser = shinyjster::selenium_ie(), type = 'serial')"
           -e "shinyjster::assert_jster(jsdt)"
 
       - name: Run headless Edge checks
