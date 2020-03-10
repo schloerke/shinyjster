@@ -69,7 +69,7 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
     )
   }
   # Shiny has finished. Don't care how the process exited
-  cancel_check()
+  # cancel_check()
 
   if (inherits(proc, "process")) {
     if (proc$is_alive()) {
