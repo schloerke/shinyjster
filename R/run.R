@@ -29,6 +29,7 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
       # not a processx obj.
       return()
     }
+
     if (isTRUE(attr(browser, "no_check"))) {
       # do not check functions that will not behave
       ## IE webdriver java jar (`selenium_ie`) does not behave well and will close early,
