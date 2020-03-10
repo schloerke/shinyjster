@@ -11,7 +11,7 @@ function initJsterHooks(): void {
     $("body").addClass("shinyjster_complete");
     setTimeout(function() {
       window.close();
-    }, 2 * 1000);
+    }, 20 * 1000);
   });
 
   if ($) {

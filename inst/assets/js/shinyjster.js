@@ -2971,7 +2971,7 @@ function initJsterHooks() {
     globals_1.$("body").addClass("shinyjster_complete");
     setTimeout(function () {
       window.close();
-    }, 2 * 1000);
+    }, 20 * 1000);
   });
 
   if (globals_1.$) {
