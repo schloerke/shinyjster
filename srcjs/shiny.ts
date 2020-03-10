@@ -7,11 +7,11 @@ function initJsterHooks(): void {
   ) {
     if (!canClose) return;
 
-    console.log("shinyjster: - closing window!");
+    console.log("shinyjster: - closing window in a bit!");
     $("body").addClass("shinyjster_complete");
     setTimeout(function() {
       window.close();
-    }, 20 * 1000);
+    }, 2 * 1000);
   });
 
   if ($) {
