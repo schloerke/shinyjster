@@ -83,12 +83,22 @@ fun main(args: Array<String>) {
 
     try {
         driver.manage().window().size = Dimension(x, y)
-        (driver as JavascriptExecutor).executeScript("window.open('${url}')")
+        driver.get(url)
 
-        val shinyjsterXpath = "/html/body[contains(@class, 'shinyjster_complete')]"
-        val body = By.xpath(shinyjsterXpath)
+        val shinyjsterXpath = "//*[contains(@class, 'shinyjster_complete')]"
+        val byXpath = By.xpath(shinyjsterXpath)
 
-        WebDriverWait(driver, timeout).until(ExpectedConditions.presenceOfElementLocated(body))
+        val startTime = System.currentTimeMillis()
+
+        while(driver.findElements(byXpath).isEmpty()) {
+            // println("Checking!")
+            Thread.sleep(250)
+            val elapsedTime = (System.currentTimeMillis() - startTime) / 1000.0
+            if (elapsedTime > timeout) {
+              throw Exception("Timeout reached! Exiting")
+            }
+        }
+
     } finally {
         driver.quit()
     }
