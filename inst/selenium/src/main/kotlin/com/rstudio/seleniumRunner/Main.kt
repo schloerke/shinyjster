@@ -73,12 +73,10 @@ fun main(args: Array<String>) {
         driver.manage().window().size = Dimension(x, y)
         (driver as JavascriptExecutor).executeScript("window.open('${url}')")
 
-        val minWindows = when(driverName) {
-            "iexplorer" -> 0
-            else -> 1
-        }
+        val shinyjsterXpath = "/html/body[contains(@class, 'shinyjster_complete')]"
+        val body = By.xpath(shinyjsterXpath)
 
-        WebDriverWait(driver, timeout).until(ExpectedConditions.numberOfWindowsToBe(minWindows))
+        WebDriverWait(driver, timeout).until(ExpectedConditions.presenceOfElementLocated(body))
     } finally {
         driver.quit()
     }

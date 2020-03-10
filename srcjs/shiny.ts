@@ -8,7 +8,10 @@ function initJsterHooks(): void {
     if (!canClose) return;
 
     console.log("shinyjster: - closing window!");
-    window.close();
+    $("body").addClass("shinyjster_complete");
+    setTimeout(function() {
+      window.close();
+    }, 2 * 1000);
   });
 
   if ($) {
