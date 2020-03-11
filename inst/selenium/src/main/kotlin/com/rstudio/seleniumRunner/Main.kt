@@ -9,6 +9,8 @@ import org.openqa.selenium.WebDriver
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
 import kotlin.system.exitProcess
+import sun.misc.Signal
+import sun.misc.SignalHandler
 
 // Types are chrome,firefox,opera,edge,phantomjs,iexplorer,selenium_server_standalone,chromium
 val types = enumValues<DriverManagerType>().map { it.name.toLowerCase() }.joinToString(",")
@@ -47,7 +49,9 @@ fun driverOptions(driverName: String, args: List<String>): Any? {
     return inst
 }
 
+
 fun main(args: Array<String>) {
+
     if (args.size < 4) {
         println("Missing required arguments.")
         help()
@@ -68,11 +72,35 @@ fun main(args: Array<String>) {
         driverClass.getDeclaredConstructor(optionsObject::class.java).newInstance(optionsObject)
     } as WebDriver
 
-    driver.manage().window().size = Dimension(x, y)
-    (driver as JavascriptExecutor).executeScript("window.open('${url}')")
+    Signal.handle(Signal("INT"), object : SignalHandler {
+        override fun handle(sig: Signal) {
+            println("\nReceived interrupt signal. Quitting driver...")
+            driver.quit();
+            println("\nDriver has quit! Exiting...")
+            System.exit(1)
+        }
+    })
 
     try {
-        WebDriverWait(driver, timeout).until(ExpectedConditions.numberOfWindowsToBe(1))
+        driver.manage().window().size = Dimension(x, y)
+        driver.get(url)
+
+        val shinyjsterXpath = "//*[contains(@class, 'shinyjster_complete')]"
+        val byXpath = By.xpath(shinyjsterXpath)
+
+        val startTime = System.currentTimeMillis()
+
+        // Loop through until the elapsed time has occured
+        // This allows for the Interrupt signal to be handled.
+        while(driver.findElements(byXpath).isEmpty()) {
+            // println("Checking!")
+            Thread.sleep(250)
+            val elapsedTime = (System.currentTimeMillis() - startTime) / 1000.0
+            if (elapsedTime > timeout) {
+              throw Exception("Timeout reached! Exiting")
+            }
+        }
+
     } finally {
         driver.quit()
     }

@@ -7,13 +7,23 @@
 \alias{selenium_ie}
 \title{Selenium browsers}
 \usage{
-selenium_chrome(timeout = 2 * 60, dimensions = "1800x1200", headless = TRUE)
+selenium_chrome(
+  timeout = 2 * 60,
+  dimensions = "1200x1200",
+  headless = FALSE,
+  verbose = TRUE
+)
 
-selenium_firefox(timeout = 2 * 60, dimensions = "1800x1200", headless = TRUE)
+selenium_firefox(
+  timeout = 2 * 60,
+  dimensions = "1200x1200",
+  headless = FALSE,
+  verbose = TRUE
+)
 
-selenium_edge(timeout = 2 * 60, dimensions = "1800x1200")
+selenium_edge(timeout = 2 * 60, dimensions = "1200x1200", verbose = TRUE)
 
-selenium_ie(timeout = 2 * 60, dimensions = "1800x1200")
+selenium_ie(timeout = 2 * 60, dimensions = "1200x1200", verbose = TRUE)
 }
 \arguments{
 \item{timeout}{Number of seconds before selenium closes the browser}
@@ -21,6 +31,8 @@ selenium_ie(timeout = 2 * 60, dimensions = "1800x1200")
 \item{dimensions}{A string in the form of \verb{"WIDTHxHEIGHT"}. Ex: \code{"1800x1200"}}
 
 \item{headless}{Logical which determines if the browser can run headless. Defaults to \code{TRUE} where possible.}
+
+\item{verbose}{Logical which determines if the selenium output is displayed as it's received}
 }
 \description{
 Opens a selenium driven browser and waits until shinyjster is finished.

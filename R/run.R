@@ -1,3 +1,4 @@
+
 #' Run an application with shinyjster enabled
 #'
 #' @inheritParams shiny::runApp
@@ -22,6 +23,31 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
     proc <<- utils::browseURL(url, browser = browser)
   })
 
+  # check to see if the browser did not start properly
+  check_if_bad_exit <- function() {
+    if (!inherits(proc, "process")) {
+      # not a processx obj.
+      return()
+    }
+
+    if (proc$is_alive()) {
+      # process is working after 10 seconds, success!
+      return()
+    }
+    # proc is dead
+    # This should only happen on a failure to start the browser application
+    # Therefore Shiny did not get a chance to load a url / test
+    if (!identical(proc$get_exit_status(), 0L)) {
+      # had a bad exit.
+      message("")
+      cat("Output:\n")
+      cat(proc$read_all_output())
+      stop("Browser process exited with a non-zero status before Shiny closed. Status: ", proc$get_exit_status())
+    }
+  }
+  # cancel the check if shiny has finished
+  cancel_check <- later::later(delay = 10, check_if_bad_exit)
+
   if (file.exists(appDir) && !dir.exists(appDir) && grepl("\\.rmd$", tolower(appDir))) {
     # is and Rmd file
     res <- rmarkdown::run(appDir, shiny_args = list(
@@ -38,28 +64,34 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
       launch.browser = FALSE
     )
   }
+  # Shiny has finished. Don't care how the process exited
+  cancel_check()
 
-  # if the app launched a browser using processx, wait up to 30s for it to close
-  if (inherits(proc, "process")) {
-    proc$wait(30 * 1000)
-    if(proc$is_alive()) {
-      cat("Output:\n")
-      cat(
-        proc$read_output()
-      )
-      cat("Response:\n")
-      str(res)
-      stop("Browser process did not shut down within 30 seconds after shiny had closed")
+  # check process every so often and see if it has died
+  # if dead, return FALSE. All function to return before full time has elapsed
+  # if alive, return TRUE
+  proc_is_alive <- function(after) {
+    sleep_val = 0.2
+    max_n <- after / sleep_val
+    for (i in seq_len(floor(max_n))) {
+      Sys.sleep(sleep_val)
+      if (!proc$is_alive()) {
+        return(FALSE)
+      }
     }
-    # proc is dead
-    if (!identical(proc$get_exit_status(), 0L)) {
-      cat("Output:\n")
-      cat(
-        proc$read_output()
-      )
-      cat("Response:\n")
-      str(res)
-      stop("Browser process did not exit with a status of 0. Status: ", proc$get_exit_status())
+    return(TRUE)
+  }
+
+  # Try to clean up any processx calls
+  if (inherits(proc, "process")) {
+    if (proc_is_alive(after = 3)) {
+      # If the process is still running, kill it.
+      # The proc is not needed at this point and should not exist.
+      message("shinyjster - Browser process is still alive. Sending SIGINT!")
+      proc$signal(tools::SIGINT)
+      if (proc_is_alive(after = 2)) {
+        message("shinyjster - Browser process is still alive after 2 seconds!!!")
+      }
     }
   }
 
@@ -110,9 +142,9 @@ run_jster_apps_lapply <- function(
   browser = getOption("browser")
 ) {
   ret <- lapply(apps, function(app) {
-    cat("shinyjster - ", "launching app: ", basename(app), "\n", sep = "")
+    cat("shinyjster - ", "starting app: ", basename(app), "\n", sep = "")
     on.exit({
-      cat("shinyjster - ", "closing app: ", basename(app), "\n", sep = "")
+      cat("shinyjster - ", "stopping app: ", basename(app), "\n", sep = "")
     }, add = TRUE)
     run_jster(app, port = port, host = host, browser = browser)
   })
@@ -126,12 +158,17 @@ run_jster_apps_serial <- function(
   browser = getOption("browser")
 ){
   ret <- lapply(apps, function(app) {
+    cat("shinyjster - ", "starting callr: ", basename(app), "\n", sep = "")
+    on.exit({
+      cat("shinyjster - ", "stopping callr: ", basename(app), "\n", sep = "")
+    }, add = TRUE)
+
     callr::r(
       function(run_jster_, app_, port_, host_, browser_) {
-        cat("shinyjster - ", "launching app: ", basename(app_), "\n", sep = "")
+        cat("shinyjster - ", "starting app: ", basename(app_), "\n", sep = "")
 
         on.exit({
-          cat("shinyjster - ", "closing app: ", basename(app_), "\n", sep = "")
+          cat("shinyjster - ", "stopping app: ", basename(app_), "\n", sep = "")
         }, add = TRUE)
 
         run_jster_(app = app_, port = port_, host = host_, browser = browser_)
@@ -225,9 +262,9 @@ run_jster_apps_callr <- function(
       app = app,
       p = callr::r_bg(
         function(run_jster_, app_, host_, i_, browser_) {
-          cat("shinyjster - ", "launching app", "\n", sep = "")
+          cat("shinyjster - ", "starting app", "\n", sep = "")
           on.exit({
-            cat("shinyjster - ", "closing app", "\n", sep = "")
+            cat("shinyjster - ", "stopping app", "\n", sep = "")
           }, add = TRUE)
 
           run_jster_(
@@ -322,5 +359,5 @@ apps_to_test <- function() {
   bad_pos <- basename(apps) %in% bad_apps
   apps <- apps[!bad_pos]
 
-  apps
+  sample(apps, length(apps))
 }

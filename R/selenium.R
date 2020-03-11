@@ -4,6 +4,7 @@ selenium_browser <- function(
   browser_name = c("chrome", "firefox", "edge", "iexplorer"),
   timeout = 2 * 60,
   dimensions = "1800x1200",
+  verbose = TRUE,
   ...
 ) {
 
@@ -17,7 +18,7 @@ selenium_browser <- function(
     stop("`timeout` must be a numeric value of size 1")
   }
   if (timeout < 30) {
-    message("`timeout` should be at least 30 seconds. Setting `timeout` to 30 seconds")
+    # message("`timeout` should be at least 30 seconds. Setting `timeout` to 30 seconds")
     # timeout <- 30
   } else if (timeout > 600) {
     message("`timeout` should not be more than 10 minutes (600 seconds). Setting `timeout` to 600 seconds")
@@ -47,6 +48,26 @@ selenium_browser <- function(
     supervise = FALSE, # do not supervise process
     cleanup = FALSE    # do not kill on gc
   )
+
+  if (isTRUE(verbose)) {
+    # display output
+    p_output <- function() {
+      output <- p$read_output_lines()
+      if (length(output) > 0) {
+        cat("pxjava - ", output, "\n")
+      }
+
+      if (p$is_alive()) {
+        later::later(delay = 0.1, p_output)
+      } else {
+        cat("pxjava - Selenium Processx closed\n")
+      }
+
+      invisible()
+    }
+    p_output()
+  }
+
   invisible(p)
 }
 
@@ -60,57 +81,61 @@ selenium_browser <- function(
 #' @param timeout Number of seconds before selenium closes the browser
 #' @param dimensions A string in the form of \verb{"WIDTHxHEIGHT"}. Ex: \code{"1800x1200"}
 #' @param headless Logical which determines if the browser can run headless. Defaults to \code{TRUE} where possible.
+#' @param verbose Logical which determines if the selenium output is displayed as it's received
 #' @describeIn selenium Opens a Chrome web browser
 #' @export
-selenium_chrome <- function(timeout = 2 * 60, dimensions = "1800x1200", headless = TRUE) {
+selenium_chrome <- function(timeout = 2 * 60, dimensions = "1200x1200", headless = FALSE, verbose = TRUE) {
   function(url) {
     selenium_browser(
       url = url,
       browser_name = "chrome",
       timeout = timeout,
       dimensions = dimensions,
+      verbose = verbose,
       if (isTRUE(headless)) "--headless"
     )
   }
 }
 #' @describeIn selenium Opens a Firefox web browser
 #' @export
-selenium_firefox <- function(timeout = 2 * 60, dimensions = "1800x1200", headless = TRUE) {
+selenium_firefox <- function(timeout = 2 * 60, dimensions = "1200x1200", headless = FALSE, verbose = TRUE) {
   function(url) {
     selenium_browser(
       url = url,
       browser_name = "firefox",
       timeout = timeout,
       dimensions = dimensions,
+      verbose = verbose,
       if (isTRUE(headless)) "-headless"
     )
   }
 }
 #' @describeIn selenium Opens an Edge web browser
 #' @export
-selenium_edge <- function(timeout = 2 * 60, dimensions = "1800x1200") {
+selenium_edge <- function(timeout = 2 * 60, dimensions = "1200x1200", verbose = TRUE) {
   function(url) {
     selenium_browser(
       url = url,
       browser_name = "edge",
       timeout = timeout,
-      dimensions = dimensions
+      dimensions = dimensions,
+      verbose = verbose
     )
   }
 }
 #' @describeIn selenium Opens an IE web browser
 #' @export
-selenium_ie <- function(timeout = 2 * 60, dimensions = "1800x1200") {
+selenium_ie <- function(timeout = 2 * 60, dimensions = "1200x1200", verbose = TRUE) {
   function(url) {
     selenium_browser(
       url = url,
       browser_name = "iexplorer",
       timeout = timeout,
-      dimensions = dimensions
+      dimensions = dimensions,
+      verbose = verbose
     )
   }
 }
-
 
 
 

@@ -2967,12 +2967,22 @@ function initJsterHooks() {
   // use event.target to obtain the output element
   globals_1.Shiny.addCustomMessageHandler("shinyjster_msg_close_window", function (canClose) {
     if (!canClose) return;
+    console.log("shinyjster: - closing window in a bit!"); // add class to body so that selenium can determine it is ok to shut down
+
+    globals_1.$("body").addClass("shinyjster_complete"); // wait ~ 2 seconds to give selenium ample time to notice that it is ok to shut down
+    // ... doesn't hurt for humans to see that the test passed
+
     setTimeout(function () {
-      console.log("shinyjster: - closing window!");
       window.close();
-    }, 500);
-    globals_1.Shiny.setInputValue("jster_closing_window", "closing");
+    }, 2 * 1000);
   });
+
+  if (globals_1.$) {
+    globals_1.$(document).on("shiny:disconnected", function () {
+      console.log("shinyjster: - lost connection. Closing window!");
+      window.close();
+    });
+  }
 }
 
 exports.initJsterHooks = initJsterHooks;

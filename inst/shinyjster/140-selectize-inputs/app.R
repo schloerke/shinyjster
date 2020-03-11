@@ -1,5 +1,4 @@
 library(shiny)
-library(shinyjster)
 
 bigvec <- paste0("a", 1:1e5)
 named_bigvec <- setNames(bigvec, bigvec)
@@ -82,6 +81,7 @@ test_set <- list(
 
 js_for_id <- function(select_id, output_id, test_val) {
   paste0("
+    jst.add(Jster.shiny.waitUntilStable);
     jst.add(function() {
       console.log('", select_id, "');
       console.log('current label')
@@ -176,9 +176,9 @@ ui <- fluidPage(
       )
     })
   ),
-  shinyjster_js(
+  shinyjster::shinyjster_js(
     "var jst = jster();",
-    "jst.add(Jster.shiny.waitUntilIdle);",
+    "jst.add(Jster.shiny.waitUntilStable);",
     paste0(
       collapse = "\n",
       lapply(seq_along(test_set), function(i) {
@@ -200,7 +200,7 @@ ui <- fluidPage(
 server <- function(input, output, session) {
 
   # include shinyjster_server call at top of server definition
-  shinyjster_server(input, output, session)
+  shinyjster::shinyjster_server(input, output, session)
 
   lapply(seq_along(test_set), function(i) {
     test_name <- names(test_set)[i]
