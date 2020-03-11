@@ -49,7 +49,7 @@ fluidPage(
   shinyjster::shinyjster_js("
     var jst = jster();
     jst.add(Jster.shiny.waitUntilStable);
-    jst.add(Jster.shiny.updateHref(window.location.href + '&test=%28fançy%21%29#hashVal'));
+    jst.add(Jster.shiny.updateHref(window.location.href + '&test=%28fan%C3%A7y%21%29#hashVal'));
 
     jst.add(function(done) {
       // update the hash value
