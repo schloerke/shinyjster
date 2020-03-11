@@ -120,7 +120,17 @@ shinyjster_server <- function(input, output, session = shiny::getDefaultReactive
   )
 
   # whenever the session stops, stop the whole application
+  ignoreOnSessionEnded <- FALSE
+  shiny::observeEvent(input$jster_ignore_on_session_ended, {
+    ignoreOnSessionEnded <<- isTRUE(input$jster_ignore_on_session_ended)
+  })
   session$onSessionEnded(function() {
+    # If told to ignore the session ending, return
+    if (ignoreOnSessionEnded) {
+      message("Browser window has been closed. Keeping shiny alive")
+      return()
+    }
+
     jster_message("Browser window has been closed. Stopping Shiny Application now.")
     shiny::stopApp(jster_return_val)
   })

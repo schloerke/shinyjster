@@ -1,7 +1,10 @@
 import { Jster, jster } from "./jster";
 
 interface ShinyType {
-  setInputValue: (key: string, value: string | Record<string, unknown>) => void;
+  setInputValue: (
+    key: string,
+    value: boolean | string | Record<string, unknown>
+  ) => void;
   addCustomMessageHandler?: (
     key: string,
     fn: (val?: string | number) => void
