@@ -127,7 +127,7 @@ shinyjster_server <- function(input, output, session = shiny::getDefaultReactive
   session$onSessionEnded(function() {
     # If told to ignore the session ending, return
     if (ignoreOnSessionEnded) {
-      message("Browser window has been closed. Keeping shiny alive")
+      jster_message("Browser window has been closed. Keeping shiny alive.")
       return()
     }
 
