@@ -45,7 +45,7 @@ selenium_browser <- function(
     stdout = "|",      # be able to read stdout
     stderr= "2>&1",    # put error output in stdout
     echo_cmd = TRUE,   # display command
-    supervise = FALSE, # do not supervise process
+    supervise = TRUE,  # do not supervise process
     cleanup = FALSE    # do not kill on gc
   )
 

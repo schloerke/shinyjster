@@ -71,7 +71,7 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
   # if dead, return FALSE. All function to return before full time has elapsed
   # if alive, return TRUE
   proc_is_alive <- function(after) {
-    sleep_val = 0.2
+    sleep_val <- 0.2
     max_n <- after / sleep_val
     for (i in seq_len(floor(max_n))) {
       Sys.sleep(sleep_val)
