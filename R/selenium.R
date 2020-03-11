@@ -126,7 +126,7 @@ selenium_edge <- function(timeout = 2 * 60, dimensions = "1200x1200", verbose = 
 #' @describeIn selenium Opens an IE web browser
 #' @export
 selenium_ie <- function(timeout = 2 * 60, dimensions = "1200x1200", verbose = TRUE) {
-  func <- function(url) {
+  function(url) {
     selenium_browser(
       url = url,
       browser_name = "iexplorer",
@@ -135,8 +135,6 @@ selenium_ie <- function(timeout = 2 * 60, dimensions = "1200x1200", verbose = TR
       verbose = verbose
     )
   }
-  attr(func, "no_check") <- TRUE
-  func
 }
 
 

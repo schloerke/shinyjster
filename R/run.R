@@ -23,26 +23,20 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
     proc <<- utils::browseURL(url, browser = browser)
   })
 
-  # periodically check to see if shiny was started, but the browser did not start properly
+  # check to see if the browser did not start properly
   check_if_bad_exit <- function() {
     if (!inherits(proc, "process")) {
       # not a processx obj.
       return()
     }
 
-    if (isTRUE(attr(browser, "no_check"))) {
-      # do not check functions that will not behave
-      ## IE webdriver java jar (`selenium_ie`) does not behave well and will close early,
-      ## However, the web browser will still exist.
-      ## This currently makes it hard to detect if an error has occured while launching the browser,
-      ## so we will not check/throw an error for Selenium IE
-      return()
-    }
     if (proc$is_alive()) {
       # process is working after 10 seconds, success!
       return()
     }
     # proc is dead
+    # This should only happen on a failure to start the browser application
+    # Therefore Shiny did not get a chance to load a url / test
     if (!identical(proc$get_exit_status(), 0L)) {
       # had a bad exit.
       message("")
@@ -51,6 +45,7 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
       stop("Browser process exited with a non-zero status before Shiny closed. Status: ", proc$get_exit_status())
     }
   }
+  # cancel the check if shiny has finished
   cancel_check <- later::later(delay = 10, check_if_bad_exit)
 
   if (file.exists(appDir) && !dir.exists(appDir) && grepl("\\.rmd$", tolower(appDir))) {
