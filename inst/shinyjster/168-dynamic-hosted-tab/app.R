@@ -1,5 +1,10 @@
-library(shiny)
-library(shinyjster)
+
+# devtools::install_github("rstudio/shiny#2545")
+# devtools::install_github("rstudio/shiny")
+
+# options(shiny.minified = FALSE)
+
+
 
 ui <- fluidPage(
   sidebarLayout(
@@ -27,73 +32,35 @@ ui <- fluidPage(
       )
     )
   ),
-  shinyjster_js("
-  var counter = 0;
-  var jst = jster(200);
+  includeScript("app.js"),
+  shinyjster::shinyjster_js("
+    var jst = jster();
 
-  // init working tabs
-  function add_button_click() {
-    jst.add(Jster.shiny.waitUntilStable);
-    jst.add(function() { $('#add').click(); });
-  }
-  add_button_click()
-  add_button_click()
-  add_button_click()
-
-  // click tabs to cause error state
-  function add_click_tab(idx) {
-    jst.add(Jster.shiny.waitUntilStable);
-    jst.add(function() { $($('#tabs a').get(idx)).click(); });
-  }
-  add_click_tab(0)
-  add_click_tab(1)
-  add_click_tab(2)
-
-  // add _broken_ tabs
-  add_button_click()
-  add_button_click()
-  add_button_click()
-  add_button_click()
-
-  // calculate value of active tab to get sum to check if working
-  function add_active_pane_counter() {
-    jst.add(Jster.shiny.waitUntilStable);
-    jst.add(function() {
-      var val = $('.tab-pane.active .val').text() - 0;
-      counter = counter + val;
+    jst.add(function(done) {
+      var wait = function() {
+        var txt = $('#result').text().trim();
+        if (txt.length == 0) {
+          setTimeout(wait, 100);
+          return;
+        }
+        done();
+        return;
+      }
+      wait();
     });
-  }
 
-  add_click_tab(0); add_active_pane_counter();
-  add_click_tab(1); add_active_pane_counter();
-  add_click_tab(2); add_active_pane_counter();
-  add_click_tab(3); add_active_pane_counter();
-  add_click_tab(4); add_active_pane_counter();
-  add_click_tab(5); add_active_pane_counter();
-  add_click_tab(6); add_active_pane_counter();
-  add_click_tab(7); add_active_pane_counter();
+    jst.add(function() {
+      Jster.assert.isEqual(
+        $('#result').text().trim(),
+        'Pass'
+      );
+    });
 
-  // verify the tabs work
-  jst.add(Jster.shiny.waitUntilStable);
-  jst.add(function() {
-    var sum = 0;
-    var len = $('.tab-pane').get().length;
-    for (var i = 0; i < len; i++) {
-      sum += i;
-    }
-
-    if (counter != sum) {
-      throw `FAILED!\nCounted a sum of ${ counter } vs ${ sum }`
-    }
-  });
-
-  jst.test();
+    jst.test();
   ")
 )
-
-
 server <- function(input, output, session) {
-  shinyjster_server(input, output, session)
+  shinyjster::shinyjster_server(input, output, session)
 
   n <- 0
   observeEvent(input$add, {
