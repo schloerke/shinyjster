@@ -811,8 +811,10 @@ function updateHref(url) {
 
 
     ignoreSessionEnded(function () {
-      // set the url
-      window.location = url; // do not call the callback... the page will refresh...
+      // set the url using window.document (not window.location)
+      // docs - https://developer.mozilla.org/en-US/docs/Web/API/Document/location
+      // random solution - https://stackoverflow.com/a/6297374/591574
+      window.document.location = url; // do not call the callback... the page will refresh...
 
       false && callback();
     });
