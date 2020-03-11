@@ -1,9 +1,4 @@
-
-# devtools::install_github("rstudio/shiny#2545")
-# devtools::install_github("rstudio/shiny")
-
-# options(shiny.minified = FALSE)
-
+library(shiny)
 
 
 ui <- fluidPage(
