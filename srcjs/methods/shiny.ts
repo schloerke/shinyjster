@@ -1,4 +1,4 @@
-import { $ } from "../globals";
+import { $, Shiny } from "../globals";
 
 let shinyIsIdle = false;
 
@@ -65,15 +65,49 @@ function waitUntilStable(callback) {
   waitUntilIdleFor(200)(callback);
 }
 
+function ignoreSessionEnded(callback) {
+  if (!(Shiny && Shiny.setInputValue)) {
+    throw "Shiny is not found!";
+  }
+  Shiny.setInputValue("jster_ignore_on_session_ended", true);
+  waitUntilStable(callback);
+}
+function updateHref(url) {
+  return function(callback) {
+    const searchParams = window.location.href.split("?")[1];
+
+    // Only update if the href is the original href
+    if (searchParams !== "shinyjster=1") {
+      callback();
+      return;
+    }
+
+    // Must be original href... updating!
+
+    // Let shiny know to ignore the upcoming page refresh.
+    ignoreSessionEnded(function() {
+      // set the url using window.document (not window.location)
+      // docs - https://developer.mozilla.org/en-US/docs/Web/API/Document/location
+      // random solution - https://stackoverflow.com/a/6297374/591574
+      window.document.location = url;
+
+      // do not call the callback... the page will refresh...
+      false && callback();
+    });
+  };
+}
+
 function hasOverlay() {
   return $("#shiny-disconnected-overlay").length > 0;
 }
 
 export {
+  ignoreSessionEnded,
   isIdle,
   isBusy,
   hasOverlay,
   waitUntilIdleFor,
   waitUntilIdle,
   waitUntilStable,
+  updateHref,
 };

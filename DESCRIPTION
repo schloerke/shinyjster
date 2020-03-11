@@ -1,6 +1,6 @@
 Package: shinyjster
 Title: Shiny JavaScript Testing
-Version: 0.0.0.9005
+Version: 0.0.0.9006
 Authors@R:
     c(
       person("Barret", "Schloerke", , "barret@rstudio.com", c("aut", "cre"),

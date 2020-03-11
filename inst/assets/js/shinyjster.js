@@ -788,6 +788,41 @@ function waitUntilStable(callback) {
 
 exports.waitUntilStable = waitUntilStable;
 
+function ignoreSessionEnded(callback) {
+  if (!(globals_1.Shiny && globals_1.Shiny.setInputValue)) {
+    throw "Shiny is not found!";
+  }
+
+  globals_1.Shiny.setInputValue("jster_ignore_on_session_ended", true);
+  waitUntilStable(callback);
+}
+
+exports.ignoreSessionEnded = ignoreSessionEnded;
+
+function updateHref(url) {
+  return function (callback) {
+    var searchParams = window.location.href.split("?")[1]; // Only update if the href is the original href
+
+    if (searchParams !== "shinyjster=1") {
+      callback();
+      return;
+    } // Must be original href... updating!
+    // Let shiny know to ignore the upcoming page refresh.
+
+
+    ignoreSessionEnded(function () {
+      // set the url using window.document (not window.location)
+      // docs - https://developer.mozilla.org/en-US/docs/Web/API/Document/location
+      // random solution - https://stackoverflow.com/a/6297374/591574
+      window.document.location = url; // do not call the callback... the page will refresh...
+
+      false && callback();
+    });
+  };
+}
+
+exports.updateHref = updateHref;
+
 function hasOverlay() {
   return globals_1.$("#shiny-disconnected-overlay").length > 0;
 }
