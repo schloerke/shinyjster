@@ -94,7 +94,7 @@ jobs:
       #     -e "remotes::install_local(force = TRUE)"
 
       - name: Run headless IE checks
-        timeout-minutes: 25
+        timeout-minutes: 15
         if: always() && runner.os == 'Windows'
         shell: bash
         run: >
@@ -103,7 +103,7 @@ jobs:
           -e "shinyjster::assert_jster(jsdt)"
 
       - name: Run headless Edge checks
-        timeout-minutes: 25
+        timeout-minutes: 15
         # if: always() && (runner.os == 'Windows' || runner.os == 'macOS')
         if: always() && runner.os == 'Windows'
         shell: bash
