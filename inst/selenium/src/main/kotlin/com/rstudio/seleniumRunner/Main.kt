@@ -74,7 +74,7 @@ fun main(args: Array<String>) {
 
     Signal.handle(Signal("INT"), object : SignalHandler {
         override fun handle(sig: Signal) {
-            println("\nReceived kill signal. Quitting driver...")
+            println("\nReceived interrupt signal. Quitting driver...")
             driver.quit();
             println("\nDriver has quit! Exiting...")
             System.exit(1)
@@ -90,6 +90,8 @@ fun main(args: Array<String>) {
 
         val startTime = System.currentTimeMillis()
 
+        // Loop through until the elapsed time has occured
+        // This allows for the Interrupt signal to be handled.
         while(driver.findElements(byXpath).isEmpty()) {
             // println("Checking!")
             Thread.sleep(250)
