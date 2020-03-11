@@ -67,22 +67,30 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
   # Shiny has finished. Don't care how the process exited
   cancel_check()
 
+  # check process every so often and see if it has died
+  # if dead, return FALSE. All function to return before full time has elapsed
+  # if alive, return TRUE
+  proc_is_alive <- function(after) {
+    sleep_val = 0.2
+    max_n <- after / sleep_val
+    for (i in seq_len(floor(max_n))) {
+      Sys.sleep(sleep_val)
+      if (!proc$is_alive()) {
+        return(FALSE)
+      }
+    }
+    return(TRUE)
+  }
+
+  # Try to clean up any processx calls
   if (inherits(proc, "process")) {
-    if (proc$is_alive()) {
-      # message("Proc is alive. Sleeping...")
-      Sys.sleep(2)
-      if (proc$is_alive()) {
-        # If the process is still running, kill it.
-        # The proc is not needed at this point and should not exist.
-        message("Proc is still alive. Killing the proc!")
-        proc$signal(tools::SIGINT)
-        message("Waiting....")
-        Sys.sleep(2)
-        if (proc$is_alive()) {
-          message("Proc is alive!!!")
-        } else {
-          message("Proc is dead")
-        }
+    if (proc_is_alive(after = 3)) {
+      # If the process is still running, kill it.
+      # The proc is not needed at this point and should not exist.
+      message("shinyjster - Browser process is still alive. Sending SIGINT!")
+      proc$signal(tools::SIGINT)
+      if (proc_is_alive(after = 2)) {
+        message("shinyjster - Browser process is still alive after 2 seconds!!!")
       }
     }
   }
