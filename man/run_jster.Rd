@@ -18,7 +18,7 @@ run_jster_apps(
   cores = parallel::detectCores(),
   port = NULL,
   host = "127.0.0.1",
-  browser = selenium_chrome()
+  browser = getOption("browser")
 )
 }
 \arguments{

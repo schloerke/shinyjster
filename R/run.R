@@ -123,7 +123,7 @@ run_jster_apps <- function(
   cores = parallel::detectCores(),
   port = NULL,
   host = "127.0.0.1",
-  browser = selenium_chrome()
+  browser = getOption("browser")
 ) {
 
   switch(match.arg(type),
@@ -142,9 +142,9 @@ run_jster_apps_lapply <- function(
   browser = getOption("browser")
 ) {
   ret <- lapply(apps, function(app) {
-    cat("shinyjster - ", "launching app: ", basename(app), "\n", sep = "")
+    cat("shinyjster - ", "starting app: ", basename(app), "\n", sep = "")
     on.exit({
-      cat("shinyjster - ", "closing app: ", basename(app), "\n", sep = "")
+      cat("shinyjster - ", "stopping app: ", basename(app), "\n", sep = "")
     }, add = TRUE)
     run_jster(app, port = port, host = host, browser = browser)
   })
@@ -158,9 +158,9 @@ run_jster_apps_serial <- function(
   browser = getOption("browser")
 ){
   ret <- lapply(apps, function(app) {
-    cat("shinyjster - ", "launching app: ", basename(app), "\n", sep = "")
+    cat("shinyjster - ", "starting callr: ", basename(app), "\n", sep = "")
     on.exit({
-      cat("shinyjster - ", "stopped app: ", basename(app), "\n", sep = "")
+      cat("shinyjster - ", "stopping callr: ", basename(app), "\n", sep = "")
     }, add = TRUE)
 
     callr::r(
@@ -168,7 +168,7 @@ run_jster_apps_serial <- function(
         cat("shinyjster - ", "starting app: ", basename(app_), "\n", sep = "")
 
         on.exit({
-          cat("shinyjster - ", "closing app: ", basename(app_), "\n", sep = "")
+          cat("shinyjster - ", "stopping app: ", basename(app_), "\n", sep = "")
         }, add = TRUE)
 
         run_jster_(app = app_, port = port_, host = host_, browser = browser_)
@@ -262,9 +262,9 @@ run_jster_apps_callr <- function(
       app = app,
       p = callr::r_bg(
         function(run_jster_, app_, host_, i_, browser_) {
-          cat("shinyjster - ", "launching app", "\n", sep = "")
+          cat("shinyjster - ", "starting app", "\n", sep = "")
           on.exit({
-            cat("shinyjster - ", "closing app", "\n", sep = "")
+            cat("shinyjster - ", "stopping app", "\n", sep = "")
           }, add = TRUE)
 
           run_jster_(
