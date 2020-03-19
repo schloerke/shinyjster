@@ -47,8 +47,7 @@
   "lint-staged": {
     "*.ts": [
       "eslint --fix",
-      "tsc --noEmit",
-      "git add"
+      "tsc --noEmit"
     ]
   }
 }
