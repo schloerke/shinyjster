@@ -29,6 +29,19 @@ class Jster {
   static input = methods.input;
   static bookmark = methods.bookmark;
 
+  // tell shiny to start listening
+  static initShiny = function() {
+    const jsterInitialized = function() {
+      if (Shiny.setInputValue) {
+        Shiny.setInputValue("jster_initialized", true);
+      } else {
+        setTimeout(jsterInitialized, 10);
+      }
+    };
+
+    jsterInitialized();
+  };
+
   constructor(timeout: number) {
     this.hasCalled = false;
     this.timeout = timeout;

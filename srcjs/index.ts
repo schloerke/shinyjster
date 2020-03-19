@@ -1,3 +1,4 @@
+import { $, Shiny } from "./globals";
 import { jster, Jster } from "./jster";
 import { initJsterHooks } from "./shiny";
 

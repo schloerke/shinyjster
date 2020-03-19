@@ -2974,7 +2974,20 @@ function () {
   Jster.image = methods_1.methods.image;
   Jster.unicode = methods_1.methods.unicode;
   Jster.input = methods_1.methods.input;
-  Jster.bookmark = methods_1.methods.bookmark;
+  Jster.bookmark = methods_1.methods.bookmark; // tell shiny to start listening
+
+  Jster.initShiny = function () {
+    var jsterInitialized = function jsterInitialized() {
+      if (globals_1.Shiny.setInputValue) {
+        globals_1.Shiny.setInputValue("jster_initialized", true);
+      } else {
+        setTimeout(jsterInitialized, 10);
+      }
+    };
+
+    jsterInitialized();
+  };
+
   return Jster;
 }();
 

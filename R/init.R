@@ -77,6 +77,8 @@ shinyjster_js <- function(..., set_timeout = TRUE) {
         if (Jster.getParameterByName('shinyjster') !== '1') {
           return;
         }
+        // tell shiny to listen for jster
+        Jster.initShiny();
 
         setTimeout(
           function(){",
@@ -92,7 +94,10 @@ shinyjster_js <- function(..., set_timeout = TRUE) {
 
         if (Jster.getParameterByName('shinyjster') !== '1') {
           return;
-        }",
+        }
+        // tell shiny to listen for jster
+        Jster.initShiny();
+        ",
             ...,
       "
       })();"
@@ -115,68 +120,73 @@ shinyjster_js <- function(..., set_timeout = TRUE) {
 shinyjster_server <- function(input, output, session = shiny::getDefaultReactiveDomain()) {
   force(session)
 
-  jster_return_val <- list(
-    type = "Session closed early"
-  )
+  shiny::observeEvent(once = TRUE, {input$jster_initialized}, {
+    print("here!")
+    jster_return_val <- list(
+      type = "Session closed early"
+    )
 
-  # whenever the session stops, stop the whole application
-  ignoreOnSessionEnded <- FALSE
-  shiny::observeEvent(input$jster_ignore_on_session_ended, {
-    ignoreOnSessionEnded <<- isTRUE(input$jster_ignore_on_session_ended)
+    # whenever the session stops, stop the whole application
+    ignoreOnSessionEnded <- FALSE
+
+    shiny::observeEvent(input$jster_ignore_on_session_ended, {
+      ignoreOnSessionEnded <<- isTRUE(input$jster_ignore_on_session_ended)
+    })
+    session$onSessionEnded(function() {
+      # If told to ignore the session ending, return
+      if (ignoreOnSessionEnded) {
+        jster_message("Browser window has been closed. Keeping shiny alive.")
+        return()
+      }
+
+      jster_message("Browser window has been closed. Stopping Shiny Application now.")
+      shiny::stopApp(jster_return_val)
+    })
+
+    shiny::observeEvent(input$jster_progress, {
+      jster_message(input$jster_progress)
+    })
+
+    shiny::observeEvent(input$jster_done, {
+      val <- input$jster_done
+
+      close_broser_window <- function(...) {
+        jster_message(..., "Closing Browser window")
+        session$sendCustomMessage("shinyjster_msg_close_window", TRUE)
+      }
+
+      if (identical(val$type, "success")) {
+        jster_return_val$type <<- "success"
+        close_broser_window("Success! ")
+      } else {
+        # error found
+        jster_return_val$type <<- "error"
+        jster_return_val$error <<- val$error
+
+        error_msg <- paste0(
+          capture.output({
+            if (all(c("x", "y", "message") %in% names(val$error))) {
+              cat(
+                "msg: ", val$error$message,
+                "\nx: ", val$error$x,
+                "\ny: ", val$error$y,
+                "\nxStr: ", val$error$xStr,
+                "\nyStr: ", val$error$yStr,
+                "\nyStr: ", val$error$yStr,
+                if (!is.null(val$error$contextStr)) paste0("\ncontextStr: ", val$error$contextStr),
+                sep = "")
+            } else {
+              str(val$error)
+            }
+          }),
+          collapse = "\n\t"
+        )
+
+        jster_message("JS error found! Error:\n\t", error_msg)
+        close_broser_window("Error found! ")
+      }
+    })
   })
-  session$onSessionEnded(function() {
-    # If told to ignore the session ending, return
-    if (ignoreOnSessionEnded) {
-      jster_message("Browser window has been closed. Keeping shiny alive.")
-      return()
-    }
 
-    jster_message("Browser window has been closed. Stopping Shiny Application now.")
-    shiny::stopApp(jster_return_val)
-  })
-
-  shiny::observeEvent(input$jster_progress, {
-    jster_message(input$jster_progress)
-  })
-
-  shiny::observeEvent(input$jster_done, {
-    val <- input$jster_done
-
-    close_broser_window <- function(...) {
-      jster_message(..., "Closing Browser window")
-      session$sendCustomMessage("shinyjster_msg_close_window", TRUE)
-    }
-
-    if (identical(val$type, "success")) {
-      jster_return_val$type <<- "success"
-      close_broser_window("Success! ")
-    } else {
-      # error found
-      jster_return_val$type <<- "error"
-      jster_return_val$error <<- val$error
-
-      error_msg <- paste0(
-        capture.output({
-          if (all(c("x", "y", "message") %in% names(val$error))) {
-            cat(
-              "msg: ", val$error$message,
-              "\nx: ", val$error$x,
-              "\ny: ", val$error$y,
-              "\nxStr: ", val$error$xStr,
-              "\nyStr: ", val$error$yStr,
-              "\nyStr: ", val$error$yStr,
-              if (!is.null(val$error$contextStr)) paste0("\ncontextStr: ", val$error$contextStr),
-              sep = "")
-          } else {
-            str(val$error)
-          }
-        }),
-        collapse = "\n\t"
-      )
-
-      jster_message("JS error found! Error:\n\t", error_msg)
-      close_broser_window("Error found! ")
-    }
-  })
 
 }
