@@ -41,13 +41,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn checks"
+      "pre-commit": "lint-staged"
     }
-  },
-  "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "yarn typescript-check && echo "
-    ]
   }
 }
