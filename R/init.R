@@ -121,7 +121,6 @@ shinyjster_server <- function(input, output, session = shiny::getDefaultReactive
   force(session)
 
   shiny::observeEvent(once = TRUE, {input$jster_initialized}, {
-    print("here!")
     jster_return_val <- list(
       type = "Session closed early"
     )
