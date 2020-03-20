@@ -10,7 +10,7 @@ on:
   # schedule:
   #   - cron:  '0 0 * * 1' # every monday at midnight
 
-name: R-CMD-check
+name: Check
 
 jobs:
   # # added so that the workflow doesn't fail.
@@ -22,7 +22,7 @@ jobs:
 
   JavaScript:
     runs-on: ubuntu-latest
-    name: Node.js Test
+    name: Typescript
 
     steps:
       - uses: actions/checkout@v1
@@ -46,6 +46,10 @@ jobs:
         run: >
           yarn install --frozen-lockfile
 
+      - name: Lints
+        run: >
+          yarn check
+
       - name: Test
         run: >
           yarn test
@@ -55,7 +59,7 @@ jobs:
     # if: false
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    name: R ${{ matrix.config.os }} (${{ matrix.config.r }})
 
     strategy:
       fail-fast: false
