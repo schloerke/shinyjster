@@ -2751,7 +2751,7 @@ var globals_1 = require("./globals");
 
 var methods_1 = require("./methods");
 
-require("ts-polyfill/lib/es2018-promise");
+var es2018_promise_1 = require("ts-polyfill/lib/es2018-promise");
 
 var assertFunction = methods_1.methods.assert.isFunction;
 
@@ -2762,7 +2762,7 @@ function () {
     this.hasCalled = false;
     this.timeout = timeout;
     this.fns = [];
-    this.p = new Promise(function (resolve) {
+    this.p = new es2018_promise_1.Promise(function (resolve) {
       resolve(true);
     });
   }
@@ -2852,7 +2852,7 @@ function () {
     this.setProgress("yellow", "Running tests!", false); // make sure shiny is fully initialized before advancing.
 
     this.p = this.p.then(function (value) {
-      return new Promise(function (resolve) {
+      return new es2018_promise_1.Promise(function (resolve) {
         var wait = function wait() {
           if (globals_1.Shiny.setInputValue) {
             resolve(value);
@@ -2873,7 +2873,7 @@ function () {
       .then(function (value) {
         _this.setProgress("yellow", "Progress: " + (idx + 1) + "/" + fns.length + " (waiting)", undefined);
 
-        return new Promise(function (resolve) {
+        return new es2018_promise_1.Promise(function (resolve) {
           setTimeout(function () {
             resolve(value);
           }, timeout);
@@ -2882,7 +2882,7 @@ function () {
       .then(function (value) {
         _this.setProgress("yellow", "Progress: " + (idx + 1) + "/" + fns.length + " (running)", undefined);
 
-        return new Promise(function (resolve) {
+        return new es2018_promise_1.Promise(function (resolve) {
           fn(resolve, value);
         });
       });
