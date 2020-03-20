@@ -1,6 +1,5 @@
 import { Shiny, $ } from "./globals";
 import { methods } from "./methods";
-import { Promise } from "ts-polyfill/lib/es2018-promise";
 
 interface ResolveFnType {
   (value?: unknown): void;

@@ -9,57 +9,59 @@ window.Shiny = {
 
 import { jster } from "../jster";
 
-test("basic jster works", (doneTest) => {
-  const jst = jster(1);
+test("basic jster works", () => {
+  return new Promise((doneTest) => {
+    const jst = jster(1);
 
-  let val = 1;
+    let val = 1;
 
-  expect.assertions(8);
+    expect.assertions(8);
 
-  // sync
-  jst.add(() => {
-    val += 2;
-    expect(val).toBe(3);
-    return 2;
-  });
-
-  // async
-  jst.add((done, priorVal) => {
-    expect(priorVal).toBe(2);
-    val += 3;
-    expect(val).toBe(6);
-    done(3);
-  });
-
-  // sync
-  jst.add(() => {
-    val += 4;
-    expect(val).toBe(10);
-    return 4;
-  });
-
-  // async
-  jst.add((done, priorVal) => {
-    expect(priorVal).toBe(4);
-    val += 5;
-    expect(val).toBe(15);
-    done(5);
-  });
-
-  jst.test(function(key, info) {
-    if (key != "jster_done") {
-      return;
-    }
-
-    // console.log(key, info);
-    expect(info).toStrictEqual({
-      type: "success",
-      length: 4,
-      value: 5,
+    // sync
+    jst.add(() => {
+      val += 2;
+      expect(val).toBe(3);
+      return 2;
     });
-    expect(key).toBe("jster_done");
 
-    doneTest();
+    // async
+    jst.add((done, priorVal) => {
+      expect(priorVal).toBe(2);
+      val += 3;
+      expect(val).toBe(6);
+      done(3);
+    });
+
+    // sync
+    jst.add(() => {
+      val += 4;
+      expect(val).toBe(10);
+      return 4;
+    });
+
+    // async
+    jst.add((done, priorVal) => {
+      expect(priorVal).toBe(4);
+      val += 5;
+      expect(val).toBe(15);
+      done(5);
+    });
+
+    jst.test(function(key, info) {
+      if (key != "jster_done") {
+        return;
+      }
+
+      // console.log(key, info);
+      expect(info).toStrictEqual({
+        type: "success",
+        length: 4,
+        value: 5,
+      });
+      expect(key).toBe("jster_done");
+
+      doneTest();
+    });
   });
 });
 
@@ -92,16 +94,18 @@ test("test can not be called after testing", () => {
   }).toThrow("`this.test()` has already been called");
 });
 
-test("test can not be called after testing - async", (doneTest) => {
-  const jst = jster(10);
+test("test can not be called after testing - async", () => {
+  return new Promise((doneTest) => {
+    const jst = jster(10);
 
-  jst.add((done) => done());
-  jst.test((key, value) => {
-    expect(key + value).toBeTruthy();
-    expect(() => {
-      jst.test(setInputMock);
-    }).toThrow("`this.test()` has already been called");
-    doneTest();
-    return;
+    jst.add((done) => done());
+    jst.test((key, value) => {
+      expect(key + value).toBeTruthy();
+      expect(() => {
+        jst.test(setInputMock);
+      }).toThrow("`this.test()` has already been called");
+      doneTest();
+      return;
+    });
   });
 });

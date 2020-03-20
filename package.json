@@ -31,8 +31,8 @@
     "test": "jest",
     "lint": "eslint --fix --ext .ts srcjs",
     "lint-check": "eslint --ext .ts srcjs",
-    "typescript-check": "tsc --noEmit srcjs/**/*.ts",
-    "type-check": "type-coverage --detail --at-least 95",
+    "typescript-check": "tsc -p tsconfig.json --noEmit",
+    "type-check": "type-coverage -p tsconfig.json --detail --at-least 85",
     "checks": "yarn typescript-check && yarn type-check && yarn lint-check"
   },
   "dependencies": {
@@ -41,13 +41,13 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "yarn checks"
     }
   },
   "lint-staged": {
     "*.ts": [
       "eslint --fix",
-      "tsc --noEmit"
+      "yarn typescript-check && echo "
     ]
   }
 }
