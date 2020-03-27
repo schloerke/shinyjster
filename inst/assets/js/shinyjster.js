@@ -1017,6 +1017,26 @@ function click(id) {
 }
 
 exports.click = click;
+},{"../globals":"eS2z"}],"vVPX":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var globals_1 = require("../globals");
+
+function getValue(id) {
+  globals_1.Shiny.inputBindings.bindingNames["shiny.sliderInput"].binding.getValue(globals_1.$("#" + id));
+}
+
+exports.getValue = getValue;
+
+function setValue(id, val) {
+  globals_1.Shiny.inputBindings.bindingNames["shiny.sliderInput"].binding.setValue(globals_1.$("#" + id), val);
+}
+
+exports.setValue = setValue;
 },{"../globals":"eS2z"}],"Y0XI":[function(require,module,exports) {
 "use strict";
 
@@ -1056,6 +1076,8 @@ var input = __importStar(require("./input"));
 
 var bookmark = __importStar(require("./bookmark"));
 
+var slider = __importStar(require("./slider"));
+
 var methods = {
   assert: assert,
   selectize: selectize,
@@ -1067,10 +1089,11 @@ var methods = {
   image: image,
   unicode: unicode,
   input: input,
-  bookmark: bookmark
+  bookmark: bookmark,
+  slider: slider
 };
 exports.methods = methods;
-},{"./selectize":"ceOt","./assert":"UK2R","./shiny":"owfG","./button":"bPYC","./radio":"ZV6I","./download":"by4Q","./checkbox":"k4af","./image":"eFjc","./unicode":"nUGZ","./input":"nPXt","./bookmark":"JqBx"}],"WLG3":[function(require,module,exports) {
+},{"./selectize":"ceOt","./assert":"UK2R","./shiny":"owfG","./button":"bPYC","./radio":"ZV6I","./download":"by4Q","./checkbox":"k4af","./image":"eFjc","./unicode":"nUGZ","./input":"nPXt","./bookmark":"JqBx","./slider":"vVPX"}],"WLG3":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1302,7 +1325,8 @@ function () {
   Jster.image = methods_1.methods.image;
   Jster.unicode = methods_1.methods.unicode;
   Jster.input = methods_1.methods.input;
-  Jster.bookmark = methods_1.methods.bookmark; // tell shiny to start listening
+  Jster.bookmark = methods_1.methods.bookmark;
+  Jster.slider = methods_1.methods.slider; // tell shiny to start listening
 
   Jster.initShiny = function () {
     var jsterInitialized = function jsterInitialized() {

@@ -9,6 +9,16 @@ interface ShinyType {
     key: string,
     fn: (val?: string | number) => void
   ) => void;
+  inputBindings?: {
+    bindingNames: {
+      [key: string]: {
+        binding: {
+          getValue: (el: JQuery<HTMLElement>) => any;
+          setValue: (el: JQuery<HTMLElement>, value: any) => void;
+        };
+      };
+    };
+  };
 }
 
 declare global {
