@@ -1,7 +1,7 @@
 import { $, Shiny } from "../globals";
 
 function getValue(id: string) {
-  Shiny.inputBindings.bindingNames["shiny.sliderInput"].binding.getValue(
+  return Shiny.inputBindings.bindingNames["shiny.sliderInput"].binding.getValue(
     $("#" + id)
   );
 }

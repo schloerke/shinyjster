@@ -1027,7 +1027,7 @@ Object.defineProperty(exports, "__esModule", {
 var globals_1 = require("../globals");
 
 function getValue(id) {
-  globals_1.Shiny.inputBindings.bindingNames["shiny.sliderInput"].binding.getValue(globals_1.$("#" + id));
+  return globals_1.Shiny.inputBindings.bindingNames["shiny.sliderInput"].binding.getValue(globals_1.$("#" + id));
 }
 
 exports.getValue = getValue;
