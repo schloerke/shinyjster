@@ -9,6 +9,7 @@ import * as image from "./image";
 import * as unicode from "./unicode";
 import * as input from "./input";
 import * as bookmark from "./bookmark";
+import * as slider from "./slider";
 
 const methods = {
   assert: assert,
@@ -22,6 +23,7 @@ const methods = {
   unicode: unicode,
   input: input,
   bookmark: bookmark,
+  slider: slider,
 };
 
 export { methods };

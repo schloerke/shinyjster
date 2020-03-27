@@ -27,6 +27,7 @@ class Jster {
   static unicode = methods.unicode;
   static input = methods.input;
   static bookmark = methods.bookmark;
+  static slider = methods.slider;
 
   // tell shiny to start listening
   static initShiny = function() {
