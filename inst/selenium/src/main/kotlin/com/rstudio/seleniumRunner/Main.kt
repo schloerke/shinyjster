@@ -57,6 +57,9 @@ fun main(args: Array<String>) {
         help()
     }
 
+    println("Edge version")
+    println(System.getProperty("wdm.edgeDriverVersion"))
+
     val (driverName, dims, url, timeoutStr) = args
     val timeout = timeoutStr.toLong()
     val (x, y) = dims.split("x").map { it.toInt() }
