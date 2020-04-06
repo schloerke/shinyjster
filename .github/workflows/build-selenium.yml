@@ -1,7 +1,7 @@
 on:
   push:
-    paths:
-      - inst/selenium/src/main/kotlin/com/rstudio/seleniumRunner/Main.kt
+    # paths:
+    #   - inst/selenium/src/main/kotlin/com/rstudio/seleniumRunner/Main.kt
     branches:
       - master
       - ghactions
@@ -49,8 +49,14 @@ jobs:
           mvn package
           cp target/selenium-1.0.0-jar-with-dependencies.jar selenium.jar
           git add selenium.jar
-
-      - name: Git Push
-        run: |
           git commit -m 'Maven build (GitHub Actions)' || echo "No Maven changes to commit"
+
+      - name: Git Push (PR)
+        uses: r-lib/actions/pr-push@master
+        if: github.event_name != 'push'
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Git Push (Branch)
+        if: github.event_name == 'push'
+        run: |
           git push https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git HEAD:${{ github.ref }} || echo "No changes to push"
