@@ -75,7 +75,8 @@ fun main(args: Array<String>) {
       // println(WebDriverManager.edgedriver().getBrowserVersion())
 
 
-      WebDriverManager.getInstance(driverType).avoidAutoVersion().version(System.getProperty("wdm.edgeDriverVersion")).setup()
+      // WebDriverManager.getInstance(driverType).avoidAutoVersion().version(System.getProperty("wdm.edgeDriverVersion")).setup()
+      WebDriverManager.edgedriver().version(System.getProperty("wdm.edgeDriverVersion")).setup()
     } else {
       WebDriverManager.getInstance(driverType).setup()
     }
