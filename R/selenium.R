@@ -147,6 +147,7 @@ selenium_ie <- function(timeout = 2 * 60, dimensions = "1200x1200", verbose = TR
 
 
 
+
 selenium_build <- function() {
   selenium_folder <- system.file("selenium", package = "shinyjster")
 
