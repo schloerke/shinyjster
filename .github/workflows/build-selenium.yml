@@ -1,7 +1,23 @@
 on:
   push:
-    paths:
-      - inst/selenium/src/main/kotlin/com/rstudio/seleniumRunner/Main.kt
+    # paths:
+    #   - inst/selenium/src/main/kotlin/com/rstudio/seleniumRunner/Main.kt
+    branches:
+      - master
+      - ghactions
+  pull_request:
+    branches:
+      - master
+  # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#onschedule
+  schedule:
+    - cron:  '0 0 * * 1' # every monday at midnight
+  repository_dispatch:
+    types:
+      - all
+      - selenium
+      - rituals
+      - build
+
 
 name: Selenium
 
@@ -11,7 +27,13 @@ jobs:
     runs-on: ubuntu-16.04
     steps:
       - uses: actions/checkout@v1
-        name: Git Pull
+        name: Git Pull (PR)
+        if: github.event_name == 'pull_request'
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/checkout@v1
+        if: github.event_name != 'pull_request'
+        name: Git Pull (Branch)
 
       - uses: actions/cache@v1
         name: Maven Cache
@@ -33,9 +55,14 @@ jobs:
           mvn package
           cp target/selenium-1.0.0-jar-with-dependencies.jar selenium.jar
           git add selenium.jar
+          git commit -m 'Maven build (GitHub Actions)' || echo "No Maven changes to commit"
 
-      - name: Git Push
+      - name: Git Push (PR)
+        uses: r-lib/actions/pr-push@master
+        if: github.event_name != 'push'
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Git Push (Branch)
         if: github.event_name == 'push'
         run: |
-          git commit -m 'Maven build (GitHub Actions)' || echo "No Maven changes to commit"
           git push https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git HEAD:${{ github.ref }} || echo "No changes to push"
