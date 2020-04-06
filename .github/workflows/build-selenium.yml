@@ -2,6 +2,16 @@ on:
   push:
     paths:
       - inst/selenium/src/main/kotlin/com/rstudio/seleniumRunner/Main.kt
+  # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#onschedule
+  schedule:
+    - cron:  '0 0 * * 1' # every monday at midnight
+  repository_dispatch:
+    types:
+      - all
+      - selenium
+      - rituals
+      - build
+
 
 name: Selenium
 
