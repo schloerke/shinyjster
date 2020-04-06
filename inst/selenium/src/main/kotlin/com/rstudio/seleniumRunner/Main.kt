@@ -57,16 +57,20 @@ fun main(args: Array<String>) {
         help()
     }
 
-    println("Edge version")
-    println(System.getProperty("wdm.edgeDriverVersion"))
-
     val (driverName, dims, url, timeoutStr) = args
     val timeout = timeoutStr.toLong()
     val (x, y) = dims.split("x").map { it.toInt() }
     val opts = args.drop(4)
 
     val driverType = enumValueOf<DriverManagerType>(driverName.toUpperCase())
-    WebDriverManager.getInstance(driverType).setup()
+    if (driverName.toUpperCase() == "EDGE") {
+      // manually set the edge driver version
+      println("Edge version")
+      println(System.getProperty("wdm.edgeDriverVersion"))
+      WebDriverManager.getInstance(driverType).version(System.getProperty("wdm.edgeDriverVersion")).setup()
+    } else {
+      WebDriverManager.getInstance(driverType).setup()
+    }
     val driverClass = Class.forName(driverType.browserClass())
     val optionsObject = driverOptions(driverName, opts)
     val driver = if (optionsObject == null) {
