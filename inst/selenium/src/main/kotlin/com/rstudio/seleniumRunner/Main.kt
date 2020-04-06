@@ -65,7 +65,7 @@ fun main(args: Array<String>) {
     val driverType = enumValueOf<DriverManagerType>(driverName.toUpperCase())
     if (driverName.toUpperCase() == "EDGE") {
       // manually set the edge driver version
-      println("Edge version")
+      println("Edge version: ")
       println(System.getProperty("wdm.edgeDriverVersion"))
       WebDriverManager.getInstance(driverType).version(System.getProperty("wdm.edgeDriverVersion")).setup()
     } else {
