@@ -77,7 +77,7 @@ fun main(args: Array<String>) {
 
       // WebDriverManager.getInstance(driverType).avoidAutoVersion().version(System.getProperty("wdm.edgeDriverVersion")).setup()
       // WebDriverManager.edgedriver().version(System.getProperty("wdm.edgeDriverVersion")).setup()
-      WebDriverManager.edgedriver().version(System.getProperty("81.0.416.34")).setup()
+      WebDriverManager.edgedriver().version("81.0.416.34").setup()
     } else {
       WebDriverManager.getInstance(driverType).setup()
     }
