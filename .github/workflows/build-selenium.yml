@@ -27,12 +27,13 @@ jobs:
     runs-on: ubuntu-16.04
     steps:
       - uses: actions/checkout@v1
-        if: github.event_name != 'pull_request'
-        name: Git Pull
-      - uses: actions/checkout@v1
+        name: Git Pull (PR)
         if: github.event_name == 'pull_request'
         with:
           ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/checkout@v1
+        if: github.event_name != 'pull_request'
+        name: Git Pull (Branch)
 
       - uses: actions/cache@v1
         name: Maven Cache
