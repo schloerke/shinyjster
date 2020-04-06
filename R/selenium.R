@@ -37,13 +37,14 @@ selenium_browser <- function(
     c(
       jvm_flags,
       "-jar",
-      selenium_file,
+      paste0("\"", selenium_file, "\""),
       browser_name,
-      dimensions,
-      url,
+      paste0("\"", dimensions, "\""),
+      paste0("\"", url, "\""),
       timeout,
       ...
     ),
+    windows_verbatim_args = TRUE,
     stdout = "|",      # be able to read stdout
     stderr= "2>&1",    # put error output in stdout
     echo_cmd = TRUE,   # display command
@@ -125,7 +126,7 @@ selenium_edge <- function(timeout = 2 * 60, dimensions = "1200x1200", verbose = 
       dimensions = dimensions,
       verbose = verbose,
       jvm_flags = c(
-        paste0("-Dwdm.edgeDriverVersion=", edge_version)
+        paste0("-Dwdm.edgeDriverVersion=\"", edge_version, "\"")
       )
     )
   }
