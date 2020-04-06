@@ -5,6 +5,10 @@ on:
   pull_request:
     branches:
       - "master"
+  repository_dispatch:
+    types:
+      - all
+      - gh-pages
 
 name: Deploy gh-pages
 
