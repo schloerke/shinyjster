@@ -37,10 +37,10 @@ selenium_browser <- function(
     c(
       jvm_flags,
       "-jar",
-      paste0("\"", selenium_file, "\""),
+      selenium_file,
       browser_name,
-      paste0("\"", dimensions, "\""),
-      paste0("\"", url, "\""),
+      dimensions,
+      url,
       timeout,
       ...
     ),
@@ -126,7 +126,7 @@ selenium_edge <- function(timeout = 2 * 60, dimensions = "1200x1200", verbose = 
       dimensions = dimensions,
       verbose = verbose,
       jvm_flags = c(
-        paste0("-Dwdm.edgeDriverVersion=\"", edge_version, "\"")
+        paste0("-Dwdm.edgeDriverVersion=", edge_version)
       )
     )
   }
