@@ -67,7 +67,15 @@ fun main(args: Array<String>) {
       // manually set the edge driver version
       println("Edge version: ")
       println(System.getProperty("wdm.edgeDriverVersion"))
-      WebDriverManager.getInstance(driverType).version(System.getProperty("wdm.edgeDriverVersion")).setup()
+
+      println("\nEdge versions: ")
+      println(WebDriverManager.getInstance(driverType).getVersions().joinToString())
+
+      // println("\nEdge browser versions: ")
+      // println(WebDriverManager.edgedriver().getBrowserVersion())
+
+
+      WebDriverManager.getInstance(driverType).avoidAutoVersion().version(System.getProperty("wdm.edgeDriverVersion")).setup()
     } else {
       WebDriverManager.getInstance(driverType).setup()
     }
