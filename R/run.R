@@ -48,17 +48,27 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
   # cancel the check if shiny has finished
   cancel_check <- later::later(delay = 10, check_if_bad_exit)
 
-  if (
-    # if the dir is actually an Rmd file
-    (file.exists(appDir) && grepl("\\.rmd$", tolower(appDir))) ||
-    # if the dir contains index.Rmd
-    (dir.exists(appDir) && any(grepl("^index\\.rmd$", tolower(dir(appDir)))))
-  ) {
-    res <- rmarkdown::run(appDir, shiny_args = list(
-      port = port,
-      host = host,
-      launch.browser = FALSE
-    ))
+  # if the dir is actually an Rmd file
+  is_rmd_file <- (file.exists(appDir) && grepl("\\.rmd$", tolower(appDir)))
+
+  # if the dir contains index.Rmd
+  has_index_rmd_file <- (dir.exists(appDir) && any(grepl("^index\\.Rmd$", dir(appDir))))
+
+  if (is_rmd_file || has_index_rmd_file) {
+    rmarkdown_app_dir <-
+      if (has_index_rmd_file) {
+        file.path(appDir, "index.Rmd")
+      } else {
+        appDir
+      }
+    res <- rmarkdown::run(
+      rmarkdown_app_dir,
+      shiny_args = list(
+        port = port,
+        host = host,
+        launch.browser = FALSE
+      )
+    )
   } else {
     # Run like a regular shiny app
     res <- shiny::runApp(
