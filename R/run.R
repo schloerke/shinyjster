@@ -15,7 +15,10 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
     port <- httpuv::randomPort()
   }
 
-  url <- paste0("http://", host, ":", port, "/?shinyjster=1")
+  # if the dir contains index.Rmd
+  has_index_rmd_file <- (dir.exists(appDir) && any(grepl("^index\\.Rmd$", dir(appDir))))
+
+  url <- paste0("http://", host, ":", port, "/", if (has_index_rmd_file) "index.Rmd", "?shinyjster=1")
   force(browser)
   force(url)
   proc <- NULL
@@ -48,21 +51,16 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
   # cancel the check if shiny has finished
   cancel_check <- later::later(delay = 10, check_if_bad_exit)
 
+  if (has_index_rmd_file) {
+    # use the index.Rmd file
+    appDir <- file.path(appDir, "index.Rmd")
+  }
   # if the dir is actually an Rmd file
   is_rmd_file <- (file.exists(appDir) && grepl("\\.rmd$", tolower(appDir)))
 
-  # if the dir contains index.Rmd
-  has_index_rmd_file <- (dir.exists(appDir) && any(grepl("^index\\.Rmd$", dir(appDir))))
-
-  if (is_rmd_file || has_index_rmd_file) {
-    rmarkdown_app_dir <-
-      if (has_index_rmd_file) {
-        file.path(appDir, "index.Rmd")
-      } else {
-        appDir
-      }
+  if (is_rmd_file) {
     res <- rmarkdown::run(
-      rmarkdown_app_dir,
+      appDir,
       shiny_args = list(
         port = port,
         host = host,
