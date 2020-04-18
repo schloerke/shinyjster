@@ -5,7 +5,8 @@ selenium_browser <- function(
   timeout = 2 * 60,
   dimensions = "1800x1200",
   verbose = TRUE,
-  ...
+  ...,
+  jvm_flags = NULL
 ) {
 
   # check and download
@@ -34,6 +35,7 @@ selenium_browser <- function(
   p <- processx::process$new(
     "java",
     c(
+      jvm_flags,
       "-jar",
       selenium_file,
       browser_name,
@@ -42,6 +44,7 @@ selenium_browser <- function(
       timeout,
       ...
     ),
+    windows_verbatim_args = TRUE,
     stdout = "|",      # be able to read stdout
     stderr= "2>&1",    # put error output in stdout
     echo_cmd = TRUE,   # display command
@@ -114,12 +117,17 @@ selenium_firefox <- function(timeout = 2 * 60, dimensions = "1200x1200", headles
 #' @export
 selenium_edge <- function(timeout = 2 * 60, dimensions = "1200x1200", verbose = TRUE) {
   function(url) {
+    edge_version <- system("msedgedriver.exe -version", intern = TRUE)
+    edge_version <- strsplit(edge_version, " ")[[1]][[2]]
     selenium_browser(
       url = url,
       browser_name = "edge",
       timeout = timeout,
       dimensions = dimensions,
-      verbose = verbose
+      verbose = verbose,
+      jvm_flags = c(
+        paste0("-Dwdm.edgeDriverVersion=", edge_version)
+      )
     )
   }
 }
@@ -136,6 +144,7 @@ selenium_ie <- function(timeout = 2 * 60, dimensions = "1200x1200", verbose = TR
     )
   }
 }
+
 
 
 

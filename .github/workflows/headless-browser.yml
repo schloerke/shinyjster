@@ -10,6 +10,11 @@ on:
   # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#onschedule
   schedule:
     - cron:  '0 0 * * 1' # every monday at midnight
+  repository_dispatch:
+    types:
+      - all
+      - headless
+      - ci
 
 name: Headless Browser
 
@@ -95,7 +100,8 @@ jobs:
 
       - name: Run headless IE checks
         timeout-minutes: 15
-        if: always() && runner.os == 'Windows'
+        # if: always() && runner.os == 'Windows'
+        if: false
         shell: bash
         run: >
           Rscript

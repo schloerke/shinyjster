@@ -63,7 +63,24 @@ fun main(args: Array<String>) {
     val opts = args.drop(4)
 
     val driverType = enumValueOf<DriverManagerType>(driverName.toUpperCase())
-    WebDriverManager.getInstance(driverType).setup()
+    if (driverName.toUpperCase() == "EDGE") {
+      // manually set the edge driver version
+      println("Edge version: ")
+      println(System.getProperty("wdm.edgeDriverVersion"))
+
+      println("\nEdge versions: ")
+      println(WebDriverManager.getInstance(driverType).getVersions().joinToString())
+
+      // println("\nEdge browser versions: ")
+      // println(WebDriverManager.edgedriver().getBrowserVersion())
+
+
+      // WebDriverManager.getInstance(driverType).avoidAutoVersion().version(System.getProperty("wdm.edgeDriverVersion")).setup()
+      // WebDriverManager.edgedriver().version(System.getProperty("wdm.edgeDriverVersion")).setup()
+      WebDriverManager.edgedriver().version("81.0.416.34").setup()
+    } else {
+      WebDriverManager.getInstance(driverType).setup()
+    }
     val driverClass = Class.forName(driverType.browserClass())
     val optionsObject = driverOptions(driverName, opts)
     val driver = if (optionsObject == null) {
