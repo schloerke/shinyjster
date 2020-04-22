@@ -1368,7 +1368,13 @@ function initJsterHooks() {
   globals_1.Shiny.addCustomMessageHandler("shinyjster_msg_close_window", function (canClose) {
     if (!canClose) return; // add class to body so that selenium can determine it is ok to shut down
 
-    globals_1.$("body").addClass("shinyjster_complete");
+    globals_1.$("body").addClass("shinyjster_complete"); // wait ~ 5 seconds to give selenium ample time to notice that it is ok to shut down
+    // ... doesn't hurt for humans to see that the test passed
+
+    console.log("shinyjster: - closing window in a bit!");
+    setTimeout(function () {
+      window.close();
+    }, 5 * 1000);
   });
 }
 
