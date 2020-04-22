@@ -1,4 +1,4 @@
-const setInputMock = function(key: string, value: string): void {
+const setInputMock = function (key: string, value: string): void {
   key + value;
   return;
 };
@@ -47,7 +47,7 @@ test("basic jster works", () => {
       done(5);
     });
 
-    jst.test(function(key, info) {
+    jst.test(function (key, info) {
       if (key != "jster_done") {
         return;
       }

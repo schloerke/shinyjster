@@ -1,9 +1,7 @@
 import { $ } from "../globals";
 
 function label(id: string) {
-  return $(`label[for="${id}"]`)
-    .text()
-    .trim();
+  return $(`label[for="${id}"]`).text().trim();
 }
 
 function currentOption(id: string) {

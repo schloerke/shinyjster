@@ -30,8 +30,8 @@ class Jster {
   static slider = methods.slider;
 
   // tell shiny to start listening
-  static initShiny = function() {
-    const jsterInitialized = function() {
+  static initShiny = function () {
+    const jsterInitialized = function () {
       if (Shiny.setInputValue) {
         Shiny.setInputValue("jster_initialized", true);
       } else {
@@ -107,7 +107,7 @@ class Jster {
       //   * assume it is a sync function
       //   * If it returns anything, pass it along to the next function
       //   * Since 'fn' has no 'value' arg, no value will be passed into 'fn'
-      addFn = function(done) {
+      addFn = function (done) {
         done(fn());
       };
     }
@@ -124,7 +124,7 @@ class Jster {
     // make sure shiny is fully initialized before advancing.
     this.p = this.p.then((value) => {
       return new Promise((resolve) => {
-        const wait = function() {
+        const wait = function () {
           if (Shiny.setInputValue) {
             resolve(value);
           } else {
@@ -149,7 +149,7 @@ class Jster {
             undefined
           );
           return new Promise((resolve) => {
-            setTimeout(function() {
+            setTimeout(function () {
               resolve(value);
             }, timeout);
           });
@@ -229,7 +229,7 @@ class Jster {
         });
 
         // display error in console
-        setTimeout(function() {
+        setTimeout(function () {
           throw error;
         }, 0);
       }

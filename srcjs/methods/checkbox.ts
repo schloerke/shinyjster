@@ -9,10 +9,7 @@ function isChecked(id: string) {
 }
 
 function label(id: string) {
-  return $(`#${id}`)
-    .parent()
-    .text()
-    .trim();
+  return $(`#${id}`).parent().text().trim();
 }
 
 export { click, isChecked, label };

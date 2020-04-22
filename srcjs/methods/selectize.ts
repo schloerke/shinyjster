@@ -21,9 +21,7 @@ function clickOption(id: string, idx: number) {
   const opt = options(id).get(idx);
 
   if ($(opt).hasClass("optgroup")) {
-    $(opt)
-      .find(".option")
-      .click();
+    $(opt).find(".option").click();
   } else {
     opt.click();
   }
@@ -40,7 +38,7 @@ function currentOption(id: string) {
 // When using serverside selectize, only the first 1000 values are sent.
 function values(id: string) {
   return options(id)
-    .map(function() {
+    .map(function () {
       const selectInfo: { label: string; value: string; group?: string } = {
         label: "",
         value: "",
@@ -61,9 +59,7 @@ function values(id: string) {
 }
 
 function label(id: string) {
-  return $(`label[for="${id}-selectized"]:visible`)
-    .text()
-    .trim();
+  return $(`label[for="${id}-selectized"]:visible`).text().trim();
 }
 
 export { click, values, options, clickOption, currentOption, label };

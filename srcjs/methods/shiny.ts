@@ -9,10 +9,10 @@ function isBusy(): boolean {
   return !shinyIsIdle;
 }
 if ($) {
-  $(document).on("shiny:busy", function() {
+  $(document).on("shiny:busy", function () {
     shinyIsIdle = false;
   });
-  $(document).on("shiny:idle", function() {
+  $(document).on("shiny:idle", function () {
     shinyIsIdle = true;
   });
 }
@@ -23,15 +23,15 @@ if ($) {
 //   `callback` will have to wait until the next time Shiny is 'idle' before attempting to wait to execute
 // Once a callback is successful, all created event handlers are removed to avoid buildup of no-op handlers
 function waitUntilIdleFor(timeout) {
-  return function(callback) {
+  return function (callback) {
     let timeoutId = null;
 
-    const busyFn = function() {
+    const busyFn = function () {
       // clear timeout. Calling with `null` is ok.
       clearTimeout(timeoutId);
     };
-    const idleFn = function() {
-      const fn = function() {
+    const idleFn = function () {
+      const fn = function () {
         // made it through the timeout, remove event listeners
         $(document).off("shiny:busy", busyFn);
         $(document).off("shiny:idle", idleFn);
@@ -73,7 +73,7 @@ function ignoreSessionEnded(callback) {
   waitUntilStable(callback);
 }
 function updateHref(url) {
-  return function(callback) {
+  return function (callback) {
     const searchParams = window.location.href.split("?")[1];
 
     // Only update if the href is the original href
@@ -85,7 +85,7 @@ function updateHref(url) {
     // Must be original href... updating!
 
     // Let shiny know to ignore the upcoming page refresh.
-    ignoreSessionEnded(function() {
+    ignoreSessionEnded(function () {
       // set the url using window.document (not window.location)
       // docs - https://developer.mozilla.org/en-US/docs/Web/API/Document/location
       // random solution - https://stackoverflow.com/a/6297374/591574
