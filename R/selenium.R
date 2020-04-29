@@ -84,57 +84,69 @@ selenium_browser <- function(
 #' @param verbose Logical which determines if the selenium output is displayed as it's received
 #' @describeIn selenium Opens a Chrome web browser
 #' @export
-selenium_chrome <- function(timeout = 2 * 60, dimensions = "1200x1200", headless = FALSE, verbose = TRUE) {
-  function(url) {
-    selenium_browser(
-      url = url,
-      browser_name = "chrome",
-      timeout = timeout,
-      dimensions = dimensions,
-      verbose = verbose,
-      if (isTRUE(headless)) "--headless"
-    )
-  }
+selenium_chrome <- function(timeout = 2 * 60, dimensions = "1200x1200", headless = !interactive(), verbose = TRUE) {
+  structure(
+    function(url) {
+      selenium_browser(
+        url = url,
+        browser_name = "chrome",
+        timeout = timeout,
+        dimensions = dimensions,
+        verbose = verbose,
+        if (isTRUE(headless)) "--headless"
+      )
+    },
+    browser = if (isTRUE(headless)) "chrome_headless" else "chrome"
+  )
 }
 #' @describeIn selenium Opens a Firefox web browser
 #' @export
-selenium_firefox <- function(timeout = 2 * 60, dimensions = "1200x1200", headless = FALSE, verbose = TRUE) {
-  function(url) {
-    selenium_browser(
-      url = url,
-      browser_name = "firefox",
-      timeout = timeout,
-      dimensions = dimensions,
-      verbose = verbose,
-      if (isTRUE(headless)) "-headless"
-    )
-  }
+selenium_firefox <- function(timeout = 2 * 60, dimensions = "1200x1200", headless = !interactive(), verbose = TRUE) {
+  structure(
+    function(url) {
+      selenium_browser(
+        url = url,
+        browser_name = "firefox",
+        timeout = timeout,
+        dimensions = dimensions,
+        verbose = verbose,
+        if (isTRUE(headless)) "-headless"
+      )
+    },
+    browser = if(isTRUE(headless)) "firefox_headless" else "firefox"
+  )
 }
 #' @describeIn selenium Opens an Edge web browser
 #' @export
 selenium_edge <- function(timeout = 2 * 60, dimensions = "1200x1200", verbose = TRUE) {
-  function(url) {
-    selenium_browser(
-      url = url,
-      browser_name = "edge",
-      timeout = timeout,
-      dimensions = dimensions,
-      verbose = verbose
-    )
-  }
+  structure(
+    function(url) {
+      selenium_browser(
+        url = url,
+        browser_name = "edge",
+        timeout = timeout,
+        dimensions = dimensions,
+        verbose = verbose
+      )
+    },
+    browser = "edge"
+  )
 }
 #' @describeIn selenium Opens an IE web browser
 #' @export
 selenium_ie <- function(timeout = 2 * 60, dimensions = "1200x1200", verbose = TRUE) {
-  function(url) {
-    selenium_browser(
-      url = url,
-      browser_name = "iexplorer",
-      timeout = timeout,
-      dimensions = dimensions,
-      verbose = verbose
-    )
-  }
+  structure(
+    function(url) {
+      selenium_browser(
+        url = url,
+        browser_name = "iexplorer",
+        timeout = timeout,
+        dimensions = dimensions,
+        verbose = verbose
+      )
+    },
+    browser = "ie"
+  )
 }
 
 
