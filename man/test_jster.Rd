@@ -27,7 +27,7 @@ A data frame with the columns \code{appDir}, \code{successful}, \code{returnValu
 }
 \description{
 This method will test your shiny application using the shinyjster code you have provided on all of the available browsers shinyjster can test with on the given platform.
-Each app will be ran in a separate R session using \link{run_jster_apps(type = 'serial')}.
+Each app will be ran in a separate R session using \code{run_jster_apps(type = 'serial')}.
 }
 \seealso{
 \code{\link[=run_jster]{run_jster()}}, \code{\link[=use_jster]{use_jster()}}

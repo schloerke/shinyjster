@@ -31,7 +31,7 @@ use_jster <- function(appDir = ".") {
 #' Test shinyjster app on all browsers
 #'
 #' This method will test your shiny application using the shinyjster code you have provided on all of the available browsers shinyjster can test with on the given platform.
-#' Each app will be ran in a separate R session using [run_jster_apps(type = 'serial')].
+#' Each app will be ran in a separate R session using `run_jster_apps(type = 'serial')`.
 #'
 #'
 #' @param browsers By default, as many browsers as selenium support on the given platform
