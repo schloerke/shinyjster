@@ -125,7 +125,7 @@ jobs:
       - name: Headless Check
         run: >
           Rscript
-          -e "remotes::install_cran(c('future', 'promises', 'magrittr'))"
+          -e "remotes::install_cran(c('future', 'promises', 'magrittr', 'ggplot2'))"
           -e "remotes::install_local(); shinyjster:::test_jster_internal()"
 
       - name: Upload check results
