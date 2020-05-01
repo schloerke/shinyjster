@@ -103,7 +103,6 @@ jobs:
         run: >
           Rscript
           -e "if (system.file(package = 'remotes') == '') install.packages('remotes')"
-          -e "if (system.file(package = 'pkgload') == '') install.packages('pkgload')"
 
       - name: Install system dependencies
         if: runner.os == 'Linux'
@@ -124,7 +123,7 @@ jobs:
         run: Rscript -e "rcmdcheck::rcmdcheck(args = '--no-manual', error_on = 'warning', check_dir = 'check')"
 
       - name: Headless Check
-        run: Rscript -e "pkgload::load_all(); test_jster_internal()"
+        run: Rscript -e "remotes::install_local(); shinyjster:::test_jster_internal()"
 
       - name: Upload check results
         if: failure() # only for previous step
