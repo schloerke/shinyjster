@@ -95,6 +95,7 @@ test_jster <- function(
 }
 
 # Test all apps stored in ./inst/shinyjster on all apps
+## TODO use shiny::runTests(appDir) once shiny v1.5.0 is published
 test_jster_internal <- function(assert = TRUE) {
 
   tests <- lapply(
