@@ -122,6 +122,9 @@ jobs:
       - name: Check
         run: Rscript -e "rcmdcheck::rcmdcheck(args = '--no-manual', error_on = 'warning', check_dir = 'check')"
 
+      - name: Headless Check
+        run: Rscript -e "shinyjster:::test_jster_internal()"
+
       - name: Upload check results
         if: failure() # only for previous step
         uses: actions/upload-artifact@v1

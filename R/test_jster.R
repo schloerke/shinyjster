@@ -93,3 +93,31 @@ test_jster <- function(
 
   ret
 }
+
+# Test all apps stored in ./inst/shinyjster on all apps
+test_jster_internal <- function(assert = TRUE) {
+
+  tests <- lapply(
+    dir(system.file("shinyjster", package = "shinyjster"), full.names = TRUE),
+    function(appDir) {
+      test_jster(
+        c(
+          selenium_chrome(headless = TRUE),
+          selenium_firefox(headless = TRUE),
+          if (platform() == "win") c(
+            selenium_edge(),
+            selenium_ie()
+          )
+        ),
+        appDir = appDir, assert = FALSE)
+    }
+  )
+
+  test_dt <- do.call(rbind, tests)
+  test_dt <- test_dt[!grepl("-fail", test_dt$appDir), ]
+  if (isTRUE(assert)) {
+    assert_jster(test_dt)
+  }
+
+  invisible(test_dt)
+}
