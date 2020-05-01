@@ -123,7 +123,10 @@ jobs:
         run: Rscript -e "rcmdcheck::rcmdcheck(args = '--no-manual', error_on = 'warning', check_dir = 'check')"
 
       - name: Headless Check
-        run: Rscript -e "remotes::install_local(); shinyjster:::test_jster_internal()"
+        run: >
+          Rscript
+          -e "remotes::install_cran(c('future', 'promises', 'magrittr'))"
+          -e "remotes::install_local(); shinyjster:::test_jster_internal()"
 
       - name: Upload check results
         if: failure() # only for previous step
