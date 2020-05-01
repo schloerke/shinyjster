@@ -10,14 +10,14 @@
 selenium_chrome(
   timeout = 2 * 60,
   dimensions = "1200x1200",
-  headless = FALSE,
+  headless = !interactive(),
   verbose = TRUE
 )
 
 selenium_firefox(
   timeout = 2 * 60,
   dimensions = "1200x1200",
-  headless = FALSE,
+  headless = !interactive(),
   verbose = TRUE
 )
 
