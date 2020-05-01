@@ -31,16 +31,17 @@ use_jster <- function(appDir = ".") {
 #' Test shinyjster app on all browsers
 #'
 #' This method will test your shiny application using the shinyjster code you have provided on all of the available browsers shinyjster can test with on the given platform.
-#' Each app will be ran in a separate R session using `run_jster_apps(type = 'serial')`.
+#' For each browser, each app will be tested using [run_jster_apps()].
 #'
-#'
+#' @inheritParams run_jster_apps
+#' @param apps Defaults the app in the directory above
 #' @param browsers By default, as many browsers as selenium support on the given platform
-#' @param appDir Defaults the app in the directory above
 #' @param assert A logical value that determines if the result should be validate if the return value passes all tests
-#' @param host,port Used when running the shiny application
 #' @seealso [run_jster()], [use_jster()]
-#' @return A data frame with the columns `appDir`, `successful`, `returnValue`, and `browser`. One row of information per `browser`.
+#' @return A data frame with the columns `appDir`, `successful`, `returnValue`, and `browser`. One row of information per `browser` and `apps` combination.
+#' @export
 test_jster <- function(
+  apps = "../",
   browsers = c(
     selenium_chrome(),
     selenium_firefox(),
@@ -49,34 +50,40 @@ test_jster <- function(
       selenium_ie()
     )
   ),
-  appDir = "../",
+  # callr is not available. Allows for each app to be run separately and wrapped in a tryCatch
+  type = c("serial", "lapply"),
   assert = TRUE,
   host = "127.0.0.1",
   port = NULL
 ) {
 
-  appDir <- normalizePath(appDir)
+  apps <- normalizePath(apps)
+  type <- match.arg(type)
 
   # for each browser,
   app_ret <- lapply(
     browsers,
     function(browser_fn) {
-      ret <- tryCatch({
-        # test in separate R session
-        run_jster_apps_serial(
-          apps = appDir,
-          browser = browser_fn,
-          host = host,
-          port = port
-        )
-      }, error = function(e) {
-        # return an error
-        tibble::tibble(
-          appDir = appDir,
-          successful = FALSE,
-          returnValue = list(e)
-        )
+      ret_list <- lapply(apps, function(app) {
+        tryCatch({
+          # test in separate R session
+          run_jster_apps(
+            apps = app,
+            browser = browser_fn,
+            host = host,
+            port = port,
+            type = type
+          )
+        }, error = function(e) {
+          # return an error
+          tibble::tibble(
+            appDir = app,
+            successful = FALSE,
+            returnValue = list(e)
+          )
+        })
       })
+      ret <- do.call(rbind, ret_list)
       # store the browser name
       name <- attr(browser_fn, "browser")
       if (is.null(name)) name <- "unknown_browser"
@@ -98,23 +105,20 @@ test_jster <- function(
 ## TODO use shiny::runTests(appDir) once shiny v1.5.0 is published
 test_jster_internal <- function(assert = TRUE) {
 
-  tests <- lapply(
-    dir(system.file("shinyjster", package = "shinyjster"), full.names = TRUE),
-    function(appDir) {
-      test_jster(
-        c(
-          selenium_chrome(headless = TRUE),
-          selenium_firefox(headless = TRUE),
-          if (platform() == "win") c(
-            selenium_edge(),
-            selenium_ie()
-          )
-        ),
-        appDir = appDir, assert = FALSE)
-    }
-  )
+  test_dt <-
+    test_jster(
+      dir(system.file("shinyjster", package = "shinyjster"), full.names = TRUE),
+      browsers = c(
+        selenium_chrome(headless = TRUE),
+        selenium_firefox(headless = TRUE),
+        if (platform() == "win") c(
+          selenium_edge(),
+          selenium_ie()
+        )
+      ),
+      assert = FALSE
+    )
 
-  test_dt <- do.call(rbind, tests)
   test_dt <- test_dt[!grepl("-fail", test_dt$appDir), ]
   if (isTRUE(assert)) {
     assert_jster(test_dt)

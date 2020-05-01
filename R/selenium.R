@@ -54,7 +54,8 @@ selenium_browser <- function(
     p_output <- function() {
       output <- p$read_output_lines()
       if (length(output) > 0) {
-        cat("pxjava - ", output, "\n")
+        out <- paste0("pxjava - ", output, "\n", collapse = "")
+        cat(out)
       }
 
       if (p$is_alive()) {

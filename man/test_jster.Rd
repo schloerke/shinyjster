@@ -5,29 +5,43 @@
 \title{Test shinyjster app on all browsers}
 \usage{
 test_jster(
+  apps = "../",
   browsers = c(selenium_chrome(), selenium_firefox(), if (platform() == "win")
     c(selenium_edge(), selenium_ie())),
-  appDir = "../",
+  type = c("serial", "lapply"),
   assert = TRUE,
   host = "127.0.0.1",
   port = NULL
 )
 }
 \arguments{
+\item{apps}{Defaults the app in the directory above}
+
 \item{browsers}{By default, as many browsers as selenium support on the given platform}
 
-\item{appDir}{Defaults the app in the directory above}
+\item{type}{Single value to determine how applications are executed. \describe{
+\item{\code{'serial'}}{Runs apps one after another using \code{lapply}. \code{port} will be random for each app unless specified.}
+\item{\code{'callr'}}{Runs apps using \code{callr::r_bg} using \code{cores} cores. \code{port} will be random for each app to allow concurrent execution.}
+\item{\code{'lapply'}}{Runs apps in succession using \code{lapply}. \code{port} will be random for each app unless specified.}
+}}
 
 \item{assert}{A logical value that determines if the result should be validate if the return value passes all tests}
 
-\item{host, port}{Used when running the shiny application}
+\item{host}{The IPv4 address that the application should listen on. Defaults
+to the \code{shiny.host} option, if set, or \code{"127.0.0.1"} if not. See
+Details.}
+
+\item{port}{The TCP port that the application should listen on. If the
+\code{port} is not specified, and the \code{shiny.port} option is set (with
+\code{options(shiny.port = XX)}), then that port will be used. Otherwise,
+use a random port.}
 }
 \value{
-A data frame with the columns \code{appDir}, \code{successful}, \code{returnValue}, and \code{browser}. One row of information per \code{browser}.
+A data frame with the columns \code{appDir}, \code{successful}, \code{returnValue}, and \code{browser}. One row of information per \code{browser} and \code{apps} combination.
 }
 \description{
 This method will test your shiny application using the shinyjster code you have provided on all of the available browsers shinyjster can test with on the given platform.
-Each app will be ran in a separate R session using \code{run_jster_apps(type = 'serial')}.
+For each browser, each app will be tested using \code{\link[=run_jster_apps]{run_jster_apps()}}.
 }
 \seealso{
 \code{\link[=run_jster]{run_jster()}}, \code{\link[=use_jster]{use_jster()}}
