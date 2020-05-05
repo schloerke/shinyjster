@@ -6,6 +6,7 @@
 #'
 #' @param appDir Location of shiny application to test
 #' @seealso [test_jster()]
+#' @export
 use_jster <- function(appDir = ".") {
 
   test_path <- file.path(appDir, "tests")
@@ -36,7 +37,7 @@ use_jster <- function(appDir = ".") {
 #' @inheritParams run_jster_apps
 #' @param apps Defaults the app in the directory above
 #' @param browsers By default, as many browsers as selenium support on the given platform
-#' @param assert A logical value that determines if the result should be validate if the return value passes all tests
+#' @param assert A logical value that determines if [assert_jster()] should be called on the return value
 #' @seealso [run_jster()], [use_jster()]
 #' @return A data frame with the columns `appDir`, `successful`, `returnValue`, and `browser`. One row of information per `browser` and `apps` combination.
 #' @export

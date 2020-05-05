@@ -25,7 +25,7 @@ test_jster(
 \item{\code{'lapply'}}{Runs apps in succession using \code{lapply}. \code{port} will be random for each app unless specified.}
 }}
 
-\item{assert}{A logical value that determines if the result should be validate if the return value passes all tests}
+\item{assert}{A logical value that determines if \code{\link[=assert_jster]{assert_jster()}} should be called on the return value}
 
 \item{host}{The IPv4 address that the application should listen on. Defaults
 to the \code{shiny.host} option, if set, or \code{"127.0.0.1"} if not. See

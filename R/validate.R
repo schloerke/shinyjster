@@ -14,7 +14,14 @@ assert_jster <- function(dt) {
   if (any(not_successful)) {
     fail_dt <- dt[not_successful, ]
     str(as.list(fail_dt))
-    stop("\nshinyjster - Failing apps:\n", paste0("shinyjster - * ", fail_dt$appDir, collapse = "\n"))
+    stop(
+      "\nshinyjster - Failing apps:\n",
+      paste0(
+        "shinyjster - * ", fail_dt$appDir,
+        if (tibble::has_name(fail_dt, "browser")) paste0(" - ", fail_dt$browser),
+        collapse = "\n"
+      )
+    )
   } else {
     message("shinyjster - Success! All apps pass")
   }
