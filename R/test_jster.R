@@ -60,6 +60,27 @@ test_jster <- function(
   apps <- normalizePath(apps)
   type <- match.arg(type)
 
+  if (is.function(browsers)) {
+    browsers <- list(browsers)
+  }
+  if (!is.list(browsers)) {
+    stop("`browsers` must be a list of functions")
+  }
+
+  mapply(browsers, seq_along(browsers), FUN = function(browser_func, i) {
+    if (!is.function(browser_func)) {
+      stop("`browsers[[", i, "`]]` is not a function")
+    }
+  })
+
+    if (is.function(browsers)) {
+    browsers <- list(browsers)
+  }
+  if (!is.list(browsers)) {
+    stop("`browsers` must be a list of functions")
+  }
+
+
   # for each browser,
   app_ret <- lapply(
     browsers,
