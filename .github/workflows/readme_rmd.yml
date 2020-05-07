@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-16.04
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      CRAN: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"
+      CRAN: "https://packagemanager.rstudio.com/all/__linux__/xenial/latest"
     steps:
       - uses: actions/checkout@v1
       - uses: r-lib/actions/setup-r@v1
