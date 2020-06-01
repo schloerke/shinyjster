@@ -98,7 +98,7 @@ run_jster <- function(appDir, port = 8000, host = "127.0.0.1", browser = getOpti
 
   # Try to clean up any processx calls
   if (inherits(proc, "process")) {
-    if (proc_is_alive(after = 3)) {
+    if (proc_is_alive(after = 10)) {
       # If the process is still running, kill it.
       # The proc is not needed at this point and should not exist.
       message("shinyjster - Browser process is still alive. Sending SIGINT!")
