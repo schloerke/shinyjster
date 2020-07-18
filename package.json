@@ -36,7 +36,7 @@
     "checks": "yarn typescript-check && yarn type-check && yarn lint-check"
   },
   "dependencies": {
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "util-inspect": "https://github.com/deecewan/browser-util-inspect#c0b4350"
   },
   "husky": {
