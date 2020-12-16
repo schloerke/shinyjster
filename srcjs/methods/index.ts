@@ -10,6 +10,7 @@ import * as unicode from "./unicode";
 import * as input from "./input";
 import * as bookmark from "./bookmark";
 import * as slider from "./slider";
+import * as datepicker from "./datepicker";
 
 const methods = {
   assert: assert,
@@ -24,6 +25,7 @@ const methods = {
   input: input,
   bookmark: bookmark,
   slider: slider,
+  datepicker: datepicker,
 };
 
 export { methods };

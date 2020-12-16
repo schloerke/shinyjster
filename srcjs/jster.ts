@@ -1,18 +1,20 @@
-import { Shiny, $ } from "./globals";
+import { Shiny, $, ShinySetInputValueType } from "./globals";
 import { methods } from "./methods";
 
 interface ResolveFnType {
   (value?: unknown): void;
 }
+
 interface AddFnType {
   (resolve?: ResolveFnType, value?: unknown): void;
 }
 
 const assertFunction = methods.assert.isFunction;
+// const prettyJSON = methods.assert.prettyJSON;
 
 class Jster {
   timeout: number;
-  fns: Array<{ fn: Function; timeout: number }>;
+  fns: Array<{ fn: AddFnType; timeout: number }>;
   p: null | Promise<unknown>;
   private hasCalled: boolean;
 
@@ -28,9 +30,10 @@ class Jster {
   static input = methods.input;
   static bookmark = methods.bookmark;
   static slider = methods.slider;
+  static datepicker = methods.datepicker;
 
   // tell shiny to start listening
-  static initShiny = function () {
+  static initShiny = function (): void {
     const jsterInitialized = function () {
       if (Shiny.setInputValue) {
         Shiny.setInputValue("jster_initialized", true);
@@ -180,7 +183,7 @@ class Jster {
     return setInputValue;
   }
 
-  test(setInputValue): void {
+  test(setInputValue?: ShinySetInputValueType): void {
     if (this.hasCalled) {
       throw "`this.test()` has already been called";
     }
@@ -236,7 +239,7 @@ class Jster {
     );
   }
 
-  wait(ms) {
+  wait(ms: number): void {
     this.add((done) => {
       setTimeout(done, ms);
     });

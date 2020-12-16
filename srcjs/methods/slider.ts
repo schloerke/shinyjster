@@ -13,4 +13,4 @@ function setValue(id: string, val: any) {
   );
 }
 
-export { getValue, setValue };
+export { getValue, setValue, getValue as value };
