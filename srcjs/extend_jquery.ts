@@ -5,5 +5,5 @@
 // https://stackoverflow.com/a/47091565/591574
 interface JQuery {
   //custom jquery plugin, had no typings
-  bsDatepicker(method: string): void;
+  bsDatepicker(method: string): string | number | Date | null;
 }
