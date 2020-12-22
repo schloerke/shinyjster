@@ -5,25 +5,25 @@
     "node": ">=12"
   },
   "devDependencies": {
-    "@types/jest": "^25.1.4",
-    "@types/jquery": "^3.3.31",
-    "@types/lodash": "^4.14.149",
-    "@typescript-eslint/eslint-plugin": "^2.3.3",
-    "@typescript-eslint/parser": "^2.3.3",
-    "eslint": "^6.5.1",
-    "eslint-config-prettier": "^6.4.0",
-    "eslint-plugin-jest": "^23.8.2",
-    "eslint-plugin-prettier": "^3.1.1",
-    "husky": "^4.2.3",
-    "jest": "^25.1.0",
-    "lint-staged": "^10.0.8",
+    "@types/jest": "^26",
+    "@types/jquery": "^3.5.5",
+    "@types/lodash": "^4",
+    "@typescript-eslint/eslint-plugin": "^4",
+    "@typescript-eslint/parser": "^4",
+    "eslint": "^7",
+    "eslint-config-prettier": "^7",
+    "eslint-plugin-jest": "^24",
+    "eslint-plugin-prettier": "^3",
+    "husky": "^4",
+    "jest": "^26",
+    "lint-staged": "^10",
     "parcel": "^1.12.3",
     "parcel-bundler": "^1.12.3",
-    "prettier": "2.x",
-    "ts-jest": "^25.2.1",
+    "prettier": "2",
+    "ts-jest": "^26",
     "ts-polyfill": "^3.8.2",
-    "type-coverage": "^2.3.0",
-    "typescript": "^3.6.3"
+    "type-coverage": "^2",
+    "typescript": "^4"
   },
   "scripts": {
     "build": "yarn typescript-check && parcel build -d inst/assets/js -o shinyjster.js --no-minify srcjs/index.ts",
@@ -36,7 +36,7 @@
     "checks": "yarn typescript-check && yarn type-check && yarn lint-check"
   },
   "dependencies": {
-    "lodash": "^4.17.15",
+    "lodash": "^4",
     "util-inspect": "https://github.com/deecewan/browser-util-inspect#c0b4350"
   },
   "husky": {

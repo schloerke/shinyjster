@@ -1,10 +1,11 @@
-import { Jster, jster } from "./jster";
+import { Jster } from "./jster";
+
+interface ShinySetInputValueType {
+  (key: string, value: boolean | string | Record<string, unknown>): void;
+}
 
 interface ShinyType {
-  setInputValue: (
-    key: string,
-    value: boolean | string | Record<string, unknown>
-  ) => void;
+  setInputValue: ShinySetInputValueType;
   addCustomMessageHandler?: (
     key: string,
     fn: (val?: string | number) => void
@@ -34,4 +35,4 @@ const Shiny: ShinyType = window.Shiny;
 
 const jQuery: JQueryStatic = window.jQuery;
 
-export { Shiny, jQuery, jQuery as $ };
+export { Shiny, jQuery, jQuery as $, ShinySetInputValueType };

@@ -60,7 +60,7 @@ test("basic jster works", () => {
       });
       expect(key).toBe("jster_done");
 
-      doneTest();
+      doneTest(true);
     });
   });
 });
@@ -84,7 +84,7 @@ test("tests can not be added after testing", () => {
   }).toThrow("`this.test()` has already been called");
 });
 
-test("test can not be called after testing", () => {
+test("can not be called after sync testing", () => {
   expect(() => {
     const jst = jster();
 
@@ -94,7 +94,7 @@ test("test can not be called after testing", () => {
   }).toThrow("`this.test()` has already been called");
 });
 
-test("test can not be called after testing - async", () => {
+test("can not be called after async testing", () => {
   return new Promise((doneTest) => {
     const jst = jster(10);
 
@@ -104,7 +104,7 @@ test("test can not be called after testing - async", () => {
       expect(() => {
         jst.test(setInputMock);
       }).toThrow("`this.test()` has already been called");
-      doneTest();
+      doneTest(true);
       return;
     });
   });
