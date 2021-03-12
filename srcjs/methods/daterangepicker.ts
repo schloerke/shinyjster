@@ -10,7 +10,7 @@ function findFromInput(id: string) {
   return $(findInput(id).get(0));
 }
 function findToInput(id: string) {
-  return $(findInput(id).get(0));
+  return $(findInput(id).get(1));
 }
 
 function setup(findFn: (id: string) => JQuery<HTMLElement>) {

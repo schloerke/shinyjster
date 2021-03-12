@@ -1196,7 +1196,7 @@ function findFromInput(id) {
 }
 
 function findToInput(id) {
-  return globals_1.$(findInput(id).get(0));
+  return globals_1.$(findInput(id).get(1));
 }
 
 function setup(findFn) {
