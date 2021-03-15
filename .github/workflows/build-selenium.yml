@@ -2,6 +2,8 @@ on:
   push:
     paths:
       - inst/selenium/src/main/kotlin/com/rstudio/seleniumRunner/Main.kt
+      - inst/selenium/pom.xml
+      - .github/workflows/build-selenium.yml
 
 name: Selenium
 
