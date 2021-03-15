@@ -11,6 +11,7 @@ import * as input from "./input";
 import * as bookmark from "./bookmark";
 import * as slider from "./slider";
 import * as datepicker from "./datepicker";
+import * as daterangepicker from "./daterangepicker";
 
 const methods = {
   assert: assert,
@@ -26,6 +27,7 @@ const methods = {
   bookmark: bookmark,
   slider: slider,
   datepicker: datepicker,
+  daterangepicker: daterangepicker,
 };
 
 export { methods };

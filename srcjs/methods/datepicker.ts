@@ -58,7 +58,7 @@ function datePickerInfo(id: string) {
   };
 }
 
-function possibleDates(id: string, callback = window.console.log): number[] {
+function possibleDates(): number[] {
   const isVisible = $(".datepicker-dropdown").length > 0;
 
   if (!isVisible)

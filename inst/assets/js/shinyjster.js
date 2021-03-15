@@ -1132,11 +1132,7 @@ function datePickerInfo(id) {
 
 exports.datePickerInfo = datePickerInfo;
 
-function possibleDates(id, callback) {
-  if (callback === void 0) {
-    callback = window.console.log;
-  }
-
+function possibleDates() {
   var isVisible = globals_1.$(".datepicker-dropdown").length > 0;
   if (!isVisible) throw "date pick is not open to inspect. Call `Jster.datepicker.bs.show()`";
   var visibleDates = globals_1.$(".datepicker-dropdown .datepicker-days .day:not(.disabled)").get().map(function (item) {
@@ -1180,6 +1176,130 @@ var datePicker = {
   getEndDate: getDateHelper("getEndDate")
 };
 exports.bs = datePicker;
+},{"../globals":"eS2z"}],"mEcw":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.to = exports.from = void 0;
+
+var globals_1 = require("../globals"); // do not expose "setDate" methods. Only use `setValue()`!
+
+
+function findInput(id) {
+  return globals_1.$("#" + id).find("input");
+}
+
+function findFromInput(id) {
+  return globals_1.$(findInput(id).get(0));
+}
+
+function findToInput(id) {
+  return globals_1.$(findInput(id).get(1));
+}
+
+function setup(findFn) {
+  function bsDatepicker(id, method) {
+    return findFn(id).bsDatepicker(method);
+  }
+
+  function click(id) {
+    datePicker.show(id);
+    findFn(id).focus(); // doesn't actually turn on the blue halo
+
+    return;
+  }
+
+  function label(id) {
+    return globals_1.$("label[for=\"" + id + "\"]").text().trim();
+  }
+
+  function value(id) {
+    return findFn(id).val();
+  }
+
+  function dateToUTCString(x) {
+    var year = x.getUTCFullYear();
+    var month = x.getUTCMonth() + 1;
+    var day = x.getUTCDate();
+    return year + "-" + month + "-" + day;
+  }
+
+  function dateInfo(x) {
+    if (x === null) {
+      return {
+        date: null,
+        curString: null,
+        year: null,
+        month: null,
+        day: null
+      };
+    }
+
+    return {
+      date: x,
+      curString: dateToUTCString(x),
+      year: x.getUTCFullYear(),
+      month: x.getUTCMonth() + 1,
+      day: x.getUTCDate()
+    };
+  } // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+
+
+  function datePickerInfo(id) {
+    return {
+      min: dateInfo(datePicker.getStartDate(id)),
+      cur: dateInfo(datePicker.getDate(id)),
+      max: dateInfo(datePicker.getEndDate(id))
+    };
+  }
+
+  function setValue(id, value) {
+    findFn(id).val(value); // set the DOM
+
+    bsDatepicker(id, "update"); // Tell the date picker DOM was updated
+
+    globals_1.$("#" + id).trigger("change"); // Tell shiny the date picker updated
+
+    return;
+  }
+
+  function getDateHelper(method_name) {
+    return function (id) {
+      return bsDatepicker(id, method_name);
+    };
+  }
+
+  var datePicker = {
+    show: function show(id) {
+      bsDatepicker(id, "show");
+      return;
+    },
+    hide: function hide(id) {
+      bsDatepicker(id, "hide");
+      return;
+    },
+    getStartDate: getDateHelper("getStartDate"),
+    getDate: getDateHelper("getDate"),
+    getEndDate: getDateHelper("getEndDate")
+  };
+  return {
+    click: click,
+    label: label,
+    value: value,
+    dateInfo: dateInfo,
+    datePickerInfo: datePickerInfo,
+    setValue: setValue,
+    bs: datePicker,
+    method: bsDatepicker
+  };
+}
+
+var from = setup(findFromInput);
+exports.from = from;
+var to = setup(findToInput);
+exports.to = to;
 },{"../globals":"eS2z"}],"Y0XI":[function(require,module,exports) {
 "use strict";
 
@@ -1248,6 +1368,8 @@ var slider = __importStar(require("./slider"));
 
 var datepicker = __importStar(require("./datepicker"));
 
+var daterangepicker = __importStar(require("./daterangepicker"));
+
 var methods = {
   assert: assert,
   selectize: selectize,
@@ -1261,10 +1383,11 @@ var methods = {
   input: input,
   bookmark: bookmark,
   slider: slider,
-  datepicker: datepicker
+  datepicker: datepicker,
+  daterangepicker: daterangepicker
 };
 exports.methods = methods;
-},{"./selectize":"ceOt","./assert":"UK2R","./shiny":"owfG","./button":"bPYC","./radio":"ZV6I","./download":"by4Q","./checkbox":"k4af","./image":"eFjc","./unicode":"nUGZ","./input":"nPXt","./bookmark":"JqBx","./slider":"vVPX","./datepicker":"U0Nf"}],"WLG3":[function(require,module,exports) {
+},{"./selectize":"ceOt","./assert":"UK2R","./shiny":"owfG","./button":"bPYC","./radio":"ZV6I","./download":"by4Q","./checkbox":"k4af","./image":"eFjc","./unicode":"nUGZ","./input":"nPXt","./bookmark":"JqBx","./slider":"vVPX","./datepicker":"U0Nf","./daterangepicker":"mEcw"}],"WLG3":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1499,7 +1622,8 @@ function () {
   Jster.input = methods_1.methods.input;
   Jster.bookmark = methods_1.methods.bookmark;
   Jster.slider = methods_1.methods.slider;
-  Jster.datepicker = methods_1.methods.datepicker; // tell shiny to start listening
+  Jster.datepicker = methods_1.methods.datepicker;
+  Jster.daterangepicker = methods_1.methods.daterangepicker; // tell shiny to start listening
 
   Jster.initShiny = function () {
     var jsterInitialized = function jsterInitialized() {

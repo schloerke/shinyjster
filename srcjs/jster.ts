@@ -31,6 +31,7 @@ class Jster {
   static bookmark = methods.bookmark;
   static slider = methods.slider;
   static datepicker = methods.datepicker;
+  static daterangepicker = methods.daterangepicker;
 
   // tell shiny to start listening
   static initShiny = function (): void {
