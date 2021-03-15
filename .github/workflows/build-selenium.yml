@@ -4,6 +4,10 @@ on:
       - inst/selenium/src/main/kotlin/com/rstudio/seleniumRunner/Main.kt
       - inst/selenium/pom.xml
       - .github/workflows/build-selenium.yml
+  repository_dispatch:
+    types:
+      - all
+      - build
 
 name: Selenium
 
