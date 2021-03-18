@@ -17,6 +17,7 @@ parsed_url_singleton <- singleton(
   h3("Parsed URL query string")
 )
 
+
 fluidPage(
   titlePanel("Client data and query string example"),
 
