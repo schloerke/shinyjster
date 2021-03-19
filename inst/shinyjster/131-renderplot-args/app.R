@@ -33,6 +33,7 @@ ui <- withTags(fluidPage(
 
     var jst = jster();
     jst.add(Jster.shiny.waitUntilIdle);
+    jst.add(Jster.shiny.waitUntilIdleFor(2000));
 
     jst.add(function() {
       if (proportion_transparent('plot') <= 0.95) {
