@@ -6,8 +6,9 @@
 \usage{
 test_jster(
   apps = "../",
-  browsers = c(selenium_chrome(), selenium_firefox(), selenium_edge(), if (platform()
-    == "win") c(selenium_ie()), if (platform() == "mac") c(selenium_safari())),
+  browsers = c(selenium_chrome(), selenium_firefox(), if (platform() == "win" ||
+    platform() == "mac") c(selenium_edge()), if (platform() == "win") c(selenium_ie()),
+    if (platform() == "mac") c(selenium_safari())),
   type = c("serial", "lapply"),
   assert = TRUE,
   host = "127.0.0.1",

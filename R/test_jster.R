@@ -46,7 +46,9 @@ test_jster <- function(
   browsers = c(
     selenium_chrome(),
     selenium_firefox(),
-    selenium_edge(),
+    if (platform() == "win" || platform() == "mac") c(
+      selenium_edge()
+    ),
     if (platform() == "win") c(
       selenium_ie()
     ),
@@ -136,7 +138,9 @@ test_jster_internal <- function(assert = TRUE) {
       browsers = c(
         selenium_chrome(headless = TRUE),
         selenium_firefox(headless = TRUE),
-        selenium_edge(),
+        if (platform() == "win" || platform() == "mac") c(
+          selenium_edge()
+        ),
         if (platform() == "win") c(
           selenium_ie()
         ),
