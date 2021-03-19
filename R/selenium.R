@@ -1,7 +1,7 @@
 
 selenium_browser <- function(
   url,
-  browser_name = c("chrome", "firefox", "edge", "iexplorer"),
+  browser_name = c("chrome", "firefox", "edge", "iexplorer", "safari"),
   timeout = 2 * 60,
   dimensions = "1800x1200",
   verbose = TRUE,
@@ -147,6 +147,22 @@ selenium_ie <- function(timeout = 2 * 60, dimensions = "1200x1200", verbose = TR
       )
     },
     browser = "ie"
+  )
+}
+#' @describeIn selenium Opens an Safari web browser
+#' @export
+selenium_safari <- function(timeout = 2 * 60, dimensions = "1200x1200", verbose = TRUE) {
+  structure(
+    function(url) {
+      selenium_browser(
+        url = url,
+        browser_name = "safari",
+        timeout = timeout,
+        dimensions = dimensions,
+        verbose = verbose
+      )
+    },
+    browser = "safari"
   )
 }
 

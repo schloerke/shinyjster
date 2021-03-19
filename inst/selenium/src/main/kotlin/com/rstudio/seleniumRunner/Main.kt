@@ -1,6 +1,6 @@
 package com.rstudio.seleniumRunner
 
-import io.github.bonigarcia.wdm.DriverManagerType
+import io.github.bonigarcia.wdm.config.DriverManagerType
 import io.github.bonigarcia.wdm.WebDriverManager
 import org.openqa.selenium.By
 import org.openqa.selenium.Dimension
@@ -12,7 +12,7 @@ import kotlin.system.exitProcess
 import sun.misc.Signal
 import sun.misc.SignalHandler
 
-// Types are chrome,firefox,opera,edge,phantomjs,iexplorer,selenium_server_standalone,chromium
+// Types are chrome,firefox,opera,edge,phantomjs,iexplorer,selenium_server_standalone,chromium,safari
 val types = enumValues<DriverManagerType>().map { it.name.toLowerCase() }.joinToString(",")
 
 fun help() {
@@ -48,6 +48,7 @@ fun driverOptions(driverName: String, args: List<String>): Any? {
     meth.invoke(inst, args.toTypedArray())
     return inst
 }
+
 
 
 fun main(args: Array<String>) {

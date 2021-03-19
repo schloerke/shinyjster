@@ -5,6 +5,7 @@
 \alias{selenium_firefox}
 \alias{selenium_edge}
 \alias{selenium_ie}
+\alias{selenium_safari}
 \title{Selenium browsers}
 \usage{
 selenium_chrome(
@@ -24,6 +25,8 @@ selenium_firefox(
 selenium_edge(timeout = 2 * 60, dimensions = "1200x1200", verbose = TRUE)
 
 selenium_ie(timeout = 2 * 60, dimensions = "1200x1200", verbose = TRUE)
+
+selenium_safari(timeout = 2 * 60, dimensions = "1200x1200", verbose = TRUE)
 }
 \arguments{
 \item{timeout}{Number of seconds before selenium closes the browser}
@@ -49,5 +52,7 @@ This function assumes selenium is installed and all appropriate web browsers are
 \item \code{selenium_edge}: Opens an Edge web browser
 
 \item \code{selenium_ie}: Opens an IE web browser
+
+\item \code{selenium_safari}: Opens an Safari web browser
 }}
 

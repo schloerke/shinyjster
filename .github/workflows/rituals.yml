@@ -6,6 +6,10 @@ on:
   pull_request:
     branches:
       - master
+  repository_dispatch:
+    types:
+      - all
+      - rituals
 
 name: Rituals
 
@@ -34,55 +38,57 @@ jobs:
       CRAN: ${{ matrix.config.cran }}
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
+        name: Git Pull (master)
+        if: github.event_name != 'pull_request'
 
-      - uses: r-lib/actions/pr-fetch@master
+      - uses: actions/checkout@v2
         name: Git Pull (PR)
         if: github.event_name == 'pull_request'
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event.pull_request.head.sha }}
 
-      - uses: r-lib/actions/setup-r@master
+      - uses: r-lib/actions/setup-r@v1
+        id: install-r
         with:
           r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
 
-      - uses: r-lib/actions/setup-pandoc@master
+      - uses: r-lib/actions/setup-pandoc@v1
+
+      - name: Install pak and query dependencies
+        shell: Rscript {0}
+        run: |
+          install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
+          saveRDS(pak::pkg_deps("local::.", dependencies = TRUE), ".github/r-depends.rds")
+
+      - name: Cache R packages
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ matrix.config.os }}-${{ steps.install-r.outputs.installed-r-version }}-1-${{ hashFiles('.github/r-depends.rds') }}
+          restore-keys: ${{ matrix.config.os }}-${{ steps.install-r.outputs.installed-r-version }}-1-
+
+      - name: Install system dependencies
+        if: runner.os == 'Linux'
+        shell: Rscript {0}
+        run: |
+          pak::local_system_requirements(execute = TRUE)
+          pak::pkg_system_requirements("rcmdcheck", execute = TRUE)
 
       - name: Git Config
         run: |
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 
-      - name: Cache R packages
-        if: runner.os != 'Windows'
-        uses: actions/cache@v1
-        with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-r-${{ matrix.config.r }}-rituals-${{ github.ref }}
-          restore_keys: |
-            ${{ runner.os }}-r-${{ matrix.config.r }}-rituals-${{ github.ref }}
-            ${{ runner.os }}-r-${{ matrix.config.r }}-${{ github.ref }}
-
-      - name: Install remotes
-        run: >
-          Rscript
-          -e "if (system.file(package = 'remotes') == '') install.packages('remotes')"
-      - name: Install system dependencies
-        if: runner.os == 'Linux'
-        env:
-          RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
-        run: |
-          Rscript -e "remotes::install_github('r-hub/sysreqs')"
-          sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
-          sudo -s eval "$sysreqs"
       - name: Install dependencies
-        run: >
-          Rscript
-          -e "remotes::install_deps(dependencies = TRUE)"
+        shell: Rscript {0}
+        run: |
+          pak::local_install_dev_deps(upgrade = TRUE)
 
       - name: Document
         run: |
-          Rscript -e 'remotes::install_cran("roxygen2")'
+          Rscript -e 'pak::pkg_install("roxygen2")'
           Rscript -e 'roxygen2::roxygenise()'
           git add man/\* NAMESPACE
           git commit -m 'Document (GitHub Actions)' || echo "No documentation changes to commit"
@@ -98,9 +104,10 @@ jobs:
           git commit -m 'yarn build (GitHub Actions)' || echo "No yarn changes to commit"
 
       - name: Code Coverage
+        shell: Rscript {0}
         run: |
-          Rscript -e 'remotes::install_cran("covr")'
-          Rscript -e 'covr::codecov(token = "${{secrets.CODECOV_TOKEN}}")'
+          pak::pkg_install("covr")
+          covr::codecov(token = "${{secrets.CODECOV_TOKEN}}")
 
       - name: Git Push (PR)
         uses: r-lib/actions/pr-push@master
