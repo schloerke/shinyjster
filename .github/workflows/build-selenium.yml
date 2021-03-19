@@ -23,9 +23,9 @@ jobs:
         name: Maven Cache
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.config.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
+            ${{ runner.config.os }}-maven-
 
       - name: Git Config
         run: |
