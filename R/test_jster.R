@@ -46,9 +46,12 @@ test_jster <- function(
   browsers = c(
     selenium_chrome(),
     selenium_firefox(),
+    selenium_edge(),
     if (platform() == "win") c(
-      selenium_edge(),
       selenium_ie()
+    ),
+    if (platform() == "mac") c(
+      selenium_safari()
     )
   ),
   # callr is not available. Allows for each app to be run separately and wrapped in a tryCatch
@@ -133,9 +136,12 @@ test_jster_internal <- function(assert = TRUE) {
       browsers = c(
         selenium_chrome(headless = TRUE),
         selenium_firefox(headless = TRUE),
+        selenium_edge(),
         if (platform() == "win") c(
-          selenium_edge(),
           selenium_ie()
+        ),
+        if (platform() == "mac") c(
+          selenium_safari()
         )
       ),
       assert = FALSE
