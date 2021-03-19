@@ -104,8 +104,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.R_LIBS_USER }}
-          key: ${{ matrix.config.os }}-${{ steps.install-r.outputs.installed-r-version }}-1-${{ hashFiles('.github/r-depends.rds') }}
-          restore-keys: ${{ matrix.config.os }}-${{ steps.install-r.outputs.installed-r-version }}-1-
+          key: ${{ matrix.config.os }}-${{ steps.install-r.outputs.installed-r-version }}-2-${{ hashFiles('.github/r-depends.rds') }}
+          restore-keys: ${{ matrix.config.os }}-${{ steps.install-r.outputs.installed-r-version }}-2-
 
       - name: Install system dependencies
         if: runner.os == 'Linux'
@@ -143,12 +143,18 @@ jobs:
         run: |
           find check -name 'testthat.Rout*' -exec cat '{}' \; || true
 
+      - name: Headless Check (Setup)
+        shell: Rscript {0}
+        run: |
+          pak::pkg_install(c("future", "promises", "magrittr", "ggplot2"), upgrade = TRUE)
+          pak::local_install_dev_deps(upgrade = TRUE)
+          pkg::local_install()
+          shinyjster:::test_jster_internal()
       - name: Headless Check
         timeout-minutes: 45
-        run: >
-          Rscript
-          -e "remotes::install_cran(c('future', 'promises', 'magrittr', 'ggplot2'))"
-          -e "remotes::install_local(); shinyjster:::test_jster_internal()"
+        shell: Rscript {0}
+        run: |
+          shinyjster:::test_jster_internal()
 
       - name: Upload check results
         if: failure()
