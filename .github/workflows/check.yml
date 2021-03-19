@@ -153,10 +153,14 @@ jobs:
           pak::pkg_install(c("future", "promises", "magrittr", "ggplot2"), upgrade = TRUE)
           pak::local_install_dev_deps(upgrade = TRUE)
           pak::local_install()
-          shinyjster:::test_jster_internal()
       - name: Headless Check
         timeout-minutes: 45
         shell: Rscript {0}
+        env:
+          # firefox needs creds to download drivers?
+          # https://github.com/bonigarcia/webdrivermanager#http-response-code-403
+          WDM_GITHUBTOKENNAME: ${{ github.actor }}
+          WDM_GITHUBTOKENSECRET: ${{ secrets.GITHUB_TOKEN }}
         run: |
           shinyjster:::test_jster_internal()
 
