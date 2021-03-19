@@ -24,33 +24,43 @@ jobs:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       CRAN: "https://packagemanager.rstudio.com/all/__linux__/xenial/latest"
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
+
       - uses: r-lib/actions/setup-r@v1
+        id: install-r
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+
       - uses: r-lib/actions/setup-pandoc@v1
+
+      - name: Install pak and query dependencies
+        shell: Rscript {0}
+        run: |
+          install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
+          saveRDS(pak::pkg_deps("local::.", dependencies = TRUE), ".github/r-depends.rds")
+
       - name: Cache R packages
-        if: runner.os != 'Windows'
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.config.os }}-r-${{ matrix.config.r }}-${{ github.ref }}
-      - name: Install remotes
-        run: >
-          Rscript
-          -e "if (system.file(package = 'remotes') == '') install.packages('remotes')"
+          key: ${{ matrix.config.os }}-${{ steps.install-r.outputs.installed-r-version }}-1-${{ hashFiles('.github/r-depends.rds') }}
+          restore-keys: ${{ matrix.config.os }}-${{ steps.install-r.outputs.installed-r-version }}-1-
+
       - name: Install system dependencies
         if: runner.os == 'Linux'
-        env:
-          RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
+        shell: Rscript {0}
         run: |
-          Rscript -e "remotes::install_github('r-hub/sysreqs')"
-          sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
-          sudo -s eval "$sysreqs"
+          pak::local_system_requirements(execute = TRUE)
+          pak::pkg_system_requirements("rcmdcheck", execute = TRUE)
+
       - name: Install dependencies
-        run: >
-          Rscript
-          -e "remotes::install_deps(dependencies = TRUE)"
-          -e "remotes::install_local(dependencies = TRUE, force = TRUE)"
-          -e 'remotes::install_cran("pkgdown")'
+        shell: Rscript {0}
+        run: |
+          pak::local_install_dev_deps(upgrade = TRUE)
+          pak::local_install(upgrade = TRUE)
+          pak::pkg_install("pkgdown")
+
       - name: Render site
         run: >
           Rscript
