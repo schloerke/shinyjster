@@ -39,6 +39,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        name: Git Pull (master)
+        if: github.event_name != 'pull_request'
+
+      - uses: actions/checkout@v2
+        name: Git Pull (PR)
+        if: github.event_name == 'pull_request'
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - uses: r-lib/actions/setup-r@v1
         id: install-r
