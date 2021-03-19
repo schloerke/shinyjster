@@ -12,7 +12,7 @@ import kotlin.system.exitProcess
 import sun.misc.Signal
 import sun.misc.SignalHandler
 
-// Types are chrome,firefox,opera,edge,phantomjs,iexplorer,selenium_server_standalone,chromium
+// Types are chrome,firefox,opera,edge,phantomjs,iexplorer,selenium_server_standalone,chromium,safari
 val types = enumValues<DriverManagerType>().map { it.name.toLowerCase() }.joinToString(",")
 
 fun help() {
