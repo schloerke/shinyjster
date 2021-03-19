@@ -120,6 +120,10 @@ jobs:
         run: |
           pak::local_install_dev_deps(upgrade = TRUE)
           pak::pkg_install("rcmdcheck")
+          pak::pkg_install("future")
+          pak::pkg_install("promises")
+          pak::pkg_install("magrittr")
+          pak::pkg_install("ggplot2")
 
       - name: Session info
         run: |
@@ -148,7 +152,7 @@ jobs:
         run: |
           pak::pkg_install(c("future", "promises", "magrittr", "ggplot2"), upgrade = TRUE)
           pak::local_install_dev_deps(upgrade = TRUE)
-          pkg::local_install()
+          pak::local_install()
           shinyjster:::test_jster_internal()
       - name: Headless Check
         timeout-minutes: 45
