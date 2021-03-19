@@ -171,7 +171,6 @@ shinyjster_server <- function(input, output, session = shiny::getDefaultReactive
                 "\ny: ", val$error$y,
                 "\nxStr: ", val$error$xStr,
                 "\nyStr: ", val$error$yStr,
-                "\nyStr: ", val$error$yStr,
                 if (!is.null(val$error$contextStr)) paste0("\ncontextStr: ", val$error$contextStr),
                 sep = "")
             } else {
