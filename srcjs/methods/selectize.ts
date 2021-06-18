@@ -1,23 +1,22 @@
 import { $ } from "../globals";
 
 // simulate user click
-function click(id: string) {
+function click(id: string): void {
   $(`#${id}`)
     .siblings()
     .filter(".selectize-control")
     .find(".selectize-input")
-    .click();
+    .trigger("click");
 }
 
-function options(id: string) {
-  return $(`#${id}`)
-    .siblings()
-    .filter(".selectize-control")
-    .find(".selectize-dropdown-content")
-    .children();
+function options(id: string): JQuery<HTMLElement> {
+  id; // not used in search
+  return $(
+    "body .selectize-dropdown:visible .selectize-dropdown-content"
+  ).children();
 }
 
-function clickOption(id: string, idx: number) {
+function clickOption(id: string, idx: number): void {
   const opt = options(id).get(idx);
 
   if ($(opt).hasClass("optgroup")) {
@@ -27,7 +26,7 @@ function clickOption(id: string, idx: number) {
   }
 }
 
-function currentOption(id: string) {
+function currentOption(id: string): string {
   return $(`#${id}`)
     .siblings()
     .filter(".selectize-control")
@@ -35,11 +34,12 @@ function currentOption(id: string) {
     .text();
 }
 
+type SelectInfo = { label: string; value: string; group?: string };
 // When using serverside selectize, only the first 1000 values are sent.
-function values(id: string) {
+function values(id: string): SelectInfo[] {
   return options(id)
     .map(function () {
-      const selectInfo: { label: string; value: string; group?: string } = {
+      const selectInfo: SelectInfo = {
         label: "",
         value: "",
       };
@@ -58,7 +58,7 @@ function values(id: string) {
     .get();
 }
 
-function label(id: string) {
+function label(id: string): string {
   return $(`label[for="${id}-selectized"]:visible`).text().trim();
 }
 

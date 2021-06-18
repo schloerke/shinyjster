@@ -141,13 +141,15 @@ var globals_1 = require("../globals"); // simulate user click
 
 
 function click(id) {
-  globals_1.$("#" + id).siblings().filter(".selectize-control").find(".selectize-input").click();
+  globals_1.$("#" + id).siblings().filter(".selectize-control").find(".selectize-input").trigger("click");
 }
 
 exports.click = click;
 
 function options(id) {
-  return globals_1.$("#" + id).siblings().filter(".selectize-control").find(".selectize-dropdown-content").children();
+  id; // not used in search
+
+  return globals_1.$("body .selectize-dropdown:visible .selectize-dropdown-content").children();
 }
 
 exports.options = options;
