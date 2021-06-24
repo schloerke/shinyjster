@@ -158,10 +158,15 @@ function clickOption(id, idx) {
   var opt = options(id).get(idx);
 
   if (globals_1.$(opt).hasClass("optgroup")) {
-    globals_1.$(opt).find(".option").click();
+    globals_1.$(opt).find(".option").trigger("click");
   } else {
-    opt.click();
+    globals_1.$(opt).trigger("click");
   }
+
+  setTimeout(function () {
+    // Remove focus
+    globals_1.$("#" + id).siblings().filter(".selectize-control").find(".selectize-input input").trigger("blur");
+  }, 0);
 }
 
 exports.clickOption = clickOption;

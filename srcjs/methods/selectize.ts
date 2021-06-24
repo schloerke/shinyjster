@@ -20,10 +20,18 @@ function clickOption(id: string, idx: number): void {
   const opt = options(id).get(idx);
 
   if ($(opt).hasClass("optgroup")) {
-    $(opt).find(".option").click();
+    $(opt).find(".option").trigger("click");
   } else {
-    opt.click();
+    $(opt).trigger("click");
   }
+  setTimeout(function () {
+    // Remove focus
+    $("#" + id)
+      .siblings()
+      .filter(".selectize-control")
+      .find(".selectize-input input")
+      .trigger("blur");
+  }, 0);
 }
 
 function currentOption(id: string): string {
