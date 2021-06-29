@@ -147,9 +147,7 @@ function click(id) {
 exports.click = click;
 
 function options(id) {
-  id; // not used in search
-
-  return globals_1.$("body .selectize-dropdown:visible .selectize-dropdown-content").children();
+  return globals_1.$("#" + id).siblings().filter(".selectize-control").find(".selectize-dropdown-content").children();
 }
 
 exports.options = options;
