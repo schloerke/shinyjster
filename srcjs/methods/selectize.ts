@@ -10,10 +10,11 @@ function click(id: string): void {
 }
 
 function options(id: string): JQuery<HTMLElement> {
-  id; // not used in search
-  return $(
-    "body .selectize-dropdown:visible .selectize-dropdown-content"
-  ).children();
+  return $(`#${id}`)
+    .siblings()
+    .filter(".selectize-control")
+    .find(".selectize-dropdown-content")
+    .children();
 }
 
 function clickOption(id: string, idx: number): void {
