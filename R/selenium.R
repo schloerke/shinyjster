@@ -97,7 +97,7 @@ selenium_chrome <- function(timeout = 2 * 60, dimensions = "1200x1200", headless
         if (isTRUE(headless)) "--headless"
       )
     },
-    browser = if (isTRUE(headless)) "chrome_headless" else "chrome"
+    browser = "chrome"
   )
 }
 #' @describeIn selenium Opens a Firefox web browser
@@ -114,7 +114,7 @@ selenium_firefox <- function(timeout = 2 * 60, dimensions = "1200x1200", headles
         if (isTRUE(headless)) "-headless"
       )
     },
-    browser = if(isTRUE(headless)) "firefox_headless" else "firefox"
+    browser = "firefox"
   )
 }
 #' @describeIn selenium Opens an Edge web browser
