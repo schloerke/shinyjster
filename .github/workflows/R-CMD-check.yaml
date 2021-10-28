@@ -1,0 +1,52 @@
+on:
+  push: { branches: [main, rc-**] }
+  pull_request: { branches: [main]}
+
+name: Package Checks
+
+jobs:
+  pkgdown:
+    uses: rstudio/shinycoreci/.github/workflows/call-pkgdown.yaml@v1
+  rituals:
+    uses: rstudio/shinycoreci/.github/workflows/call-rituals.yaml@v1
+    with:
+      node-version: "14.x"
+      covr: true
+  R-CMD-check:
+    uses: rstudio/shinycoreci/.github/workflows/call-R-CMD-check.yaml@v1
+
+  headless:
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - { os: windows-latest, r: 'release'}
+        - { os: macOS-latest, r: 'release'}
+        - { os: ubuntu-18.04, r: 'release'}
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: rstudio/shinycoreci/.github/composite/install-r-package@v1
+        with:
+          extra-packages: |
+            future
+            promises
+            magrittr
+            ggplot2
+
+      - name: Headless Check (Setup)
+        shell: Rscript {0}
+        run: |
+          pak::local_install()
+      - name: Headless Check
+        timeout-minutes: 45
+        shell: Rscript {0}
+        env:
+          # firefox needs creds to download drivers?
+          # https://github.com/bonigarcia/webdrivermanager#http-response-code-403
+          WDM_GITHUBTOKENNAME: ${{ github.actor }}
+          WDM_GITHUBTOKENSECRET: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          shinyjster:::test_jster_internal()
