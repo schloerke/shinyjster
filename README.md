@@ -4,11 +4,8 @@
 # shinyjster
 
 <!-- badges: start -->
-
 [![R build
-status](https://github.com/schloerke/shinyjster/workflows/R-CMD-check/badge.svg)](https://github.com/schloerke/shinyjster/actions?query=workflow%3AR-CMD-check)
-[![GitHub Actions
-status](https://github.com/schloerke/shinyjster/workflows/Deploy%20gh-pages/badge.svg?branch=mainn)](https://github.com/schloerke/shinyjster/actions?query=workflow%3ADeploy%20gh-pages)
+status](https://github.com/schloerke/shinyjster/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/schloerke/shinyjster/actions)
 <!-- badges: end -->
 
 Run JavaScript testing on Shiny applications. On successful testing,
