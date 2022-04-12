@@ -132,6 +132,8 @@ test_jster <- function(
 ## TODO use shiny::runTests(appDir) once shiny v1.5.0 is published
 test_jster_internal <- function(assert = TRUE) {
 
+  app_folders <- dir(system.file("shinyjster", package = "shinyjster"), full.names = TRUE)
+
   test_dt <-
     test_jster(
       dir(system.file("shinyjster", package = "shinyjster"), full.names = TRUE),
