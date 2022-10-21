@@ -45,3 +45,4 @@ jobs:
         run: |
           git commit -m 'Maven build (GitHub Actions)' || echo "No Maven changes to commit"
           git push https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git HEAD:${{ github.ref }} || echo "No changes to push"
+
