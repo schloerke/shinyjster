@@ -39,6 +39,8 @@ testthat_shinyjster <- function(
 
       # Temp workaround while mac firefox apps don't complete in time
       if (browser == "firefox" && is_mac()) testthat::skip("Not testing Firefox on macOS")
+      # https://github.com/schloerke/shinyjster/pull/58
+      if (browser == "firefox") testthat::skip("Not testing Firefox due to WebDriver issues. Firefox fails to start")
 
       browser_func <- switch(browser,
         chrome = selenium_chrome(timeout = timeout, dimensions = dimensions),
