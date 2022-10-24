@@ -128,35 +128,11 @@ test_jster <- function(
   ret
 }
 
-# Test all apps stored in ./inst/shinyjster on all apps
-## TODO use shiny::runTests(appDir) once shiny v1.5.0 is published
 test_jster_internal <- function(assert = TRUE) {
 
   app_folders <- dir(system.file("shinyjster", package = "shinyjster"), full.names = TRUE)
 
-  test_dt <-
-    test_jster(
-      dir(system.file("shinyjster", package = "shinyjster"), full.names = TRUE),
-      browsers = c(
-        selenium_chrome(headless = TRUE),
-        selenium_firefox(headless = TRUE),
-        if (platform() == "win" || platform() == "mac") c(
-          selenium_edge()
-        ),
-        if (platform() == "win") c(
-          selenium_ie()
-        ),
-        if (platform() == "mac") c(
-          selenium_safari()
-        )
-      ),
-      assert = FALSE
-    )
-
-  test_dt <- test_dt[!grepl("-fail", test_dt$appDir), ]
-  if (isTRUE(assert)) {
-    assert_jster(test_dt)
-  }
-
-  invisible(test_dt)
+  invisible(lapply(app_folders, function(app_folder) {
+    shiny::runTests(app_folder, assert = assert)
+  }))
 }

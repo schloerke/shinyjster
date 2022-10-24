@@ -18,6 +18,8 @@ testthat_shinyjster(
 
 \item{app_dir}{Defaults the app in the directory above}
 
+\item{...}{Ignored}
+
 \item{browsers}{Names of each browser to be tested.}
 
 \item{timeout, dimensions}{Parameters to be supplied to each browser}

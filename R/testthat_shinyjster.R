@@ -10,6 +10,7 @@
 #' for browsers to not effect the other tests.
 #'
 #' @param test_name suffix to add to the test name for `testthat::test_that(NAME, {})`
+#' @param ... Ignored
 #' @param app_dir Defaults the app in the directory above
 #' @param browsers Names of each browser to be tested.
 #' @param timeout,dimensions Parameters to be supplied to each browser
@@ -24,6 +25,8 @@ testthat_shinyjster <- function(
   dimensions = "1200x1200"
 ) {
 
+  ellipsis::check_dots_empty()
+
   browsers <- unique(match.arg(browsers, several.ok = TRUE))
 
   app_name <- basename(normalizePath(app_dir))
@@ -33,12 +36,16 @@ testthat_shinyjster <- function(
   ret <- list()
 
   lapply(browsers, function(browser) {
-    testthat::test_that(paste0(name, browser, suffix), {
+    test_name <- paste0(name, browser, suffix)
+    message("Running test:", test_name)
+    testthat::test_that(test_name, {
       if (browser == "edge") testthat::skip("Not testing Edge browser")
       if (browser %in% c("edge", "ie") && !is_windows()) testthat::skip("Only testing Edge or IE on Windows")
 
       # Temp workaround while mac firefox apps don't complete in time
       if (browser == "firefox" && is_mac()) testthat::skip("Not testing Firefox on macOS")
+      # https://github.com/schloerke/shinyjster/pull/58
+      if (browser == "firefox") testthat::skip("Not testing Firefox due to WebDriver issues. Firefox fails to start")
 
       browser_func <- switch(browser,
         chrome = selenium_chrome(timeout = timeout, dimensions = dimensions),

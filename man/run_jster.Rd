@@ -69,8 +69,8 @@ Run an application with shinyjster enabled
 }
 \section{Functions}{
 \itemize{
-\item \code{run_jster}: Run a single shiny application with shinyjster enabled
+\item \code{run_jster()}: Run a single shiny application with shinyjster enabled
 
-\item \code{run_jster_apps}: Run a set of Shiny applications with shinyjster enabled
+\item \code{run_jster_apps()}: Run a set of Shiny applications with shinyjster enabled
+
 }}
-
