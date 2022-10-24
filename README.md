@@ -4,6 +4,7 @@
 # shinyjster
 
 <!-- badges: start -->
+
 [![R build
 status](https://github.com/schloerke/shinyjster/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/schloerke/shinyjster/actions)
 <!-- badges: end -->
