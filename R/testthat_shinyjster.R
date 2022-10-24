@@ -36,7 +36,9 @@ testthat_shinyjster <- function(
   ret <- list()
 
   lapply(browsers, function(browser) {
-    testthat::test_that(paste0(name, browser, suffix), {
+    test_name <- paste0(name, browser, suffix)
+    message("Running test:", test_name)
+    testthat::test_that(test_name, {
       if (browser == "edge") testthat::skip("Not testing Edge browser")
       if (browser %in% c("edge", "ie") && !is_windows()) testthat::skip("Only testing Edge or IE on Windows")
 
