@@ -21,3 +21,4 @@
 ^README\.Rmd$
 ^inst/selenium/(?!selenium.jar)
 ^lint-staged.config.js$
+^codecov\.yml$
