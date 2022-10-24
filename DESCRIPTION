@@ -19,7 +19,8 @@ Imports:
     shiny,
     later,
     tibble,
-    testthat
+    testthat,
+    ellipsis
 Suggests:
     spelling,
     httpuv,

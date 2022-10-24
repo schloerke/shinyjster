@@ -10,6 +10,7 @@
 #' for browsers to not effect the other tests.
 #'
 #' @param test_name suffix to add to the test name for `testthat::test_that(NAME, {})`
+#' @param ... Ignored
 #' @param app_dir Defaults the app in the directory above
 #' @param browsers Names of each browser to be tested.
 #' @param timeout,dimensions Parameters to be supplied to each browser
@@ -23,6 +24,8 @@ testthat_shinyjster <- function(
   timeout = 2 * 60,
   dimensions = "1200x1200"
 ) {
+
+  ellipsis::check_dots_empty()
 
   browsers <- unique(match.arg(browsers, several.ok = TRUE))
 
