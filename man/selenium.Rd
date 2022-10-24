@@ -45,14 +45,14 @@ This function assumes selenium is installed and all appropriate web browsers are
 }
 \section{Functions}{
 \itemize{
-\item \code{selenium_chrome}: Opens a Chrome web browser
+\item \code{selenium_chrome()}: Opens a Chrome web browser
 
-\item \code{selenium_firefox}: Opens a Firefox web browser
+\item \code{selenium_firefox()}: Opens a Firefox web browser
 
-\item \code{selenium_edge}: Opens an Edge web browser
+\item \code{selenium_edge()}: Opens an Edge web browser
 
-\item \code{selenium_ie}: Opens an IE web browser
+\item \code{selenium_ie()}: Opens an IE web browser
 
-\item \code{selenium_safari}: Opens an Safari web browser
+\item \code{selenium_safari()}: Opens an Safari web browser
+
 }}
-
