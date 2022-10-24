@@ -24,17 +24,18 @@ Run JavaScript testing on Shiny applications.  On successful testing, 'shinyjste
 
 ## Installation
 
-You can install the released version of shinyjster from [CRAN](https://CRAN.R-project.org) with:
+You can install ~~the released version of shinyjster from [CRAN](https://CRAN.R-project.org) with:~~
 
 ``` r
-install.packages("shinyjster")
+## Currently not on CRAN
+# install.packages("shinyjster")
 ```
 
-And the development version from [GitHub](https://github.com/) with:
+~~And~~ the development version from [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("schloerke/shinyjster")
+# install.packages("pak")
+pak::pkg_install("schloerke/shinyjster")
 ```
 ## Example
 
