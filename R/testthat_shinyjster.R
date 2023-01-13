@@ -20,7 +20,7 @@ testthat_shinyjster <- function(
   test_name = NULL,
   app_dir = "../../",
   ...,
-  browsers = c("chrome", "firefox", "edge", "ie"),
+  browsers = c("chrome", "firefox", "edge"),
   timeout = 2 * 60,
   dimensions = "1200x1200"
 ) {
