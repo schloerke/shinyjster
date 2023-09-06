@@ -35,7 +35,7 @@ jobs:
 
       - name: Build Selenium Jar
         run: |
-          export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=512m"
+          export MAVEN_OPTS="-Xmx3G -XX:MaxPermSize=512m"
           cd inst/selenium
           mvn package
           cp target/selenium-1.0.0-jar-with-dependencies.jar selenium.jar
