@@ -64,7 +64,7 @@ fun main(args: Array<String>) {
     val opts = args.drop(4)
 
     val driverType = enumValueOf<DriverManagerType>(driverName.toUpperCase())
-    WebDriverManager.getInstance(driverType).setup()
+    WebDriverManager.getInstance(driverType).clearDriverCache().setup()
     val driverClass = Class.forName(driverType.browserClass())
     val optionsObject = driverOptions(driverName, opts)
     val driver = if (optionsObject == null) {
