@@ -19,14 +19,6 @@ jobs:
       - uses: actions/checkout@v1
         name: Git Pull
 
-      - uses: actions/cache@v1
-        name: Maven Cache
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.config.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.config.os }}-maven-
-
       - name: Git Config
         run: |
           git config user.name "${GITHUB_ACTOR}"
