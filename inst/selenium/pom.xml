@@ -10,9 +10,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <selenium.version>4.29.0</selenium.version>
+        <selenium.version>4.31.0</selenium.version>
         <kotlin.version>1.3.61</kotlin.version>
-        <webdrivermanager.version>5.9.3</webdrivermanager.version>
+        <webdrivermanager.version>6.0.1</webdrivermanager.version>
         <main.class>com.rstudio.seleniumRunner.MainKt</main.class>
     </properties>
 
