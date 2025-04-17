@@ -14,9 +14,9 @@ name: Selenium
 jobs:
   selenium:
     name: Build Jar
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
         name: Git Pull
 
       - name: Git Config
@@ -37,4 +37,3 @@ jobs:
         run: |
           git commit -m 'Maven build (GitHub Actions)' || echo "No Maven changes to commit"
           git push https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git HEAD:${{ github.ref }} || echo "No changes to push"
-
