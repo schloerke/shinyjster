@@ -21,7 +21,7 @@ function click(id: string): void {
 }
 
 function label(id: string): string {
-  return $(`label[for="${id}"]`).text().trim();
+  return $(`label[for="${id}"]`).html() || "";
 }
 
 function value(id: string): string | number | string[] {

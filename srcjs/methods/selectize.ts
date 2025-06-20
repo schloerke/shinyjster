@@ -68,7 +68,7 @@ function values(id: string): SelectInfo[] {
 }
 
 function label(id: string): string {
-  return $(`label[for="${id}-selectized"]:visible`).text().trim();
+  return $(`label[for="${id}-selectized"]:visible`).html() || "";
 }
 
 export { click, values, options, clickOption, currentOption, label };
