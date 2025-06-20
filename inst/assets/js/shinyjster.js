@@ -199,7 +199,7 @@ function values(id) {
 exports.values = values;
 
 function label(id) {
-  return globals_1.$("label[for=\"" + id + "-selectized\"]:visible").text().trim();
+  return globals_1.$("label[for=\"" + id + "-selectized\"]:visible").html() || "";
 }
 
 exports.label = label;
@@ -923,7 +923,7 @@ function isChecked(id) {
 exports.isChecked = isChecked;
 
 function label(id) {
-  return globals_1.$("#" + id).parent().text().trim();
+  return globals_1.$("#" + id).parent().find("span").html() || "";
 }
 
 exports.label = label;
@@ -988,7 +988,7 @@ exports.setValue = exports.value = exports.currentOption = exports.label = void 
 var globals_1 = require("../globals");
 
 function label(id) {
-  return globals_1.$("label[for=\"" + id + "\"]").text().trim();
+  return globals_1.$("label[for=\"" + id + "\"]").html() || "";
 }
 
 exports.label = label;
@@ -1088,7 +1088,7 @@ function click(id) {
 exports.click = click;
 
 function label(id) {
-  return globals_1.$("label[for=\"" + id + "\"]").text().trim();
+  return globals_1.$("label[for=\"" + id + "\"]").html() || "";
 }
 
 exports.label = label;
@@ -1217,7 +1217,7 @@ function setup(findFn) {
   }
 
   function label(id) {
-    return globals_1.$("label[for=\"" + id + "\"]").text().trim();
+    return globals_1.$("label[for=\"" + id + "\"]").html() || "";
   }
 
   function value(id) {

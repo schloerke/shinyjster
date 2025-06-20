@@ -25,7 +25,7 @@ function setup(findFn: (id: string) => JQuery<HTMLElement>) {
   }
 
   function label(id: string): string {
-    return $(`label[for="${id}"]`).text().trim();
+    return $(`label[for="${id}"]`).html() || "";
   }
 
   function value(id: string): string | number | string[] {
